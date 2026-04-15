@@ -26,3 +26,21 @@ ggplot(data = exam_data,
        aes(x = RACE)) + 
     geom_bar()
 ```
+
+::: {.panel-tabset}
+
+## R Graphics
+
+```{r}
+hist(exam_data$MATHS)
+```
+
+## ggplot2
+
+```{r}
+
+
+library(ggplot2)
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 10)
+```
