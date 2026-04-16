@@ -27,15 +27,44 @@ ggplot(data = exam_data,
     geom_bar()
 ```
 
-::: {.panel-tabset}
+# Hands-on Exercise 1: A Layered Grammar of Graphics - ggplot2 methods
 
+## R Graphics vs ggplot
+
+Grammar of Graphics is a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. It was introduced by Leland Wilkinson (1999) Grammar of Graphics, Springer. The grammar of graphics is an answer to a question:
+
+## Layer of grammer of graphics
+
+ggplot2 is an implementation of Leland Wilkinson’s Grammar of Graphics. Figure below shows the seven grammars of ggplot2. ![The Seven Layers of the Grammar of Graphics](layer_of_graphics.jpg) In the nutshell, Grammar of Graphics defines the rules of structuring mathematical and aesthetic elements into a meaningful graph.
+
+There are two principles in Grammar of Graphics, they are:
+
+Graphics = distinct layers of grammatical elements Meaningful plots through aesthetic mapping A good grammar of graphics will allow us to gain insight into the composition of complicated graphics, and reveal unexpected connections between seemingly different graphics (Cox 1978). It also provides a strong foundation for understanding a diverse range of graphics. Furthermore, it may also help guide us on what a well-formed or correct graphic looks like, but there will still be many grammatically correct but nonsensical graphics.
+
+## Building Blocks Reference
+
+:::: {.callout-tip collapse="true"}
+::: {.callout-tip collapse="false"}
+## 🏗️ Building Blocks Reference
+
+-   **Data:** The dataset being plotted.
+-   **Aesthetics:** Attributes of the data used to influence visual characteristics, such as *position, colors, size, shape,* or *transparency*.
+-   **Geometrics:** The visual elements used to represent the data, such as *points, bars,* or *lines*.
+-   **Facets:** Splitting data into subsets to create multiple variations of the same graph (paneling/small multiples).
+-   **Statistics:** Statistical transformations that summarize data, such as *mean* or *confidence intervals*.
+-   **Coordinate Systems:** Define the plane on which data are mapped on the graphic.
+-   **Themes:** Modify all non-data components of a plot, such as the *title, sub-title, y-axis title,* or *legend background*.
+:::
+::::
+
+::: panel-tabset
 ## R Graphics
 
 ```{r}
 hist(exam_data$MATHS)
 ```
 
-## ggplot2
+## ggplot histogram
 
 ```{r}
 
@@ -44,3 +73,298 @@ library(ggplot2)
 ggplot(data = exam_data, aes(x = MATHS)) +
   geom_histogram(bins = 10)
 ```
+
+## geom_dotplot
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot(binwidth=2.5,         
+               dotsize = 0.5) +      
+  scale_y_continuous(NULL,           
+                     breaks = NULL)  
+```
+
+## geom histogram
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20,            
+                 color="black",      
+                 fill="light blue")  
+```
+
+## geom histogram with gender fill
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           fill = GENDER)) +
+  geom_histogram(bins=20, 
+                 color="grey30")
+```
+
+## geom density
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_density()           
+
+```
+
+## geom density with gender fill
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x = MATHS, 
+           colour = GENDER)) +
+  geom_density()
+
+```
+
+## boxplot
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS,       
+           x= GENDER)) +    
+  geom_boxplot()            
+```
+
+## boxplot with notch
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_boxplot(notch=TRUE)          
+```
+
+## violin plot
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_violin()          
+```
+
+## scatter plot
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point()            
+```
+
+## geom boxplot and geom point
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_boxplot() +                    
+  geom_point(position="jitter", 
+             size = 0.5)        
+```
+:::
+
+## Essential Grammatical Elements in ggplot2: stat
+
+::: panel-tabset
+The code chunk below adds mean values by using stat_summary() function and overriding the default geom.
+
+## boxplot and summary
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, x= GENDER)) +
+  geom_boxplot() +
+  stat_summary(geom = "point",       
+               fun = "mean",         
+               colour ="red",        
+               size=4)               
+```
+
+In the code chunk below, geom_smooth() is used to plot a best fit curve on the scatterplot.
+
+## geom point and geom smooth
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(linewidth=0.5)
+```
+
+## geom point and geom smooth linear
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              linewidth=0.5)
+```
+:::
+
+## geom in ggplot reference
+
+:::: {.callout-tip collapse="true"}
+::: callout-note
+## 🎨 Common Geometric Objects (Geoms)
+
+| Geom | Purpose | Common Plot Type |
+|:---|:---|:---|
+| [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html) | Individual points | Scatter plot |
+| [`geom_line()`](https://ggplot2.tidyverse.org/reference/geom_path.html) | Connecting lines | Line chart |
+| [`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html) | Smoothed trend lines | Regression/Approximations |
+| [`geom_bar()`](https://ggplot2.tidyverse.org/reference/geom_bar.html) | Bars (height represents count/value) | Bar chart |
+| [`geom_histogram()`](https://ggplot2.tidyverse.org/reference/geom_histogram.html) | Binned values | Histogram |
+| [`geom_polygon()`](https://ggplot2.tidyverse.org/reference/geom_polygon.html) | Arbitrary filled shapes | Custom areas |
+| [`geom_map()`](https://ggplot2.tidyverse.org/reference/geom_map.html) | Geographic polygons | Maps (use with `map_data()`) |
+:::
+::::
+
+## Working with facet_wrap
+
+facet_wrap wraps a 1d sequence of panels into 2d. This is generally a better use of screen space than facet_grid because most displays are roughly rectangular.
+
+The code chunk below plots a trellis plot using facet-wrap().
+
+## facet wrap
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20) +
+    facet_wrap(~ CLASS)
+```
+
+## facet grid
+
+facet_grid() forms a matrix of panels defined by row and column facetting variables. It is most useful when you have two discrete variables, and all combinations of the variables exist in the data.
+
+The code chunk below plots a trellis plot using facet_grid().
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20) +
+    facet_grid(~ CLASS)
+
+```
+
+## Essential Grammatical Elements in ggplot2: Coordinates
+
+The Coordinates functions map the position of objects onto the plane of the plot. There are a number of different possible coordinate systems to use, they are:
+
+::: callout-tip
+## Quick Reference: Coordinate Systems
+
+-   [`coord_cartesian()`](https://ggplot2.tidyverse.org/reference/coord_cartesian.html): The default cartesian coordinate systems, where you specify x and y values (e.g. allows you to zoom in or out).
+-   [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html): A cartesian system with the x and y flipped.
+-   [`coord_fixed()`](https://ggplot2.tidyverse.org/reference/coord_fixed.html): A cartesian system with a "fixed" aspect ratio (e.g. 1.78 for a "widescreen" plot).
+-   [`coord_quickmap()`](https://ggplot2.tidyverse.org/reference/coord_map.html): A coordinate system that approximates a good aspect ratio for maps.
+:::
+
+::: panel-tabset
+## geom bar
+
+By the default, the bar chart of ggplot2 is in vertical form.
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar()
+```
+
+## geom bar horizontal
+
+The code chunk below flips the horizontal bar chart into vertical bar chart by using coord_flip().
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip()
+```
+:::
+
+## Changing the y- and x-axis range
+
+The scatterplot on the geom smooth original is slightly misleading because the y-aixs and x-axis range are not equal. Please refer to geom smooth amend where we edit the x and y limit
+
+::: panel-tabset
+## geom smooth original
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, linewidth=0.5)
+
+```
+
+## geom smooth amend
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+
+```
+:::
+
+## Working with theme
+
+The code chunk below plot a horizontal bar chart using theme_gray().
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_gray()
+
+```
+
+A horizontal bar chart plotted using theme_classic().
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_classic()
+```
+
+A horizontal bar chart plotted using theme_minimal().
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_minimal()
+
+```
+
+::: callout-tip
+## References
+
+-   Hadley Wickham (2023) [**ggplot2: Elegant Graphics for Data Analysis**](https://ggplot2-book.org/). Online 3rd edition.
+-   Winston Chang (2013) [**R Graphics Cookbook 2nd edition**](https://r-graphics.org/). Online version.
+-   Healy, Kieran (2019) [**Data Visualization: A practical introduction**](https://socviz.co/). Online version.
+-   [Learning ggplot2 on Paper – Components](https://rstudio-pubs-static.s3.amazonaws.com/262506_83d31481f1854199991277a0166236b2.html)
+-   [Learning ggplot2 on Paper – Layer](https://rstudio-pubs-static.s3.amazonaws.com/262506_83d31481f1854199991277a0166236b2.html)
+-   [Learning ggplot2 on Paper – Scale](https://rstudio-pubs-static.s3.amazonaws.com/262506_83d31481f1854199991277a0166236b2.html)
+:::
