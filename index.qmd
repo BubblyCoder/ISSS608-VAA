@@ -4,3 +4,10 @@ format: html
 ---
 
 Welcome to ISSS608 **Visual Analytics and Applications** homepage. In this website, you will find my coursework prepared for this course.
+
+
+
+::: {.callout-note}
+## AI Disclosure
+This project was developed with the assistance of **Gemini (AI)** as a learning co-pilot. AI was utilized to clarify technical concepts in R, debug code chunks, and assist with Quarto formatting..
+:::
