@@ -108,6 +108,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -900,6 +929,7 @@ Tip
 </figure>
 </div>
 <p>He identified seven Visual Variables that can be used to represent data on a flat surface. He categorized them based on their “retinal properties” how our eyes and brains prioritize them.</p>
+<p>The symbols in the yellow-shaded diagonal represent the “mathematical” power of each variable. This tells you what kind of data the variable is capable of representing: <span class="math inline">\(Q\)</span> (Quantitative): Can represent numerical ratios. Size is the only variable Bertin considered truly quantitative (e.g., a circle with twice the area represents twice the value). <span class="math inline">\(O\)</span> (Ordered): Can represent a ranking or sequence (e.g., Small &lt; Medium &lt; Large or Light &lt; Dark). <span class="math inline">\(\neq\)</span> (Selective): Can be used to “select” or isolate a group instantly. For example, your eyes can immediately pick out all the “red” items or all the “large” items. <span class="math inline">\(\equiv\)</span> (Associative): Can be used to group items together without one appearing more important than the other. Color and Form are highly associative because a red circle and a blue circle are seen as “equal” in weight.</p>
 <ul>
 <li><p>The Plane (X, Y): The most powerful variables. This is the position of marks on a two-dimensional space.</p></li>
 <li><p>Size: Effective for showing quantitative differences (e.g., a larger bubble means a higher value).</p></li>
