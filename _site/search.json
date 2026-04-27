@@ -126,13 +126,6 @@
     "text": "One of the challenge in plotting statistical graph is annotation, especially with large number of data points.\n\nggplotalternatively\n\n\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           y=ENGLISH)) +\n  geom_point() +        # add the points\n  geom_smooth(method=lm, \n              linewidth=0.5) +  #note size is deprecated use linewidth\n  geom_label(aes(label = ID), \n             hjust = .5, \n             vjust = -.5) +\n  coord_cartesian(xlim=c(0,100), #x and y coordinate has the same extend\n                  ylim=c(0,100)) +\n  ggtitle(\"English scores versus Maths scores for Primary 3\")\n\n\n\n\n\n\n\n\n\n\n\n# still not a very successful attempt\nggplot(data=exam_data, aes(x= MATHS, \n           y=ENGLISH, label= ID)) +\n  geom_text_repel() +\n  geom_point(color = 'red') +\n  theme_classic(base_size = 16)\n\n\n\n\n\n\n\n\n\n\n\nggrepel is an extension of ggplot2 package which provides geoms for ggplot2 to repel overlapping text as in our examples on the right."
   },
   {
-    "objectID": "Hands-On_Ex/Hands-on_Ex02/Hands-on_Ex02.html#alternatively",
-    "href": "Hands-On_Ex/Hands-on_Ex02/Hands-on_Ex02.html#alternatively",
-    "title": "Hands-on Exercise 2",
-    "section": "",
-    "text": "# still not a very successful attempt\nggplot(data=exam_data, aes(x= MATHS, \n           y=ENGLISH, label= ID)) +\n  geom_text_repel() +\n  geom_point(color = 'red') +\n  theme_classic(base_size = 16)\n\n\n\n\n\n\n\n\n:::\nggrepel is an extension of ggplot2 package which provides geoms for ggplot2 to repel overlapping text as in our examples on the right."
-  },
-  {
     "objectID": "Hands-On_Ex/Hands-on_Ex02/Hands-on_Ex02.html#working-with-ggrepel",
     "href": "Hands-On_Ex/Hands-on_Ex02/Hands-on_Ex02.html#working-with-ggrepel",
     "title": "Hands-on Exercise 2",
