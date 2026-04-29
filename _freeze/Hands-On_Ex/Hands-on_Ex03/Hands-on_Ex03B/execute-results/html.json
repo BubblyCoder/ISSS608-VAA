@@ -1,0 +1,15 @@
+{
+  "hash": "363b236c7ba22a7c17a4af3d7674c51b",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Hands-on_Ex03B\"\nauthor: \"Alvin Ong Wei Ming\"\ndate: \"April 29, 2026\"\ndate-modified: \"last-modified\"\nexecute:\n  eval: true # As and when you render the code it will run through and display the output\n  echo: true #when it render the document it will show the code chunk\n  warning: false # this will prevent warning from appearing.\n  freeze: true #everytime you render, it will only render my latest hands on exericse and not the rest of it.\n---\n\n# Today we will be exploring animated statistical Graphics with R\n\nThese are some of the packages we will use in this session.\n\n-   [plotly](https://plotly.com/r/), R library for plotting interactive statistical graphs.\n\n-   [gganimate](https://gganimate.com/), an ggplot extension for creating animated statistical graphs.\n\n-   [gifski](https://gif.ski/) converts video frames to GIF animations using pngquant’s fancy features for efficient cross-frame palettes and temporal dithering. It produces animated GIFs that use thousands of colors per frame.\n\n-   [gapminder](https://cran.r-project.org/web/packages/gapminder/index.html): An excerpt of the data available at Gapminder.org. We just want to use its country_colors scheme.\n\n-   [tidyverse](https://tidyverse.org/), a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs.\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(readxl, gifski, gapminder,\n               plotly, gganimate, tidyverse)\n```\n:::\n\n\n## Basic concepts of animation\n\n![](Hands-On_Ex/Hands-on_Ex03)\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
