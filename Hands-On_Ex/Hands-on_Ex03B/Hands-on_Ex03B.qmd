@@ -16,7 +16,6 @@ execute:
 
 When creating animations, the plot does not actually move. Instead, many individual plots are built and then stitched together as movie frames, just like an old-school flip book or cartoon. Each frame is a different plot when conveying motion, which is built using some relevant subset of the aggregate data. The subset drives the flow of the animation when stitched back together.
 
-
 ![](image1.jpg)
 
 ::: callout-tip
@@ -40,9 +39,6 @@ These are some of the packages we will use in this session.
 pacman::p_load(readxl, gifski, gapminder,
                plotly, gganimate, tidyverse)
 ```
-
-
-
 
 ::: callout-note
 ## Things to learn from the code chunk below
@@ -82,32 +78,29 @@ globalPop <- read_xls("data/GlobalPopulation.xls",
   mutate_at(col, as.factor) %>%
   mutate(Year = as.integer(Year))
 ```
-
-
 :::
 
 ## Animated Data Visualisation: gganimate method
 
-
 [gganimate](https://gganimate.com/) extends the grammar of graphics as implemented by ggplot2 to include the description of animation. It does this by providing a range of new grammar classes that can be added to the plot object in order to customise how it should change with time.
 
-- transition_*() defines how the data should be spread out and how it relates to itself across time.
+-   transition\_\*() defines how the data should be spread out and how it relates to itself across time.
 
-- view_*() defines how the positional scales should change along the animation.
+-   view\_\*() defines how the positional scales should change along the animation.
 
-- shadow_*() defines how data from other points in time should be presented in the given point in time.
+-   shadow\_\*() defines how data from other points in time should be presented in the given point in time.
 
-- enter_*()/exit_*() defines how new data should appear and how old data should disappear during the course of the animation.
+-   enter\_*()/exit\_*() defines how new data should appear and how old data should disappear during the course of the animation.
 
-- ease_aes() defines how different aesthetics should be eased during transitions.
+-   ease_aes() defines how different aesthetics should be eased during transitions.
 
 ## Building a static population bubble plot
 
 In the code chunk below, the basic ggplot2 functions are used to create a static bubble plot.
 
 ::: panel-tabset
-
 ## Static
+
 ```{r}
 ggplot(globalPop, aes(x = Old, y = Young, 
                       size = Population, 
@@ -122,9 +115,10 @@ ggplot(globalPop, aes(x = Old, y = Young,
 
 ```
 
-## Animated 
-- [transition_time()](https://gganimate.com/reference/transition_time.html) of gganimate is used to create transition through distinct states in time (i.e. Year).
-- ease_aes() is used to control easing of aesthetics. The default is linear. Other methods are: quadratic, cubic, quartic, quintic, sine, circular, exponential, elastic, back, and bounce.
+## Animated
+
+-   [transition_time()](https://gganimate.com/reference/transition_time.html) of gganimate is used to create transition through distinct states in time (i.e. Year).
+-   ease_aes() is used to control easing of aesthetics. The default is linear. Other methods are: quadratic, cubic, quartic, quintic, sine, circular, exponential, elastic, back, and bounce.
 
 ```{r}
 #| cache: true
@@ -144,8 +138,8 @@ ggplot(globalPop, aes(x = Old, y = Young,
 ```
 
 ## Animated Data Visualisation: plotly
-In Plotly R package, both ggplotly() and plot_ly() support key frame animations through the frame argument/aesthetic. They also support an ids argument/aesthetic to ensure smooth transitions between objects with the same id (which helps facilitate object constancy).
 
+In Plotly R package, both ggplotly() and plot_ly() support key frame animations through the frame argument/aesthetic. They also support an ids argument/aesthetic to ensure smooth transitions between objects with the same id (which helps facilitate object constancy).
 
 ```{r}
 
@@ -167,13 +161,13 @@ gg <- ggplot(globalPop_small,
 
 ggplotly(gg)
 
-ggplotly(gg)
+
 ```
+:::
+
 
 ::: callout-note
-
-Appropriate ggplot2 functions are used to create a static bubble plot. The output is then saved as an R object called gg.
-ggplotly() is then used to convert the R graphic object into an animated svg object.
+Appropriate ggplot2 functions are used to create a static bubble plot. The output is then saved as an R object called gg. ggplotly() is then used to convert the R graphic object into an animated svg object.
 
 Notice that although show.legend = FALSE argument was used, the legend still appears on the plot. To overcome this problem, theme(legend.position='none') should be used as shown in the plot and code chunk below.
 :::
@@ -196,7 +190,6 @@ ggplotly(gg)
 
 ## Building an animated bubble plot: plot_ly() method
 
-
 ```{r}
 
 bp <- globalPop %>%
@@ -216,3 +209,4 @@ bp
 
 
 ```
+
