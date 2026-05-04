@@ -15,6 +15,8 @@ website:
           href: "Hands-On_Ex/Hands-on_Ex03/Hands-on_Ex03A.html"
         - text: "Hands-on Exercise 3: Programming Animated Statistical Graphics with R"
           href: "Hands-On_Ex/Hands-on_Ex03B/Hands-on_Ex03B.html"
+        - text: "Hands-on Exercise 4: Fundamentals of Visual Analytics"
+          href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04.html"
     right:
       - href: index.qmd
         text: Home
