@@ -1,5 +1,5 @@
 ---
-title: "Hands-on_Ex03B"
+title: "ands-on Exercise 3B"
 author: "Alvin Ong Wei Ming"
 date: "April 29, 2026"
 date-modified: "last-modified"
@@ -165,7 +165,6 @@ ggplotly(gg)
 ```
 :::
 
-
 ::: callout-note
 Appropriate ggplot2 functions are used to create a static bubble plot. The output is then saved as an R object called gg. ggplotly() is then used to convert the R graphic object into an animated svg object.
 
@@ -209,4 +208,3 @@ bp
 
 
 ```
-

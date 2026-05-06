@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 3"
+title: "Hands-on Exercise 3A"
 author: "Alvin Ong Wei Ming"
 date: "April 28, 2026"
 date-modified: "last-modified"
@@ -23,8 +23,8 @@ Libraries we will be looking at:
 -   [tidyverse](https://tidyverse.org/): A family of modern R packages for data science, analysis, and communication.
 
 -   [patchwork](https://cran.r-project.org/web/packages/patchwork/index.html): For combining multiple ggplot2 graphs into one figure.
--    [skimr](https://cran.r-project.org/web/packages/skimr/index.html): an R package designed to provide detact and compact summary statistics for data frames, tibbles and vectors. i added this library to have an equivalent of panda's describe
 
+-   [skimr](https://cran.r-project.org/web/packages/skimr/index.html): an R package designed to provide detact and compact summary statistics for data frames, tibbles and vectors. i added this library to have an equivalent of panda's describe
 
 ## Lets load the packages
 
@@ -194,11 +194,12 @@ girafe(ggobj = gg_point,
 ```
 
 ## Hover effect with data_id aesthetic
+
 Code chunk below shows the second interactive feature of ggiraph, namely data_id.
 
 ::: panel-tabset
-
 ## V1
+
 ```{r}
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -221,6 +222,7 @@ girafe(
 ```
 
 ## V2
+
 ```{r}
 
 p <- ggplot(data=exam_data, 
@@ -248,6 +250,7 @@ girafe(
 ```
 
 ## V3 (Bonus)
+
 ```{r}
 p <- ggplot(data = exam_data, aes(x = RACE, y = MATHS)) +
   geom_boxplot(outlier.shape = NA) + # Hide static outliers
@@ -265,6 +268,7 @@ girafe(ggobj = p)
 :::
 
 ## Combining tooltip and hover effect
+
 There are time that we want to combine tooltip and hover effect on the interactive statistical graph as shown in the code chunk below.
 
 ```{r}
@@ -318,8 +322,9 @@ girafe(
 
 ```
 
-::: {.callout-warning}
+::: callout-warning
 ## Warning
+
 Note that click actions must be a string column in the dataset containing valid javascript instructions.
 :::
 
@@ -362,11 +367,10 @@ girafe(code = print(p1 + p2),
 
 The data_id aesthetic is critical to link observations between plots and the tooltip aesthetic is optional but nice to have when mouse over a point.
 
-
 ## Creating an interactive scatter plot: plot_ly() method
 
-
 ## Plotly R
+
 ```{r}
 plot_ly(data = exam_data, 
         x = ~ENGLISH, 
@@ -375,11 +379,10 @@ plot_ly(data = exam_data,
 ```
 
 ## Coordinated Multiple Views with plotly
+
 The creation of a coordinated linked plot by using plotly involves three steps:
 
-highlight_key() of plotly package is used as shared data.
-two scatterplots will be created by using ggplot2 functions.
-lastly, subplot() of plotly package is used to place them next to each other side-by-side.
+highlight_key() of plotly package is used as shared data. two scatterplots will be created by using ggplot2 functions. lastly, subplot() of plotly package is used to place them next to each other side-by-side.
 
 ```{r}
 d <- highlight_key(exam_data)
@@ -423,9 +426,11 @@ subplot(ggplotly(p1),
 ```
 
 ## Interactive Data Visualisation - crosstalk methods!
+
 Crosstalk is an add-on to the htmlwidgets package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
 
 ### Interactive Data Table: DT package
+
 A wrapper of the JavaScript Library DataTables
 
 Data objects in R can be rendered as HTML tables using the JavaScript library ‘DataTables’ (typically via R Markdown or Shiny).
@@ -434,7 +439,7 @@ Data objects in R can be rendered as HTML tables using the JavaScript library �
 DT::datatable(exam_data, class= "compact")
 ```
 
-##  Linked brushing: crosstalk method
+## Linked brushing: crosstalk method
 
 ```{r}
 d <- highlight_key(exam_data) 

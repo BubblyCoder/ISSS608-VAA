@@ -1,5 +1,5 @@
 ---
-title: "Hands-on_Ex04"
+title: "Hands-on Exercise 4A"
 author: "Alvin Ong Wei Ming"
 date: "May 04, 2026"
 date-modified: "last-modified"
@@ -14,17 +14,17 @@ execute:
 
 For the purpose of this exercise we will use:
 
-- [ggridges](https://cran.r-project.org/web/packages/ggridges/), a ggplot2 extension specially designed for plotting ridgeline plots,
+-   [ggridges](https://cran.r-project.org/web/packages/ggridges/), a ggplot2 extension specially designed for plotting ridgeline plots,
 
-- [ggdist](https://cran.r-project.org/web/packages/ggdist/index.html), a ggplot2 extension spacially desgin for visualising distribution and uncertainty,
-- tidyverse, a family of R packages to meet the modern data science and visual communication needs,
+-   [ggdist](https://cran.r-project.org/web/packages/ggdist/index.html), a ggplot2 extension spacially desgin for visualising distribution and uncertainty,
 
-- [ggthemes](https://cran.r-project.org/web/packages/ggthemes/index.html), a ggplot extension that provides the user additional themes, scales, and geoms for the - ggplots package, and
+-   tidyverse, a family of R packages to meet the modern data science and visual communication needs,
 
-- [colorspace](https://cran.r-project.org/web/packages/colorspace/vignettes/colorspace.html), an R package provides a broad toolbox for selecting individual colors or color palettes, manipulating these colors, and employing them in various kinds of visualisations.
+-   [ggthemes](https://cran.r-project.org/web/packages/ggthemes/index.html), a ggplot extension that provides the user additional themes, scales, and geoms for the - ggplots package, and
 
-- [BayesFactor](https://cran.r-project.org/web/packages/BayesFactor/index.html), A suite of functions for computing various Bayes factors for simple designs, including contingency tables, one- and two-sample designs, one-way designs, general ANOVA designs, and linear regressio
+-   [colorspace](https://cran.r-project.org/web/packages/colorspace/vignettes/colorspace.html), an R package provides a broad toolbox for selecting individual colors or color palettes, manipulating these colors, and employing them in various kinds of visualisations.
 
+-   [BayesFactor](https://cran.r-project.org/web/packages/BayesFactor/index.html), A suite of functions for computing various Bayes factors for simple designs, including contingency tables, one- and two-sample designs, one-way designs, general ANOVA designs, and linear regressio
 
 ```{r}
 pacman::p_load(ggdist, ggridges, ggthemes,
@@ -38,13 +38,14 @@ head(exam)
 ```
 
 ## Visualising Distribution with Ridgeline Plot
+
 Ridgeline plot (sometimes called Joyplot) is a data visualisation technique for revealing the distribution of a numeric value for several groups. Distribution can be represented using histograms or density plots, all aligned to the same horizontal scale and presented with a slight overlap.
 
 ggridges package provides two main geom to plot gridgeline plots, they are: geom_ridgeline() and geom_density_ridges(). The former takes height values directly to draw the ridgelines, and the latter first estimates data densities and then draws those using ridgelines.
 
 ::: panel-tabset
-
 ## Default
+
 ```{r}
 ggplot(exam, 
        aes(x = ENGLISH, 
@@ -64,6 +65,7 @@ ggplot(exam,
 ```
 
 ## With Gradient
+
 ```{r}
 ggplot(exam, 
        aes(x = ENGLISH, 
@@ -81,6 +83,7 @@ ggplot(exam,
   scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
   theme_ridges()
 ```
+
 ## With Bayes Factor
 
 ```{r}
@@ -132,7 +135,6 @@ ggplot(exam,
 ```
 :::
 
-
 ## Mapping the probabilities directly onto color
 
 ```{r}
@@ -146,7 +148,8 @@ ggplot(exam,
                        direction = -1) +
   theme_ridges()
 ```
-::: {.callout-important}
+
+::: callout-important
 ## Important
 
 It is important include the argument `calc_ecdf = TRUE` in `stat_density_ridges()`.
@@ -170,6 +173,7 @@ ggplot(exam,
   scale_fill_viridis_d(name = "Quartiles") +
   theme_ridges()
 ```
+
 Instead of using number to define the quantiles, we can also specify quantiles by cut points such as 2.5% and 97.5% tails to colour the ridgeline plot as shown in the figure below.
 
 ```{r}
@@ -192,12 +196,14 @@ ggplot(exam,
   theme_ridges()
 
 ```
+
 ## Visualising Distribution with Raincloud Plot
+
 Raincloud Plot is a data visualisation techniques that produces a half-density to a distribution plot. It gets the name because the density plot is in the shape of a “raincloud”. The raincloud (half-density) plot enhances the traditional box-plot by highlighting multiple modalities (an indicator that groups may exist). The boxplot does not show where densities are clustered, but the raincloud plot does!
 
 ::: panel-tabset
-
 ## Default
+
 ```{r}
 ggplot(exam, 
        aes(x = RACE, 
@@ -226,6 +232,7 @@ ggplot(exam,
 :::
 
 ## Adding the boxplot with geom_boxplot()
+
 Next, we will add the second geometry layer using geom_boxplot() of ggplot2. This produces a narrow boxplot. We reduce the width and adjust the opacity.
 
 ```{r}
@@ -241,8 +248,7 @@ ggplot(exam,
 
 ```
 
-Next, we will add the third geometry layer using stat_dots() of ggdist package. This produces a half-dotplot, which is similar to a histogram that indicates the number of samples (number of dots) in each bin. We select side = “left” to indicate we want it on the left-hand side.
-Rainplot looks pretty good here too
+Next, we will add the third geometry layer using stat_dots() of ggdist package. This produces a half-dotplot, which is similar to a histogram that indicates the number of samples (number of dots) in each bin. We select side = “left” to indicate we want it on the left-hand side. Rainplot looks pretty good here too
 
 ```{r}
 ggplot(exam, 
@@ -260,7 +266,9 @@ ggplot(exam,
             dotsize = 2)
 
 ```
+
 Flipping it over
+
 ```{r}
 ggplot(exam, 
        aes(x = RACE, 
@@ -279,7 +287,6 @@ ggplot(exam,
   theme_economist()
 
 ```
-
 
 ```{r}
 #| fig-width: 10
