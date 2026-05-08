@@ -19,6 +19,8 @@ website:
           href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04A.html"
         - text: "Hands-on Exercise 4B: Visual Statistical Analysis"
           href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04B.html"
+        - text: "Hands-on Exercise 4C: Visualising Uncertainty"
+          href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04B.html"
     right:
       - href: index.qmd
         text: Home
