@@ -39,7 +39,7 @@ head(covid19)
 
 ## FunnelPlotR methods: Basic Plot Example
 
-(FunnelPlotR)\[https://nhs-r-community.github.io/FunnelPlotR/\] package uses ggplot to generate funnel plots. It requires a numerator (events of interest), denominator (population to be considered) and group. The key arguments selected for customisation are:
+[FunnelPlotR](https://nhs-r-community.github.io/FunnelPlotR/) package uses ggplot to generate funnel plots. It requires a numerator (events of interest), denominator (population to be considered) and group. The key arguments selected for customisation are:
 
 -   limit: plot limits (95 or 99).
 -   label_outliers: to label outliers (true or false).
