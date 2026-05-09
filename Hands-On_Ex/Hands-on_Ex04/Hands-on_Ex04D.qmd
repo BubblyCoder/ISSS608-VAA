@@ -148,19 +148,19 @@ It gives a much higher weight to sub-districts with high precision (small SE) an
 
 ```{r}
 #| echo: false
-# The arithmetic mean
+
 simple.mean <- mean(df$rate)
 
 # 2. Generate smooth funnel lines based on the weighted mean
 # We create a sequence of 'Positive' population sizes to draw the curve
 funnel_bounds <- data.frame(Positive = seq(min(df$Positive), max(df$Positive), length.out = 100)) %>%
   mutate(
-    # SE for the expected baseline
+
     expected_se = sqrt((fit.mean * (1 - fit.mean)) / Positive),
-    # 95% Confidence Limits (approx 1.96 standard deviations)
+
     limit_95_upper = fit.mean + 1.96 * expected_se,
     limit_95_lower = fit.mean - 1.96 * expected_se,
-    # 99.8% Confidence Limits (approx 3.09 standard deviations)
+
     limit_99_upper = fit.mean + 3.09 * expected_se,
     limit_99_lower = fit.mean - 3.09 * expected_se
   )
@@ -180,7 +180,7 @@ ggplot() +
   # Add the INCORRECT Arithmetic Mean center line
   geom_hline(aes(yintercept = simple.mean), color = "red", linetype = "twodash", size = 1) +
   
-  # Aesthetics and Labels
+
   scale_y_continuous(labels = scales::percent_format(accuracy = 0.1)) +
   labs(
     title = "COVID-19 Case Fatality: Weighted vs Arithmetic Mean",
