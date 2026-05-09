@@ -147,7 +147,6 @@ It gives a much higher weight to sub-districts with high precision (small SE) an
 ## if we do not calculate a weighted mean
 
 ```{r}
-#| echo: false
 
 simple.mean <- mean(df$rate)
 
