@@ -145,6 +145,7 @@ hc.order = True refers to using hierarchical clustering to put similar variables
 
 The current default uses p value, a bayesian approach can also be used by changing type = 'bayes'
 :::
+
 ```{r}
 #Changing the color to better show that this is different from the above plots
 
