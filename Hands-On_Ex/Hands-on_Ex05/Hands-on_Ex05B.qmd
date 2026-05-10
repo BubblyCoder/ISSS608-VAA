@@ -147,7 +147,8 @@ ggplot.component = list( theme(text=element_text(size=5), axis.text.x = element_
 - The current default uses p value, a bayesian approach can also be used by changing type = 'bayes'
 :::
 
-```{r}
+```{r} 
+
 #Changing the color to better show that this is different from the above plots
 
 ggstatsplot::ggcorrmat(
