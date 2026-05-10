@@ -4,31 +4,45 @@ project:
 website:
   title: "ISSS608-VAA"
   navbar:
+    background: primary
+    search: true
     left:
-    - text: "Hands-on Exercise"
-      menu:
-        - text: "Hands-on Exercise 1: A Layered Grammar of Graphics - ggplot2 methods"
-          href: "Hands-On_Ex/Hands-on_Ex01/Hands-on_Ex01.html"
-        - text: "Hands-on Exercise 2: Beyond ggplot2 Fundamentals"
-          href: "Hands-On_Ex/Hands-on_Ex02/Hands-on_Ex02.html"
-        - text: "Hands-on Exercise 3: Programming Interactive Data Visualisation with R"
-          href: "Hands-On_Ex/Hands-on_Ex03/Hands-on_Ex03A.html"
-        - text: "Hands-on Exercise 3: Programming Animated Statistical Graphics with R"
-          href: "Hands-On_Ex/Hands-on_Ex03B/Hands-on_Ex03B.html"
-        - text: "Hands-on Exercise 4A: Fundamentals of Visual Analytics"
-          href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04A.html"
-        - text: "Hands-on Exercise 4B: Visual Statistical Analysis"
-          href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04B.html"
-        - text: "Hands-on Exercise 4C: Visualising Uncertainty"
-          href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html"
-        - text: "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons"
-          href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html"
-          
-          
+      - text: "Hands-on Exercise"
+        menu:
+          - text: "Hands-on Exercise 1: Layered Grammar of Graphics"
+            href: "Hands-On_Ex/Hands-on_Ex01/Hands-on_Ex01.html"
+          - text: "Hands-on Exercise 2: Beyond ggplot2 Fundamentals"
+            href: "Hands-On_Ex/Hands-on_Ex02/Hands-on_Ex02.html"
+          - text: "Hands-on Exercise 3A: Interactive Data Visualisation"
+            href: "Hands-On_Ex/Hands-on_Ex03/Hands-on_Ex03A.html"
+          - text: "Hands-on Exercise 3B: Animated Statistical Graphics"
+            href: "Hands-On_Ex/Hands-on_Ex03B/Hands-on_Ex03B.html"
+          - text: "Hands-on Exercise 4A: Fundamentals of Visual Analytics"
+            href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04A.html"
+          - text: "Hands-on Exercise 4B: Visual Statistical Analysis"
+            href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04B.html"
+          - text: "Hands-on Exercise 4C: Visualising Uncertainty"
+            href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html"
+          - text: "Hands-on Exercise 4D: Funnel Plots"
+            href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html"
+          - text: "Hands-on Exercise 5A: Creating Ternary Plot with R"
+            href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05A.html"
+          - text: "Hands-on Exercise 5B: Heatmap for Visualising and Analysing Multivariate Data"
+            href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05B.html"
+      
+
+      - text: "Take-Home Exercise 01"
+        menu:
+          - text: "Technical Report"
+            href: "Take-Home_Ex/Ex01/Ex01_Technical.html" 
+          - text: "Executive Report"
+            href: "Take-Home_Ex/Ex01/Ex01_Executive.html"
+
     right:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - text: Home
+        href: index.qmd
+      - text: About
+        href: about.qmd
 
 format:
   html:
@@ -37,4 +51,3 @@ format:
     toc: true
 
 editor: visual
-

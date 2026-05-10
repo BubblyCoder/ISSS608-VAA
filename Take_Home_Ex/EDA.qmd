@@ -1,0 +1,64 @@
+---
+title: "EDA"
+format: html
+---
+
+```{r}
+pacman::p_load(plotly, crosstalk, DT, 
+               ggdist, ggridges, colorspace,
+               gganimate, tidyverse,skimr)
+
+```
+
+```{r}
+df <-read.csv2("C:/BubblyCoder/ISSS608-VAA/Take_Home_Ex/Dataset of motor insurance portfolio.csv") %>% mutate()
+head(df)
+```
+
+
+
+```{r}
+skim(df)
+
+```
+
+```{r}
+library(tidyverse)
+
+# 1. Pre-filter the data to only include character columns
+df_chr <- df %>% 
+  select(where(is.character))
+
+# 2. Create the summary table from the filtered data
+unique_summary <- tibble(
+  column_name  = names(df_chr),
+  unique_count = map_int(df_chr, n_distinct),
+  unique_set   = map(df_chr, unique)
+)
+
+# 3. View the result
+print(unique_summary,n= 40)
+```
+
+```{r}
+df %>%
+  filter(is.na(as.numeric(liability_premium))) %>%
+  select(liability_premium) %>%
+  distinct()
+```
+
+```{r}
+df <- df %>% mutate(
+  
+    policy_type = as.factor(policy_type),
+    policy_status = as.factor(policy_status),
+    business_type = as.factor(business_type),
+    payment_frequency = as.factor(bonus_score),
+    fuel_type = as.factor(fuel_type),
+    municipality_type = as.factor(municipality_type),
+    circulation_area = as.factor(circulation_area)
+
+)
+
+head(df)
+```
