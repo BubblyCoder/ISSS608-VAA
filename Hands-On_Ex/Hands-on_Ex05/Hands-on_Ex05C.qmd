@@ -3,3 +3,20 @@ title: "Hands-on_Ex05C"
 format: html
 ---
 
+# Heatmap for Visualising and Analysing Multivariate Data
+
+## What are Heat Maps?
+
+Heatmaps visualise data through variations in colouring. When applied to a tabular format, heatmaps are useful for cross-examining multivariate data, through placing variables in the columns and observation (or records) in row and colouring the cells within the table. Heatmaps are good for showing variance across multiple variables, revealing any patterns, displaying whether any variables are similar to each other, and for detecting if any correlations exist in-between them.
+
+## R Packages
+
+For this exercise we will use the below
+
+-   [seriation](https://cran.r-project.org/web/packages/seriation/index.html) Infrastructure for ordering objects with an implementation of several seriation/sequencing/ordination techniques to reorder matrices, dissimilarity matrices, and dendrograms. Also provides (optimally) reordered heatmaps, color images and clustering visualizations like dissimilarity plots, and visual assessment of cluster tendency plots (VAT and iVAT)
+
+-   [dendextend](https://www.rdocumentation.org/packages/dendextend/versions/1.19.1)
+
+-   [heatmaply](https://www.rdocumentation.org/packages/heatmaply/versions/1.6.0/topics/heatmaply) provides general functions for handling tree-like structures in R. It is intended as a replacement for similar functions in hierarchical clustering and classification/regression trees, such that all of these can use the same engine for plotting or cutting trees.
+
+-   [tidyverse](https://tidyverse.org/) A family of modern R packages for data science, analysis, and communication.
