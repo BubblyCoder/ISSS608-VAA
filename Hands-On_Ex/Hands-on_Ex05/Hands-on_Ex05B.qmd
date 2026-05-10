@@ -154,7 +154,7 @@ ggstatsplot::ggcorrmat(
   type = "bayes",
   ggcorrplot.args = list(outline.color = "black", 
                          hc.order = TRUE,
-                         tl.cex = 10),
+                         tl.cex = 0.7),
   title    = "Bayesian Correlogram for Wine Dataset",
   subtitle = "Values in cells represent Log(Bayes Factor)"
 ) + scale_fill_distiller(palette = "YlOrRd", direction = 1)
@@ -368,5 +368,4 @@ corrplot(wine.cor,
          order="hclust",
          hclust.method = "ward.D",
          addrect = 3)
-```
 ```
