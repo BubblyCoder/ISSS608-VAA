@@ -162,7 +162,6 @@ ggstatsplot::ggcorrmat(
 ) + scale_fill_distiller(palette = "YlOrRd", direction = 1)
 ```
 
-::: callout-note
 After switching from frequentist to bayes, none of the plot was crossed out.
 
 A quick search: While the frequentist approach suggests four pairs are non-significant, the Bayesian approach reveals that these relationships are 'anecdotal' ($1 < BF_{10} < 3$) rather than definitively absent, providing a more nuanced view of the chemical interactions in the wine
@@ -172,7 +171,7 @@ Some examples of interpretation
 $log_e(BF_{10})$: This is the "Log-Bayes Factor." We use logs because Bayes Factors can become massive (e.g., 1,000,000).Positive number (e.g., 5): Strong evidence for a relationship.Negative number (e.g., -2): Evidence against a relationship (supports the null).Near 0: The data is "inconclusive" or "anecdotal."
 
 $BF_{10} = 10$: The data is 10 times more likely under the "Relationship" model than the "No Relationship" model.
-:::
+
 
 
 
