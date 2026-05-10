@@ -18,15 +18,15 @@ Ternary plots are a way of displaying the distribution and variability of three-
 
 For this exercise we will use the below 2 packages
 
-- [ggtern](https://www.rdocumentation.org/packages/ggtern/versions/4.0.0)a ggplot extension specially designed to plot ternary diagrams. The package will be used to plot static ternary plots.
+-   [ggtern](https://www.rdocumentation.org/packages/ggtern/versions/4.0.0)a ggplot extension specially designed to plot ternary diagrams. The package will be used to plot static ternary plots.
 
-- [Plotly R](https://plotly.com/r/) an R package for creating interactive web-based graphs via plotly’s JavaScript graphing library, plotly.js . The plotly R libary contains the ggplotly function, which will convert ggplot2 figures into a Plotly object.
+-   [Plotly R](https://plotly.com/r/) an R package for creating interactive web-based graphs via plotly’s JavaScript graphing library, plotly.js . The plotly R libary contains the ggplotly function, which will convert ggplot2 figures into a Plotly object.
 
 ```{r}
 pacman::p_load(plotly, ggtern, tidyverse)
 ```
 
-We will use the Singapore Residents by Planning AreaSubzone, Age Group, Sex and Type of Dwelling, June 2000-2018 data 
+We will use the Singapore Residents by Planning AreaSubzone, Age Group, Sex and Type of Dwelling, June 2000-2018 data
 
 ```{r}
 #Reading the data into R environment
@@ -50,15 +50,17 @@ agpop_mutated <- pop_data %>%
 
 head(agpop_mutated)
 ```
+
 ::: callout-note
-mutate: To create a new column
-spread: It takes the age groups (stored in AG) and turns each unique age group into its own column, filling the cells with the corresponding Population value
+mutate: To create a new column spread: It takes the age groups (stored in AG) and turns each unique age group into its own column, filling the cells with the corresponding Population value
 :::
 
 ## Plotting Ternary Diagram with R
 
 ### Plotting a static ternary diagram
+
 We use ggtern to create a simple ternary plot.
+
 ```{r}
 #Building the static ternary plot
 ggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) +
@@ -67,6 +69,7 @@ ggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) +
 ```
 
 Upgrading the plot with colours.
+
 ```{r}
 #Building the static ternary plot
 ggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +
@@ -76,6 +79,7 @@ ggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +
 ```
 
 We can also add kernel density estimate across the three variables and draws "contour lines" where the data points are most concentrated.
+
 ```{r}
 ggtern(data = agpop_mutated, aes(x = YOUNG, y = ACTIVE, z = OLD)) +
   geom_point(alpha = 0.5) + # Keep points slightly transparent
@@ -86,7 +90,7 @@ ggtern(data = agpop_mutated, aes(x = YOUNG, y = ACTIVE, z = OLD)) +
   theme_rgbw()
 ```
 
-##  Plotting an interative ternary diagram
+## Plotting an interative ternary diagram
 
 ```{r}
 # reusable function for creating annotation object
@@ -130,4 +134,3 @@ plot_ly(
   )
 
 ```
-

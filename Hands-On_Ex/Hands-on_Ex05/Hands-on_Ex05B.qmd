@@ -123,7 +123,7 @@ ggstatsplot::ggcorrmat(
   cor.vars = 1:11,
   ggcorrplot.args = list(outline.color = "black", 
                          hc.order = TRUE,
-                         tl.cex = 10),
+                         tl.cex = 0.7),
   title    = "Correlogram for wine dataset",
   subtitle = "Four pairs are not significant at p < 0.05"
 )
@@ -144,7 +144,7 @@ ggplot.component = list( theme(text=element_text(size=5), axis.text.x = element_
 hc.order = True refers to using hierarchical clustering to put similar variables together while tl.cex = 10: Adjusts the text label size for the variable names so they are readable even if the matrix is large.
 
 The current default uses p value, a bayesian approach can also be used by changing type = 'bayes'
-
+:::
 ```{r}
 #Changing the color to better show that this is different from the above plots
 
@@ -253,24 +253,23 @@ corrplot(wine.cor,
 
 ```{r}
 ## If using 'hclust', corrplot() can draw rectangles around the plot of correlation matrix based on the results of hierarchical clustering.
-wine.cor(M, order = 'hclust', addrect = 2)
+## FIX: Use corrplot() function, not the variable name
+corrplot(wine.cor, order = 'hclust', addrect = 2)
 
 ```
 
 
 ## hist mixed
 ```{r}
-# We select only numeric columns and handle missing values
-M <- cor(wine[, sapply(wine, is.numeric)], use = "complete.obs")
 
 # 3. Create the Mixed Correlogram
-corrplot.mixed(M, 
+corrplot.mixed(wine.cor, 
                lower = 'shade', 
                upper = 'pie', 
                order = 'hclust',
-               tl.col = "black",   # Text label color
-               tl.cex = 0.8,       # Text label size
-               addrect = 3)        # Optional: Draws boxes around hclust groups
+               tl.col = "black", 
+               tl.cex = 0.7, 
+               addrect = 3)     # Optional: Draws boxes around hclust groups
 ```
 :::
 
@@ -320,7 +319,7 @@ Figure below shows a corrgram combined with the significant test. The corrgram r
 
 With corrplot package, we can use the cor.mtest() to compute the p-values and confidence interval for each pair of variables.
 ```{r}
-wine.sig = cor.mtest(wine.cor, conf.level= .95)
+wine.sig = cor.mtest(wine[, 1:11], conf.level = .95
 
 ```
 We can then use the p.mat argument of corrplot function as shown in the code chunk below.
