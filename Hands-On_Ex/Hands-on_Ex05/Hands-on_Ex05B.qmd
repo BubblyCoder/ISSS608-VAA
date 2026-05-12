@@ -178,8 +178,8 @@ Since ggstasplot is an extension of ggplot2, it also supports faceting. However 
 
 ```{r}
 
-#| fig-width: 32    # 1. Make the canvas very wide
-#| fig-height: 16    # 1. Make the canvas taller
+#| fig-width: 16    # 1. Make the canvas very wide
+#| fig-height: 8    # 1. Make the canvas taller
 
 
 
