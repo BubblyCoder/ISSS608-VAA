@@ -177,10 +177,8 @@ $BF_{10} = 10$: The data is 10 times more likely under the "Relationship" model 
 Since ggstasplot is an extension of ggplot2, it also supports faceting. However the feature is not available in ggcorrmat() but in the [grouped_ggcorrmat()](https://www.indrapatil.com/ggstatsplot/reference/grouped_ggcorrmat.html) of ggstatsplot.
 
 ```{r}
-
-#| fig-width: 16    # 1. Make the canvas very wide
-#| fig-height: 8    # 1. Make the canvas taller
-
+#| fig-width: 16    
+#| fig-height: 8    
 
 grouped_ggcorrmat(
   data = wine,
