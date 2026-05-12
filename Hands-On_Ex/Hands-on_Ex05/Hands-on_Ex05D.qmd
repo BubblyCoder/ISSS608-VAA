@@ -1,5 +1,23 @@
 ---
 title: "Hands-on_Ex05D"
-format: html
+author: "Alvin Ong Wei Ming"
+date: "May 12, 2026"
+date-modified: "last-modified"
+execute:
+  eval: true # As and when you render the code it will run through and display the output
+  echo: true #when it render the document it will show the code chunk
+  warning: false # this will prevent warning from appearing.
+  freeze: false #everytime you render, it will only render my latest hands on exericse and not the rest of it.
 ---
 
+# Visual Multivariate Analysis with Parallel Coordinates Plot
+
+
+Parallel coordinates plot is a data visualisation specially designed for visualising and analysing multivariate, numerical data. It is ideal for comparing multiple variables together and seeing the relationships between them. For example, the variables contribute to Happiness Index. Parallel coordinates was invented by Alfred Inselberg in the 1970s as a way to visualize high-dimensional data. This data visualisation technique is more often found in academic and scientific communities than in business and consumer data visualizations. As pointed out by [Stephen Few(2006)](https://www.perceptualedge.com/articles/b-eye/parallel_coordinates.pdf), “This certainly isn’t a chart that you would present to the board of directors or place on your Web site for the general public. In fact, the strength of parallel coordinates isn’t in their ability to communicate some truth in the data to others, but rather in their ability to bring meaningful multivariate patterns and comparisons to light when used interactively for analysis.” For example, parallel coordinates plot can be used to characterise clusters detected during customer segmentation.
+
+
+## Packages used
+
+[GGally](https://cran.r-project.org/web/packages/GGally/index.html) it is use to reduce the complexity of combining geometric objects with transformed dat
+
+[]
