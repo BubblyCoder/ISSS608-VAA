@@ -7,7 +7,7 @@ execute:
   eval: true # As and when you render the code it will run through and display the output
   echo: true #when it render the document it will show the code chunk
   warning: false # this will prevent warning from appearing.
-  freeze: true #everytime you render, it will only render my latest hands on exericse and not the rest of it.
+  freeze: false #everytime you render, it will only render my latest hands on exericse and not the rest of it.
 ---
 
 # Visual Correlation Analysis
