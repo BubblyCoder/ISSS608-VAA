@@ -3,7 +3,7 @@ project:
 
 website:
   title: "ISSS608-VAA"
-  navbar:
+  navbar: 
     background: primary
     search: true
     left:
