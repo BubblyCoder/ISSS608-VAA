@@ -180,8 +180,7 @@ Since ggstasplot is an extension of ggplot2, it also supports faceting. However 
 
 #| fig-width: 32    # 1. Make the canvas very wide
 #| fig-height: 16    # 1. Make the canvas taller
-#| out-width: "100%"
-#| 
+
 
 
 grouped_ggcorrmat(
