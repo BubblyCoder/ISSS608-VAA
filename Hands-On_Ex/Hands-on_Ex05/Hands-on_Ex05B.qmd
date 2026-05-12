@@ -182,7 +182,6 @@ Since ggstasplot is an extension of ggplot2, it also supports faceting. However 
 #| fig-height: 8    # 1. Make the canvas taller
 
 
-
 grouped_ggcorrmat(
   data = wine,
   cor.vars = 1:11,
