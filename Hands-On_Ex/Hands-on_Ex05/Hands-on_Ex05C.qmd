@@ -1,6 +1,5 @@
 ---
 title: "Hands-on_Ex05C"
-title: "Hands-on_Ex05B"
 author: "Alvin Ong Wei Ming"
 date: "May 10, 2026"
 date-modified: "last-modified"

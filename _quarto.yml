@@ -27,9 +27,12 @@ website:
             href: "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html"
           - text: "Hands-on Exercise 5A: Creating Ternary Plot with R"
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05A.html"
-          - text: "Hands-on Exercise 5B: Heatmap for Visualising and Analysing Multivariate Data"
+          - text: "Hands-on Exercise 5B: Visual Correlation Analysis"
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05B.html"
-      
+          - text: "Hands-on Exercise 5C: Heatmap for Visualising and Analysing Multivariate Data"
+            href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05C.html"           
+          - text: "Hands-on Exercise 5D: Visual Multivariate Analysis with Parallel Coordinates Plot"
+            href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05D.html"          
 
       - text: "Take-Home Exercise 01"
         menu:
