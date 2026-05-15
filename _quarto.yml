@@ -33,6 +33,8 @@ website:
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05C.qmd"
           - text: "Hands-on Exercise 5D: Parallel Coordinates Plot"
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05D.qmd"
+          - text: "Hands-on Exercise 5E: Treemap Visualisation with R"
+            href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05E.qmd"
 
       - text: "Take-Home Exercise"
         menu:
