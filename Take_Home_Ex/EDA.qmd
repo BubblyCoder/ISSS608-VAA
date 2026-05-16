@@ -4,9 +4,9 @@ format: html
 ---
 
 ```{r}
-pacman::p_load(plotly, crosstalk, DT, 
+pacman::p_load(plotly, ggstatsplot, 
                ggdist, ggridges, colorspace,
-               gganimate, tidyverse,skimr,naniar,glimpse)
+               gganimate, tidyverse,skimr,naniar,scales)
 
 ```
 
@@ -30,15 +30,38 @@ skim(df)
 ## see Data types'
 ```{r}
 str(df)
-
 ```
 
+#total Exposure max value
+motor insurance happen to have only max 1 year contract.
+```{r}
+max(df$total_exposure)
+```
+
+
+#identify if the missingness has a pattern.
+We observe that the missing values for vehicle values and fuel_type are likely independent.
+Whereas vehicle and age are missing together but the value is 2.
+If we are using vehicle values and fuel_type it is likely ok to impute for these values.
+
+Missing at Random seems to be in play here.
+```{r}
+gg_miss_upset(df, nsets = 4)
+
+```
 ## data type conversion
 We also created an indicator called underwriting profit to identify which portfolios are losses.
 ```{r}
 df <- df %>% mutate(
     # all the factor like variables
-    policy_type = as.factor(policy_type),
+    policy_type = case_when(
+      policy_type == "TP"     ~ "Basic Third-Party",
+      policy_type == "TPG"    ~ "Third-Party with Glass Cov",
+      policy_type == "CC"     ~ "Third-Party with two or more Cov",
+      policy_type == "COMP_E" ~ "Comprehensive with Excess",
+      policy_type == "COMP_N" ~ "Comprehensive without Excess",
+      TRUE                    ~ "Other"
+    ),
     policy_status = as.factor(policy_status),
     business_type = as.factor(business_type),
     payment_frequency = as.factor(bonus_score),
@@ -71,50 +94,54 @@ df <- df %>% mutate(
     liability_exposure = as.numeric(liability_exposure),
     underwriting_profit = total_premium - total_incurred
     
-)
+) %>% mutate(
+  
+  policy_type = factor(policy_type, levels = c(
+      "Basic Third-Party", 
+      "Third-Party with Glass Cov", 
+      "Third-Party with two or more Cov", 
+      "Comprehensive with Excess", 
+      "Comprehensive without Excess",
+      "Other"
+    ))
+  )
+
 
 head(df)
 ```
 
-#identify if the missingness has a pattern.
-We observe that the missing values for vehicle values and fuel_type are likely independent.
-Whereas vehicle and age are missing together but the value is 2.
-If we are using vehicle values and fuel_type it is likely ok to impute for these values.
+## Low Profitability
+A simple way to define this is whatever premium is paid - claims paid out where there are more losses than gains.
 
-Missing at Random seems to be in play here.
+Now that we have created an additional column called underwriting profits.
+Earlier we also saw that the maximum exposure is 1 year or less in this dataset
 ```{r}
-gg_miss_upset(df, nsets = 4)
+ggplot(data=df, 
+       aes(y = underwriting_profit, x = policy_type)) +
+  geom_boxplot() +
+  stat_summary(geom = "point",       
+               fun = "mean",         
+               colour ="red",        
+               size=4) +
+  theme(
+    # Rotate the x-axis text
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)
+  )
 
 ```
 
-
-
-```{r}
-vis_dat(df)
-vis_miss(df)
-```
-
-
-```{# 1. Pre-filter the data to only include character columns}
-df_chr <- df %>% 
-  select(where(is.character))
-
-# 2. Create the summary table from the filtered data
-unique_summary <- tibble(
-  column_name  = names(df_chr),
-  unique_count = map_int(df_chr, n_distinct),
-  unique_set   = map(df_chr, unique)
-)
-
-# 3. View the result
-print(unique_summary,n= 40)
-```
 
 ```{r}
 df %>%
-  filter(is.na(as.numeric(liability_premium))) %>%
-  select(liability_premium) %>%
-  distinct()
+  mutate(age_bin = cut(driver_age, breaks = seq(18, 90, by = 10))) %>%
+  group_by(policy_description, age_bin) %>%
+  summarise(mean_profit = mean(underwriting_profit)) %>%
+  ggplot(aes(x = age_bin, y = policy_description, fill = mean_profit)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "red", mid = "white", high = "blue", midpoint = 0) +
+  labs(title = "Profitability Heatmap",
+       fill = "Avg Profit") +
+  theme_minimal()
 ```
 
 
