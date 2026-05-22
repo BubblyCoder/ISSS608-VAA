@@ -29,7 +29,7 @@ Libraries used
 - GGally
 - glue
 
-Colour used
+## Colour used
 
 When comparing before and after
 Before: #f8766d
@@ -37,6 +37,28 @@ After: #00bfc4
 
 Grey Background
 Color: grey30
+
+Premiums: #2ca02c"
+Claims: #d9534f
+
+Avg dash lines in bar charts: gray40
+
+Premium Line Chart: #D4AF37
+
+Green Gradient:
+low = "#A2E1A6", high = "#137333
+
+Red Gradient
+low = "#3A1414", high = "#E57373"
+
+Claim, No Claim
+Claim Filed (1)" = "#E46726", "No Claim (0)" = "#F0F0F0"
+
+Correlation Matrix Divergence Scale (Continous
+c("#2c7bb6", "#ffffbf", "#d7191c")
+
+Categorical Correlation
+low = "#ffffbf", mid = "#fdae61", high = "#d7191c"
 
 ### Load Data
 
@@ -388,6 +410,8 @@ df_transformed =  read_parquet("df_transformed.parquet")
 # dplyr::glimpse(df_transformed)
 ```
 
+
+## Analysis
 ### 1. Financial health of the business
 
 -   Chart A
