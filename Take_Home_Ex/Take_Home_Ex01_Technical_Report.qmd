@@ -136,7 +136,6 @@ df %>%
     Percentage_Missing = mean(is.na(fuel_type)) * 100 # If this is > 5%, be careful with the mode!
   )
 ```
-
 :::
 
 ## Data Cleaning
@@ -147,7 +146,6 @@ df %>%
 -   Remove the 2 rows of data where vehicle age and age driving license is null
 -   Impute Median to vehicle age and mode to fuel type
 -   We also created indicator called underwriting profit to identify which portfolios are losses.
-
 
 ```{r}
 
@@ -524,8 +522,7 @@ print(dashboard)
 
 ### 2.Product profitability from 2022 to 2024
 
-In this section, we want to see the overall view of the motor insurance view. 
-How much of the portfolio belongs to each category of product.
+In this section, we want to see the overall view of the motor insurance view. How much of the portfolio belongs to each category of product.
 
 ```{r}
 #| fig-width: 18
@@ -625,7 +622,6 @@ p2 <- ggplot(pareto_data2, aes(x = policy_type)) +
 p1 + p2
 ```
 
-
 ```{r}
 #| fig-width: 18
 #| fig-height: 8
@@ -718,21 +714,19 @@ ggplot() +
   )
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ## Findings
-- Comprehensive without Excess Insurance has very high claims , rendering the product to be either break even or barely profitable
-- Third Party with glass coverage insurance also has very high claim amount, rendering is with thin margins
-- Basic Third party insurance has razor thin margins
-:::
 
+-   Comprehensive without Excess Insurance has very high claims , rendering the product to be either break even or barely profitable
+-   Third Party with glass coverage insurance also has very high claim amount, rendering is with thin margins
+-   Basic Third party insurance has razor thin margins
+:::
 
 ### 3. Premiums from 2022 to 2024
 
--   This is to perform confirmatory data analysis that there is a change in distribution amongst the various product over the years 
+-   This is to perform confirmatory data analysis that there is a change in distribution amongst the various product over the years
 
-Where 
-Null Hypothesis: The distribution of total premium is identical across all three years 
-Alternative Hypothesis: The distribution of total premium is not identical across all three years; at least one year's premium distribution stochastically dominates
+Where Null Hypothesis: The distribution of total premium is identical across all three years Alternative Hypothesis: The distribution of total premium is not identical across all three years; at least one year's premium distribution stochastically dominates
 
 -   We also observed that there are extreme values in total premiums, hence a log is applied to the y axis to help observe the full range of premiums more easily
 
@@ -917,7 +911,6 @@ plot_pairwise_matrix(df_transformed, "Third-Party with two or more Cov")
 plot_policy_distribution(df_transformed, "Comprehensive with Excess")
 ```
 
-
 ```{r}
 plot_pairwise_matrix(df_transformed, "Comprehensive with Excess")
 
@@ -928,7 +921,6 @@ plot_pairwise_matrix(df_transformed, "Comprehensive with Excess")
 ```{r}
 plot_policy_distribution(df_transformed, "Comprehensive without Excess")
 ```
-
 
 ```{r}
 plot_pairwise_matrix(df_transformed, "Comprehensive without Excess")
@@ -1099,9 +1091,11 @@ plot_pairwise_matrix(df_transformed, "Basic Third-Party","total_incurred")
 :::
 
 ### Additional charts for stakeholders (Premiums and claims from 2022 to 2024)
+
 This is to emphasise the peak of the for Third-Party with Glass Cov
 
 For Third Party With Glass Coverage
+
 ```{r}
 
 ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"), 
@@ -1144,22 +1138,19 @@ ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"),
   coord_flip() 
 ```
 
-
-
-
 ### Observation from Customer Plans
 
-⚠️Third-Party with two or more Cov: 
+⚠️Third-Party with two or more Cov:
 
-- Total Premium Distribution change is associated with more lower priced premiums, although the median remain relatively similar.
+-   Total Premium Distribution change is associated with more lower priced premiums, although the median remain relatively similar.
 
-- Median of claims stayed the same from 2022 to 2024 but the number of \$1000 (log scale) claims increases sharply. There are also more variation of claims below the 25th percentile of all claims
+-   Median of claims stayed the same from 2022 to 2024 but the number of \$1000 (log scale) claims increases sharply. There are also more variation of claims below the 25th percentile of all claims
 
-⚠️Comprehensive with Excess: 
+⚠️Comprehensive with Excess:
 
-- Distribution change seems to be associated with more lower priced premiums, although the medium remain relatively similar.
+-   Distribution change seems to be associated with more lower priced premiums, although the medium remain relatively similar.
 
-- Overall distribution is statistically significant (p = 2.23e-03) when using the Kruskal Wallis Test, but shows a statistically insignificance when using the Wilcoxon Rank-Sum test with Holm Adjusted method. This shows that on a year on year basis, there is no big change in the claims and its stable but a change is observable from 2022 and 2024. The claims is stable and predictable
+-   Overall distribution is statistically significant (p = 2.23e-03) when using the Kruskal Wallis Test, but shows a statistically insignificance when using the Wilcoxon Rank-Sum test with Holm Adjusted method. This shows that on a year on year basis, there is no big change in the claims and its stable but a change is observable from 2022 and 2024. The claims is stable and predictable
 
 ✅Comprehensive without excess: - Pricing for this category seems to have move to a higher tier as compared to 2023 and 2022 as more motor insurance plans has shifted to a higher premium tier.
 
@@ -1176,7 +1167,6 @@ ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"),
 -   The Interquartile range of this price plan shortern and differs from 2022 and 2023. We also observed a split peak for the distribution for 2024 meaning there could be another sub group in this product. It is also likely the case that the 2024 total premiums has remain the same as 2022 as per the ($p-value = 0.062$)
 
 -   Claim pattern have change as well from the bulge in claims around the medium claims in 2024 as compared to 2022 and 2023. IQR now is longer and less predictable.
-
 
 ## 4. Overall Age Groups that has the most claims
 
@@ -1264,28 +1254,26 @@ ggplot(treemap_data, aes(area = total_policies, fill = claim_rate, label = tile_
     legend.position = "right"
   )
 ```
-The above treemap suggest that it is brand agnostic when it comes to vehicle brand, municipality type, and circulation area 
 
-
-
+The above treemap suggest that it is brand agnostic when it comes to vehicle brand, municipality type, and circulation area
 
 ## 6. Profile of Drivers for low profitability plans
-In the previous section we determine that the above mentioned products warrants further study
-We will look into the profile of the drivers within this segments
--
+
+In the previous section we determine that the above mentioned products warrants further study We will look into the profile of the drivers within this segments -
 
 ### Age of low profitability plans
-"We are testing whether our 'Third-Party with two or more Cov'/'Basic Third Party'  portfolio is backed by the same age profile as our general business baseline ($H_0$), or if it has drifted into a statistically distinct demographic risk pool ($H_1$)."
+
+"We are testing whether our 'Third-Party with two or more Cov'/'Basic Third Party' portfolio is backed by the same age profile as our general business baseline ($H_0$), or if it has drifted into a statistically distinct demographic risk pool ($H_1$)."
 
 ::: panel-tabset
-
 ### Third-Party with two or more Cov
+
 ```{r}
 
 ```
 
-
 ### Third-Party with two or more Cov
+
 ```{r}
 
 ggstatsplot::gghistostats(
@@ -1299,6 +1287,7 @@ ggstatsplot::gghistostats(
   ylab = "Count"
 )
 ```
+
 From the above chart, we can conclude that with absolute statistical certainty that this sub-portfolio has drifted into a structurally older demographic risk profile than the overall portfolio"
 
 ### Basic Third-Party
@@ -1315,17 +1304,15 @@ ggstatsplot::gghistostats(
   ylab = "Count"
 )
 ```
+
 Similarly, the median age of Basic Third Party is below the median average of the whole portfolio.
 :::
-
 
 From the above chart, we can conclude that with absolute statistical certainty that this sub-portfolio has drifted into a structurally older demographic risk profile than the overall portfolio"
 
 ### Age of cars
 
-
 ::: panel-tabset
-
 ### Comprehensive without Excess
 
 ```{r}
@@ -1341,8 +1328,8 @@ ggstatsplot::gghistostats(
 )
 ```
 
-
 ### Third-Party with two or more Cov
+
 ```{r}
 ggstatsplot::gghistostats(
   data = df_transformed %>% filter(policy_type == "Third-Party with two or more Cov") ,
@@ -1356,8 +1343,8 @@ ggstatsplot::gghistostats(
 )
 ```
 
-
 ### Basic Third-Party
+
 ```{r}
 ggstatsplot::gghistostats(
   data = df_transformed %>% filter(policy_type == "Basic Third-Party") ,
@@ -1372,12 +1359,11 @@ ggstatsplot::gghistostats(
 ```
 :::
 
-### identifying the type of claims triggered
-In this section, we want to understand for 'Third-Party with two or more Cov'/'Basic Third Party' portfolio.
-What are the claims most triggered?
+## identifying the type of claims triggered
+
+In this section, we want to understand for 'Third-Party with two or more Cov'/'Basic Third Party' portfolio. What are the claims most triggered?
 
 ::: panel-tabset
-
 ### Comprehensive without Excess
 
 ```{r}
@@ -1439,8 +1425,8 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
 
 ```
 
-
 ### Third-Party with two or more Cov
+
 ```{r}
 
 # 1. Isolate the subset and select the binary claim columns
@@ -1503,7 +1489,9 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
 
 
 ```
+
 ### Basic Third-Party
+
 ```{r}
 
 df_claims_raw <- df_transformed %>%
@@ -1565,12 +1553,11 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
 ```
 :::
 
-
 ## 7.Profile of Age and Vehicle Age of selected Policy Type Claims
+
 This section performs multi-variate analysis to understand the relationship between drivers age, vehicle age and claims.
 
 ::: panel-tabset
-
 ### Comprehensive without Excess
 
 ```{r}
@@ -1614,8 +1601,8 @@ ggplot(heatmap_data, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
   )
 ```
 
-
 ### Third-Party with two or more Cov
+
 ```{r}
 heatmap_data <- df_transformed %>%
   filter(policy_type == "Third-Party with two or more Cov") %>%
@@ -1656,9 +1643,11 @@ ggplot(heatmap_data, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
     panel.grid = element_blank()
   )
 ```
+
 Our liability property claim spike is being driven by two specific operational pockets: middle-aged to senior drivers operating brand-new or modern vehicles (0–6 years old), alongside a high, persistent baseline risk from our under-35 cohort across all car ages.
 
 ### Basic Third-Party
+
 ```{r}
 
 heatmap_data <- df_transformed %>%
@@ -1700,14 +1689,13 @@ ggplot(heatmap_data, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
     panel.grid = element_blank()
   )
 ```
-
 :::
 
 ## 8. Correlation
 
 ::: panel-tabset
-
 ### Continous Variable
+
 ```{r}
 
  corr_data <- df_transformed %>%
@@ -1740,6 +1728,7 @@ ggcorrmat(
 ```
 
 ### Categorical Variables
+
 ```{r}
 
 # 1. Isolate and clean the factors
@@ -1791,15 +1780,13 @@ ggplot(v_long, aes(x = Variable1, y = Variable2, fill = CramersV)) +
 ```
 :::
 
+## 9. Premium Exposure By Drivers Age and Vehicle Age
 
-##  9. Premium Exposure By Drivers Age and Vehicle Age
-In this section we will take into account the exposure column. Create variables to address the "Average Premium Revenue per Unit of Exposure Year"
-in section 1
-
+In this section we will take into account the exposure column. Create variables to address the "Average Premium Revenue per Unit of Exposure Year" in section 1
 
 ::: panel-tabset
-
 ### Comprehensive without Excess
+
 ```{r}
 #| fig-width: 12
 #| fig-height: 6
@@ -1911,8 +1898,8 @@ p2 <- ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_e
 p1 +p2
 ```
 
-
 ### Third-Party with two or more Cov (Driver + Vehicle Age)
+
 ```{r}
 #| fig-width: 12
 #| fig-height: 6
@@ -2024,15 +2011,15 @@ p2 <- ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_e
 p1 +p2
 ```
 
+### Basic Third Party (Driver + Vehicle Age)
 
-### Third-Party with two or more Cov (Driver + Vehicle Age)
 ```{r}
 #| fig-width: 12
 #| fig-height: 6
 #| dpi: 150
 # Driver age
 premium_exposure_analysis <- df_transformed %>%
-  filter(policy_type == "Third-Party with two or more Cov") %>%
+  filter(policy_type == "Basic Third-Party") %>%
   mutate(
     age_bin = cut(driver_age, 
                   breaks = c(17, 25, 35, 45, 55, 65, Inf), 
@@ -2136,6 +2123,4 @@ p2 <-ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_ex
 
 p1 + p2
 ```
-
-
 :::
