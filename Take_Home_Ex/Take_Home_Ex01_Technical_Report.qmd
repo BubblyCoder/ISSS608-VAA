@@ -1371,6 +1371,7 @@ ggstatsplot::gghistostats(
 )
 ```
 :::
+
 ### identifying the type of claims triggered
 In this section, we want to understand for 'Third-Party with two or more Cov'/'Basic Third Party' portfolio.
 What are the claims most triggered?
@@ -1562,7 +1563,7 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
   )
 
 ```
-
+:::
 
 
 ## 7.Profile of Age and Vehicle Age of selected Policy Type Claims
