@@ -15,18 +15,50 @@ execute:
 
 ## Set Up
 
+Libraries used
+
+- ggstatsplot
+- ggdist
+- see
+- tidyverse
+- skimr
+- naniar
+- scales
+- arrow
+- patchwork,
+- GGally
+- glue
+
+Colour used
+
+When comparing before and after
+Before: #f8766d
+After: #00bfc4
+
+Grey Background
+Color: grey30
+
 ### Load Data
 
 ```{r}
-pacman::p_load(plotly, ggstatsplot, 
-               ggdist,see, colorspace,
-              tidyverse,skimr,naniar,scales,ggpubr,arrow,patchwork,GGally,glue,ggcorrplot,treemapify, vcd,ggtern)
-
+#| code-fold: false
+pacman::p_load(ggstatsplot, 
+               ggdist,
+               see,
+               tidyverse,
+               skimr,
+               naniar,
+               scales,
+               arrow,
+               patchwork,
+               GGally,
+               glue)
 ```
 
 ### Read in Data
 
 ```{r}
+#| code-fold: false
 df <-read.csv2("C:/BubblyCoder/ISSS608-VAA/Take_Home_Ex/Dataset of motor insurance portfolio.csv")
 ```
 
@@ -282,14 +314,14 @@ p1 <- ggplot(df_compare, aes(x = "Vehicle Value Profile", y = vehicle_value, fil
     data = filter(df_compare, status == "Before"),
     flip = FALSE, 
     alpha = 0.6, 
-    color = "grey30"
+    color = "grey25"
   ) + 
   # Layer 2: Draw Right Half (After Imputation)
   see::geom_violinhalf(
     data = filter(df_compare, status == "After"),
     flip = TRUE,   # Only flip this specific layer
     alpha = 0.6, 
-    color = "grey30"
+    color = "grey25"
   ) +
   scale_fill_manual(values = c("Before" = "#f8766d", "After" = "#00bfc4")) +
   scale_y_continuous(labels = label_comma()) +
@@ -458,7 +490,7 @@ p2 <- ggplot(yearly_summary, aes(x = factor(year), y = underwriting_profit, fill
     size = 3,
     fontface = "bold"
   ) +
-  scale_fill_manual(values = c("TRUE" = "#2ca02c", "FALSE" = "#d62728"), guide = "none") +
+  scale_fill_manual(values = c("TRUE" = "#2ca02c", "FALSE" = "#d9534f"), guide = "none") +
   scale_y_continuous(
     labels = label_number(scale_cut = cut_short_scale(), prefix = "$"),
     expand = expansion(mult = c(0.15, 0.15))
@@ -512,7 +544,7 @@ dashboard <- (p1 | p2) / p3 +
     subtitle = "Year-on-Year metrics tracking revenue growth, claims impact, and net margin",
     theme = theme(
       plot.title = element_text(face = "bold", size = 16, margin = margin(b = 5)),
-      plot.subtitle = element_text(color = "gray40", size = 11, margin = margin(b = 15))
+      plot.subtitle = element_text(color = "gray25", size = 11, margin = margin(b = 15))
     )
   )
 
@@ -694,8 +726,8 @@ ggplot() +
   ) +
   
   # Styling and Legends
-  scale_fill_manual(values = c("Premium" = "#137333", "Claims" = "#A94442")) +
-  scale_color_manual(values = c("Remaining Revenue Tail" = "#D4AF37", "Remaining Claims Tail" = "#90A4AE")) +
+  scale_fill_manual(values = c("Premium" = "#2ca02c", "Claims" = "#d9534f")) +
+  scale_color_manual(values = c("Remaining Revenue Tail" = "#D4AF37", "Remaining Claims Tail" = "grey25")) +
   
   labs(
     title = "Portfolio Premium & Incurred Claims",
@@ -1834,7 +1866,7 @@ p1 <- ggplot(premium_exposure_analysis, aes(x = age_bin, y = avg_premium_per_exp
            color = "gray30", fontface = "italic", size = 3.5) +
   
   scale_fill_manual(
-    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d62728")
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
   ) +
   labs(
     title = "Average Premium Revenue per Unit of Exposure Year",
@@ -1886,7 +1918,7 @@ p2 <- ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_e
            color = "gray30", fontface = "italic", size = 3.5) +
   
   scale_fill_manual(
-    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d62728")
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
   ) +
   labs(
     title = "Average Premium Revenue per Unit of Exposure Year",
@@ -1947,7 +1979,7 @@ p1 <- ggplot(premium_exposure_analysis, aes(x = age_bin, y = avg_premium_per_exp
            color = "gray30", fontface = "italic", size = 3.5) +
   
   scale_fill_manual(
-    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d62728")
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
   ) +
   labs(
     title = "Average Premium Revenue per Unit of Exposure Year",
@@ -2059,7 +2091,7 @@ p1 <- ggplot(premium_exposure_analysis, aes(x = age_bin, y = avg_premium_per_exp
            color = "gray30", fontface = "italic", size = 3.5) +
   
   scale_fill_manual(
-    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d62728")
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
   ) +
   labs(
     title = "Average Premium Revenue per Unit of Exposure Year",
@@ -2111,7 +2143,7 @@ p2 <-ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_ex
            color = "gray30", fontface = "italic", size = 3.5) +
   
   scale_fill_manual(
-    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d62728")
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
   ) +
   labs(
     title = "Average Premium Revenue per Unit of Exposure Year",
