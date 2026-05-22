@@ -97,7 +97,7 @@ df <-read.csv2("C:/BubblyCoder/ISSS608-VAA/Take_Home_Ex/Dataset of motor insuran
 skim(df)
 ```
 
-### see Data types'
+### See Data types'
 
 ```{r}
 str(df)
@@ -145,7 +145,6 @@ labs(x = "Vehicle Value", y = "Count")
 
 ```{r}
 
-# 1. Run your categorical transformation for fuel_type (Mapping NA to "Unknown")
 df_clean <- df %>%
   mutate(
     fuel_type = case_when(
@@ -158,8 +157,8 @@ df_clean <- df %>%
   )
 
 # 2. Build the Bar Chart Layer (p1)
-p1 <- ggplot(data = df_clean, aes(x = fuel_type, fill = fuel_type)) +
-  geom_bar(color = "grey25", alpha = 0.8) +
+p1 <- ggplot(data = df_clean, aes(x = fuel_type)) +
+  geom_bar(fill = "grey70", color = "grey25", alpha = 0.8) +
   theme_minimal() +
   labs(
     title = "Frequency Distribution of Fuel Types",
@@ -579,104 +578,6 @@ print(dashboard)
 ### 2.Product profitability from 2022 to 2024
 
 In this section, we want to see the overall view of the motor insurance view. How much of the portfolio belongs to each category of product.
-
-```{r}
-#| fig-width: 18
-#| fig-height: 8
-#| dpi: 150
-
-pareto_data <- df_transformed %>%
-  group_by(policy_type) %>%
-  summarize(total_premium_sum = sum(total_premium, na.rm = TRUE)) %>%
-  arrange(desc(total_premium_sum)) %>%
-  mutate(
-    policy_type = factor(policy_type, levels = policy_type),
-    cum_sum = cumsum(total_premium_sum),
-    total_sum = sum(total_premium_sum),
-    cum_pct = (cum_sum / total_sum) * 100,
-    
-    # NEW METRIC: Calculates the remaining revenue % from this product onwards
-    remaining_pct = 100 - lag(cum_pct, default = 0)
-  )
-
-total_premium_total <- sum(pareto_data$total_premium_sum)
-
-p1 <- ggplot(pareto_data, aes(x = policy_type)) +
-  geom_bar(aes(y = total_premium_sum, fill = total_premium_sum), stat = "identity", alpha = 0.9) +
-  scale_fill_gradient(low = "#A2E1A6", high = "#137333", guide = "none") +
-  
-  # Plot the downward-sloping Remaining Percentage line
-  geom_line(aes(y = remaining_pct * (total_premium_total / 100), group = 1), color = "#D4AF37", linewidth = 1.2) +
-  geom_point(aes(y = remaining_pct * (total_premium_total / 100)), color = "#D4AF37", size = 2.5) +
-  
-  # Unified Y-Axis (Right-hand axis remains 0% at bottom, 100% at top)
-  scale_y_continuous(
-    name = "Total Premium Amount",
-    limits = c(0, total_premium_total * 1.05),
-    breaks = seq(0, total_premium_total * 1.05, by = 10000000),
-    labels = label_comma(),
-    sec.axis = sec_axis(
-      trans = ~ . / total_premium_total * 100,
-      name = "Remaining Portfolio Percentage (%)",
-      breaks = seq(0, 100, by = 10)
-    )
-  ) +
-  labs(
-    title = "Total Premium and Remaining Revenue Tail by Policy Type",
-    subtitle = "The gold line tracks how much portfolio revenue remains from each product onwards",
-    x = "Policy Type"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
-    plot.title = element_text(face = "bold", size = 14),
-    panel.grid.minor = element_blank()
-  )
-
-  
-pareto_data2 <- df_transformed %>%
-  group_by(policy_type) %>%
-  summarize(total_incurred_sum = sum(total_incurred, na.rm = TRUE)) %>%
-  arrange(desc(total_incurred_sum)) %>%
-  mutate(
-    policy_type = factor(policy_type, levels = policy_type),
-    cum_sum = cumsum(total_incurred_sum),
-    total_sum = sum(total_incurred_sum),
-    cum_pct = (cum_sum / total_sum) * 100,
-    
-    # NEW METRIC: Calculates the remaining revenue % from this product onwards
-    remaining_pct = 100 - lag(cum_pct, default = 0)
-  )
-
-total_incurred_total <- sum(pareto_data2$total_incurred_sum)
-
-total_premium_total <- sum(pareto_data$total_premium_sum)
-max_y_limit <- total_premium_total * 1.05
-
-p2 <- ggplot(pareto_data2, aes(x = policy_type)) +
-  geom_bar(aes(y = total_incurred_sum, fill = total_incurred_total), stat = "identity", alpha = 0.9) +
-  scale_fill_gradient(low = "#3A1414", high = "#E57373", guide = "none") +
-  
-  scale_y_continuous(
-    name = "Total Claim Amount",
-    limits = c(0, max_y_limit),
-    breaks = seq(0, max_y_limit, by = 10000000), 
-    labels = label_comma()
-    ) +
-  labs(
-    title = "Total Claims by Policy Type",
-    subtitle = "The silver line tracks how much portfolio claim remains from each product onwards",
-    x = "Policy Type"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
-    plot.title = element_text(face = "bold", size = 14),
-    panel.grid.minor = element_blank()
-  )
-
-p1 + p2
-```
 
 ```{r}
 #| fig-width: 18
