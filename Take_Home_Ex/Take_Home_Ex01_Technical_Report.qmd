@@ -1103,17 +1103,28 @@ ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"),
 
 -   Median of claims stayed the same from 2022 to 2024 but the number of \$1000 (log scale) claims increases sharply. There are also more variation of claims below the 25th percentile of all claims
 
-⚠️Comprehensive with Excess:
+✅Comprehensive with excess:
 
--   Distribution change seems to be associated with more lower priced premiums, although the medium remain relatively similar.
+- Distribution change seems to be associated with more lower priced premiums, although the medium remain relatively similar.
 
--   Overall distribution is statistically significant (p = 2.23e-03) when using the Kruskal Wallis Test, but shows a statistically insignificance when using the Wilcoxon Rank-Sum test with Holm Adjusted method. This shows that on a year on year basis, there is no big change in the claims and its stable but a change is observable from 2022 and 2024. The claims is stable and predictable
+- On a year on year basis, there is no big change in the claims and its stable 
 
-✅Comprehensive without excess: - Pricing for this category seems to have move to a higher tier as compared to 2023 and 2022 as more motor insurance plans has shifted to a higher premium tier.
 
--   General shape of the claims are rather similar amongst the 3 years, and similarly to our claims, there are two distinct peaks in the distribution.
+⚠️Comprehensive without excess: 
 
--   claim and pricing display similar patterns and no drastic movement is observed
+- Pricing for this category seems to have move to a higher tier as compared to 2023 and 2022 as more motor insurance plans has shifted to a higher premium tier. This is observed from the two peaks in 2024
+
+- For claims, there are two distinct peaks in the distribution, and there is no change in distribution between 2023 and 2024.
+
+- Claim and pricing display similar patterns and no drastic movement is observed
+
+::: {.callout-note}
+## Key Underwriting Insight
+Although on an aggregate level, Comprehensive insurance without excess is barely making a profit.
+A change seems to have taken place between 2023 and 2024.
+The diverging two peaks that form in 2024 appears to be two different sub groups of customers.
+But most importantly, the change has taken effect and appears to be working.
+:::
 
 ✅Third Party with Glass Cov - Although this is change in distribution when comparing the 3 years. The year 2022 and 2024 ($p-value = 0.043$) is very close to the alpha value tolerance level of 0.05. This could mean that the distribution is nearing the distribution from 2024 to 2022.
 
@@ -1325,7 +1336,7 @@ ggstatsplot::gghistostats(
 ```
 :::
 
-## identifying the type of claims triggered
+## Identifying the type of claims triggered
 
 In this section, we want to understand for 'Third-Party with two or more Cov'/'Basic Third Party' portfolio. What are the claims most triggered?
 
