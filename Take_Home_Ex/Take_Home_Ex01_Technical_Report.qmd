@@ -1405,7 +1405,7 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
   
   theme_minimal(base_size = 12) +
   labs(
-    title = "Claims Activation Heatmap",
+    title = "Comprehensive without Excess Claims Activation Heatmap",
     subtitle = glue("Visual matrix audit of {nrow(df_sample)} claim-active policies"),
     x = "Coverage Type",
     y = "",
@@ -1468,7 +1468,7 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
   
   theme_minimal(base_size = 12) +
   labs(
-    title = "Claims Activation Heatmap",
+    title = "Third-Party with two or more Coverage Claims Activation Heatmap",
     subtitle = glue("Visual matrix audit of {nrow(df_sample)} claim-active policies"),
     x = "Coverage Type",
     y = "",
@@ -1532,7 +1532,7 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
   
   theme_minimal(base_size = 12) +
   labs(
-    title = "Claims Activation Heatmap",
+    title = "Basic Third-Party Claims Activation Heatmap",
     subtitle = glue("Visual matrix audit of {nrow(df_sample)} claim-active policies"),
     x = "Coverage Type",
     y = "",
