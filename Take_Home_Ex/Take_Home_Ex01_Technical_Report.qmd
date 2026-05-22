@@ -1269,15 +1269,21 @@ The above treemap suggest that it is brand agnostic when it comes to vehicle bra
 
 
 
-## 6. Profile of Drivers for Third-Party with two or more Coverage and Basic Third Party Plan
+## 6. Profile of Drivers for low profitability plans
 In the previous section we determine that the above mentioned products warrants further study
 We will look into the profile of the drivers within this segments
 -
 
-### Age of Third-Party with two or more Coverage and Basic Third Party Plan
+### Age of low profitability plans
 "We are testing whether our 'Third-Party with two or more Cov'/'Basic Third Party'  portfolio is backed by the same age profile as our general business baseline ($H_0$), or if it has drifted into a statistically distinct demographic risk pool ($H_1$)."
 
 ::: panel-tabset
+
+### Third-Party with two or more Cov
+```{r}
+
+```
+
 
 ### Third-Party with two or more Cov
 ```{r}
@@ -1317,7 +1323,25 @@ From the above chart, we can conclude that with absolute statistical certainty t
 
 ### Age of cars
 
+
 ::: panel-tabset
+
+### Comprehensive without Excess
+
+```{r}
+ggstatsplot::gghistostats(
+  data = df_transformed %>% filter(policy_type == "Comprehensive without Excess") ,
+  x = vehicle_age,
+  type = "bayesian",      
+  test.value = median(df_transformed$vehicle_age, na.rm = TRUE),  
+  binwidth = 1,                    
+  title = glue("Statistical Evaluation of Vehicle Age Against Portfolio Median: {median(df_transformed$vehicle_age, na.rm = TRUE)}"),
+  xlab = "Vehicle Age (Years)",
+  ylab = "Count"
+)
+```
+
+
 ### Third-Party with two or more Cov
 ```{r}
 ggstatsplot::gghistostats(
@@ -1353,7 +1377,7 @@ What are the claims most triggered?
 
 ::: panel-tabset
 
-### Coverage without excess
+### Comprehensive without Excess
 
 ```{r}
 df_claims_raw <- df_transformed %>%
