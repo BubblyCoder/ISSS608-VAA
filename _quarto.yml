@@ -39,10 +39,9 @@ website:
 
       - text: "Take-Home Exercise"
         menu:
-          - text: "Technical Report"
-            href: "Take_Home_Ex/Ex01/Ex01_Technical.qmd"
-          - text: "Executive Report"
-            href: "Take_Home_Ex/Ex01/Ex01_Executive.qmd"
+          - text: "Technical Report 01"
+            href: "Take_Home_Ex/Take_Home_Ex01_Technical_Report.qmd"
+
 
     right:
       - text: Home
