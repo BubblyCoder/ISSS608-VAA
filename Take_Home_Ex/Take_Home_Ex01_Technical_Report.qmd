@@ -1322,10 +1322,19 @@ In the previous section we determine that the above mentioned products warrants 
 "We are testing whether our 'Third-Party with two or more Cov'/'Basic Third Party' portfolio is backed by the same age profile as our general business baseline ($H_0$), or if it has drifted into a statistically distinct demographic risk pool ($H_1$)."
 
 ::: panel-tabset
-### Third-Party with two or more Cov
+### Comprehensive without Excess
 
 ```{r}
-
+ggstatsplot::gghistostats(
+  data = df_transformed %>% filter(policy_type == "Comprehensive without Excess") ,
+  x = driver_age,
+  type = "bayesian",      
+  test.value = median(df_transformed$driver_age, na.rm = TRUE),  
+  binwidth = 1,               
+  title = glue("Statistical Evaluation of Driver Age Against Portfolio Median: {median(df_transformed$driver_age, na.rm = TRUE)}"),
+  xlab = "Driver Age (Years)",
+  ylab = "Count"
+)
 ```
 
 ### Third-Party with two or more Cov
@@ -1838,7 +1847,11 @@ ggplot(v_long, aes(x = Variable1, y = Variable2, fill = CramersV)) +
 
 ## 9. Premium Exposure By Drivers Age and Vehicle Age
 
-In this section we will take into account the exposure column. Create variables to address the "Average Premium Revenue per Unit of Exposure Year" in section 1
+In this section we will take into account the exposure column. 
+Create variables to address the "Average Premium Revenue per Unit of Exposure Year" in section 1
+and we will compare this new variable against Drivers Age and Vehicle Age.
+
+This is meant to be use in conjunction with the heat map above
 
 ::: panel-tabset
 ### Comprehensive without Excess
@@ -1954,7 +1967,7 @@ p2 <- ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_e
 p1 +p2
 ```
 
-### Third-Party with two or more Cov (Driver + Vehicle Age)
+### Third-Party with two or more Cov 
 
 ```{r}
 #| fig-width: 12
@@ -2067,7 +2080,7 @@ p2 <- ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_e
 p1 +p2
 ```
 
-### Basic Third Party (Driver + Vehicle Age)
+### Basic Third Party
 
 ```{r}
 #| fig-width: 12
