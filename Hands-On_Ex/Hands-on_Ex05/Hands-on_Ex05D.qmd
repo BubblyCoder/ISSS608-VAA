@@ -7,14 +7,12 @@ execute:
   eval: true # As and when you render the code it will run through and display the output
   echo: true #when it render the document it will show the code chunk
   warning: false # this will prevent warning from appearing.
-  freeze: false #everytime you render, it will only render my latest hands on exericse and not the rest of it.
+  freeze: true #everytime you render, it will only render my latest hands on exericse and not the rest of it.
 ---
 
 # Visual Multivariate Analysis with Parallel Coordinates Plot
 
-
 Parallel coordinates plot is a data visualisation specially designed for visualising and analysing multivariate, numerical data. It is ideal for comparing multiple variables together and seeing the relationships between them. For example, the variables contribute to Happiness Index. Parallel coordinates was invented by Alfred Inselberg in the 1970s as a way to visualize high-dimensional data. This data visualisation technique is more often found in academic and scientific communities than in business and consumer data visualizations. As pointed out by [Stephen Few(2006)](https://www.perceptualedge.com/articles/b-eye/parallel_coordinates.pdf), “This certainly isn’t a chart that you would present to the board of directors or place on your Web site for the general public. In fact, the strength of parallel coordinates isn’t in their ability to communicate some truth in the data to others, but rather in their ability to bring meaningful multivariate patterns and comparisons to light when used interactively for analysis.” For example, parallel coordinates plot can be used to characterise clusters detected during customer segmentation.
-
 
 ## Packages used
 
@@ -27,7 +25,8 @@ pacman::p_load(GGally, parallelPlot, tidyverse)
 
 ```
 
-##  Data Preparation
+## Data Preparation
+
 ```{r}
 
 wh <- read_csv("data/WHData-2018.csv")
@@ -38,13 +37,16 @@ wh <- read_csv("data/WHData-2018.csv")
 In this section, you will learn how to plot static parallel coordinates plot by using ggparcoord() of GGally package. Before getting started, it is a good practice to read the function description in detail.
 
 ## Plotting a simple parallel coordinates
+
 ```{r}
 ggparcoord(data = wh, 
            columns = c(7:12))
 ```
+
 Notice that only two argument namely data and columns is used. Data argument is used to map the data object (i.e. wh) and columns is used to select the columns for preparing the parallel coordinates plot.
 
 ## Plotting a parallel coordinates with boxplot
+
 The basic parallel coordinates failed to reveal any meaning understanding of the World Happiness measures. In this section, you will learn how to makeover the plot by using a collection of arguments provided by ggparcoord().
 
 ```{r}
@@ -58,17 +60,18 @@ ggparcoord(data = wh,
            boxplot = TRUE, 
            title = "Parallel Coordinates Plot of World Happines Variables")
 ```
+
 Things to learn from the code chunk above.
 
-- groupColumn argument is used to group the observations (i.e. parallel lines) by using a single variable (i.e. Region) and colour the parallel coordinates lines by region name.
+-   groupColumn argument is used to group the observations (i.e. parallel lines) by using a single variable (i.e. Region) and colour the parallel coordinates lines by region name.
 
-- scale argument is used to scale the variables in the parallel coordinate plot by using uniminmax method. The method univariately scale each variable so the minimum of the variable is zero and the maximum is one.
+-   scale argument is used to scale the variables in the parallel coordinate plot by using uniminmax method. The method univariately scale each variable so the minimum of the variable is zero and the maximum is one.
 
-- alphaLines argument is used to reduce the intensity of the line colour to 0.2. The permissible value range is between 0 to 1.
+-   alphaLines argument is used to reduce the intensity of the line colour to 0.2. The permissible value range is between 0 to 1.
 
-- boxplot argument is used to turn on the boxplot by using logical TRUE. The default is FALSE.
+-   boxplot argument is used to turn on the boxplot by using logical TRUE. The default is FALSE.
 
-- title argument is used to provide the parallel coordinates plot a title.
+-   title argument is used to provide the parallel coordinates plot a title.
 
 ## Parallel coordinates with facet
 
@@ -87,6 +90,7 @@ ggparcoord(data = wh,
            title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
   facet_wrap(~ Region)
 ```
+
 One of the aesthetic defect of the current design is that some of the variable names overlap on x-axis.
 
 ## Rotating x-axis text label
@@ -107,7 +111,7 @@ ggparcoord(data = wh,
 
 Thing to learn from the code chunk above:
 
-- To rotate x-axis text labels, we use axis.text.x as argument to theme() function. And we specify element_text(angle = 30) to rotate the x-axis text by an angle 30 degree.
+-   To rotate x-axis text labels, we use axis.text.x as argument to theme() function. And we specify element_text(angle = 30) to rotate the x-axis text by an angle 30 degree.
 
 ## Adjusting the rotated x-axis text label
 
@@ -143,6 +147,7 @@ parallelPlot(wh,
 Notice that some of the axis labels are too long. You will learn how to overcome this problem in the next step.
 
 ## Rotate axis label
+
 In the code chunk below, rotateTitle argument is used to avoid overlapping axis labels.
 
 ```{r}
@@ -150,9 +155,11 @@ parallelPlot(wh,
              rotateTitle = TRUE
             )
 ```
+
 One of the useful interactive feature of parallelPlot is we can click on a variable of interest, for example Happiness score, the monotonous blue colour (default) will change a blues with different intensity colour scheme will be used.
 
 ## Changing the colour scheme
+
 We can change the default blue colour scheme by using continousCS argument as shown in the code chunl below.
 
 ```{r}
@@ -160,6 +167,7 @@ parallelPlot(wh,
              continuousCS = "YlOrRd",
              rotateTitle = TRUE)
 ```
+
 ## Parallel coordinates plot with histogram
 
 ```{r}
@@ -169,4 +177,3 @@ parallelPlot(wh,
              rotateTitle = TRUE,
              histoVisibility = histoVisibility)
 ```
-

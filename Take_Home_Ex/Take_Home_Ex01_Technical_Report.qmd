@@ -17,48 +17,41 @@ execute:
 
 Libraries used
 
-- ggstatsplot
-- ggdist
-- see
-- tidyverse
-- skimr
-- naniar
-- scales
-- arrow
-- patchwork,
-- GGally
-- glue
+-   ggstatsplot
+-   ggdist
+-   see
+-   tidyverse
+-   skimr
+-   naniar
+-   scales
+-   arrow
+-   patchwork,
+-   GGally
+-   glue
+-   ggpubr
 
 ## Colour used
 
-When comparing before and after
-Before: #f8766d
-After: #00bfc4
+When comparing before and after Before: #f8766d After: #00bfc4
 
-Grey Background
-Color: grey30
+Grey Background Color: grey30
 
-Premiums: #2ca02c"
+Premiums: #2ca02c" 
 Claims: #d9534f
 
 Avg dash lines in bar charts: gray40
 
 Premium Line Chart: #D4AF37
 
-Green Gradient:
-low = "#A2E1A6", high = "#137333
+Green Gradient: low = "#A2E1A6", high = "#137333
 
-Red Gradient
-low = "#3A1414", high = "#E57373"
+Red Gradient low = "#3A1414", high = "#E57373"
 
-Claim, No Claim
-Claim Filed (1)" = "#E46726", "No Claim (0)" = "#F0F0F0"
+Claim, No Claim Claim Filed (1)" = "#E46726", "No Claim (0)" = "#F0F0F0"
 
-Correlation Matrix Divergence Scale (Continous
-c("#2c7bb6", "#ffffbf", "#d7191c")
+Correlation Matrix Divergence Scale (Continous c("#2c7bb6", "#ffffbf", "#d7191c")
 
-Categorical Correlation
-low = "#ffffbf", mid = "#fdae61", high = "#d7191c"
+Categorical Correlation low = "#ffffbf", mid = "#fdae61", high = "#d7191c"
 
 ### Load Data
 
@@ -74,7 +67,10 @@ pacman::p_load(ggstatsplot,
                arrow,
                patchwork,
                GGally,
-               glue)
+               glue,
+               ggpubr,
+               treemapify,
+               vcd)
 ```
 
 ### Read in Data
@@ -409,8 +405,8 @@ df_transformed =  read_parquet("df_transformed.parquet")
 # dplyr::glimpse(df_transformed)
 ```
 
-
 ## Analysis
+
 ### 1. Financial health of the business
 
 -   Chart A
@@ -1105,25 +1101,22 @@ ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"),
 
 ✅Comprehensive with excess:
 
-- Distribution change seems to be associated with more lower priced premiums, although the medium remain relatively similar.
+-   Distribution change seems to be associated with more lower priced premiums, although the medium remain relatively similar.
 
-- On a year on year basis, there is no big change in the claims and its stable 
+-   On a year on year basis, there is no big change in the claims and its stable
 
+⚠️Comprehensive without excess:
 
-⚠️Comprehensive without excess: 
+-   Pricing for this category seems to have move to a higher tier as compared to 2023 and 2022 as more motor insurance plans has shifted to a higher premium tier. This is observed from the two peaks in 2024
 
-- Pricing for this category seems to have move to a higher tier as compared to 2023 and 2022 as more motor insurance plans has shifted to a higher premium tier. This is observed from the two peaks in 2024
+-   For claims, there are two distinct peaks in the distribution, and there is no change in distribution between 2023 and 2024.
 
-- For claims, there are two distinct peaks in the distribution, and there is no change in distribution between 2023 and 2024.
+-   Claim and pricing display similar patterns and no drastic movement is observed
 
-- Claim and pricing display similar patterns and no drastic movement is observed
-
-::: {.callout-note}
+::: callout-note
 ## Key Underwriting Insight
-Although on an aggregate level, Comprehensive insurance without excess is barely making a profit.
-A change seems to have taken place between 2023 and 2024.
-The diverging two peaks that form in 2024 appears to be two different sub groups of customers.
-But most importantly, the change has taken effect and appears to be working.
+
+Although on an aggregate level, Comprehensive insurance without excess is barely making a profit. A change seems to have taken place between 2023 and 2024. The diverging two peaks that form in 2024 appears to be two different sub groups of customers. But most importantly, the change has taken effect and appears to be working.
 :::
 
 ✅Third Party with Glass Cov - Although this is change in distribution when comparing the 3 years. The year 2022 and 2024 ($p-value = 0.043$) is very close to the alpha value tolerance level of 0.05. This could mean that the distribution is nearing the distribution from 2024 to 2022.
@@ -1759,9 +1752,7 @@ ggplot(v_long, aes(x = Variable1, y = Variable2, fill = CramersV)) +
 
 ## 9. Premium Exposure By Drivers Age and Vehicle Age
 
-In this section we will take into account the exposure column. 
-Create variables to address the "Average Premium Revenue per Unit of Exposure Year" in section 1
-and we will compare this new variable against Drivers Age and Vehicle Age.
+In this section we will take into account the exposure column. Create variables to address the "Average Premium Revenue per Unit of Exposure Year" in section 1 and we will compare this new variable against Drivers Age and Vehicle Age.
 
 This is meant to be use in conjunction with the heat map above
 
@@ -1879,7 +1870,7 @@ p2 <- ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_e
 p1 +p2
 ```
 
-### Third-Party with two or more Cov 
+### Third-Party with two or more Cov
 
 ```{r}
 #| fig-width: 12
