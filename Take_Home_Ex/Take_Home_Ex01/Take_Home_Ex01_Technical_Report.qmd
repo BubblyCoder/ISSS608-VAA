@@ -87,9 +87,6 @@ knitr::kable(color_preview_table, format = "markdown")
 ```
 
 ### Read in Data
-```{r}
-getwd()
-```
 
 ```{r}
 #| code-fold: false
