@@ -1,0 +1,14 @@
+---
+title: "Take Home Exercise 1 Executive Summary"
+author: "Alvin Ong Wei Ming"
+date: "May 15, 2026"
+date-modified: "last-modified"
+format: 
+  revealjs:
+    code-fold: true     # Enables the expandable/collapsible 'Code' buttons on your slides
+    echo: true          # Ensures the code chunks are visible on the slides
+execute:
+  eval: true            # Runs your code live and displays the visual outputs/plots
+  warning: false        # Hides annoying package loading warnings from ruining slide aesthetics
+  freeze: true          # Crucial for Vercel: preserves existing slides; only builds your latest edits
+---

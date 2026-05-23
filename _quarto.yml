@@ -35,13 +35,13 @@ website:
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05D.qmd"
           - text: "Hands-on Exercise 5E: Treemap Visualisation with R"
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05E.qmd"
-  
 
       - text: "Take-Home Exercise"
         menu:
           - text: "Technical Report 01"
-            href: "Take_Home_Ex/Take_Home_Ex01_Technical_Report.qmd"
-
+            href: "Take_Home_Ex/Take_Home_Ex01/Take_Home_Ex01_Technical_Report.qmd"
+          - text: "Executive Summary 01"
+            href: "Take_Home_Ex/Take_Home_Ex01/Take_Home_Ex01_Executive_Summary.qmd" 
 
     right:
       - text: Home
