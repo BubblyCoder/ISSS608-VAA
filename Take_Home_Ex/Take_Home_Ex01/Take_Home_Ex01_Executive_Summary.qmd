@@ -1271,4 +1271,4 @@ Granular subgroup analysis reveals that while high-risk young drivers ($18\text{
 
 ### Data Issues
 
-- To partnering with the engineering team to resolve these collection and validation errors pertaining to 1,287 missing fuel_type records and 513 missing vehicle_value records, ensuring data integrity for future analysis
+- To partner with the engineering team to resolve these collection and validation errors pertaining to 1,287 missing fuel_type records and 513 missing vehicle_value records, ensuring data integrity for future analysis
