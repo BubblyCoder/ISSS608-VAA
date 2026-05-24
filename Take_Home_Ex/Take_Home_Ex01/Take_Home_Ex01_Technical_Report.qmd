@@ -123,7 +123,7 @@ max(df$total_exposure)
 
 ### Identify if the missingness has a pattern.
 
-An Upset-plot is generated to identify if the missingness of value has a pattern. We observe that the missing values for vehicle values and fuel_type are likely independent. Whereas vehicle and age are missing together but there are only 2 rows affected by it. If we are using vehicle values and fuel_type Missing at Random seems to be in play here
+An Upset-plot is generated to identify if the missingness of value has a pattern. We observe that the missing values for vehicle values and fuel_type are likely independent. Whereas vehicle and age are missing together but there are only 2 rows affected by it. If we are using vehicle values and fuel_type [Missing at Random](https://medium.com/@adnan.mazraeh1993/type-of-missing-data-c52b7788da52) seems to be in play here
 
 ```{r}
 gg_miss_upset(df, nsets = 4)
@@ -1113,7 +1113,7 @@ ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"),
 
 -   Total Premium Distribution change is associated with more lower priced premiums, although the median remain relatively similar.
 
--   Median of claims stayed the same from 2022 to 2024 but the number of \$1000 (log scale) claims increases sharply. There are also more variation of claims below the 25th percentile of all claims
+-   Median of claims stayed the same from 2022 to 2024 but the number of \$1000 (log scale) claims is more concentrated. There are also more variation of claims below the 25th percentile of all claims
 
 ✅Comprehensive with excess:
 
@@ -1137,15 +1137,17 @@ Although on an aggregate level, Comprehensive insurance without excess is barely
 
 ✅Third Party with Glass Cov
 
--   Although this is change in distribution when comparing the 3 years. The year 2022 and 2024 ($p-value = 0.043$) is very close to the alpha value tolerance level of 0.05. This could mean that the distribution is nearing the distribution from 2024 to 2022.
+-   Although there is change in distribution when comparing the 3 years. The year 2022 and 2024 ($p-value = 0.043$) is very close to the alpha value tolerance level of 0.05. This could mean that the distribution is nearing the distribution from 2024 to 2022.
 
 -   Claims stayed relative stable and predictable.
 
 ⚠️Basic Third Party Plan:
 
--   The Interquartile range of this price plan shortern and differs from 2022 and 2023. We also observed a split peak for the distribution for 2024 meaning there could be another sub group in this product. It is also likely the case that the 2024 total premiums has remain the same as 2022 as per the ($p-value = 0.062$)
+-   The Interquartile Range (IQR) for premiums compressed significantly in 2024 compared to prior years. Notably, the 2024 violin plot exhibits a clear bimodal (split) peak, indicating emerging sub-groups or distinct risk segmentation within the product line. Pairwise testing indicates that while overall historical changes are decisive , the shift in mean premiums between 2023 and 2024 was not statistically significant ($p = 0.062$).
 
 -   Claim pattern have change as well from the bulge in claims around the medium claims in 2024 as compared to 2022 and 2023. IQR now is longer and less predictable.
+
+- This also means that this portfolio will need to be revisited as more claims hit the median and the overall range of claims are wider and less predictable 
 
 ## 4. Overall Age Groups that has the most claims
 
@@ -1234,7 +1236,7 @@ ggplot(treemap_data, aes(area = total_policies, fill = claim_rate, label = tile_
   )
 ```
 
-The above treemap suggest that it is brand agnostic when it comes to vehicle brand, municipality type, and circulation area
+Our high-volume segments (left) exhibit a stable, controlled claim rate of approximately 10-12%,  However, the treemap reveals significant risk volatility in our low-volume, niche segments (bottom-right), where claim rates swing drastically up to 25%. This indicates a need to either consolidate these micro-segments or apply stricter pricing loading to these volatile pockets."
 
 ## 6. Profile of Drivers for low profitability plans
 
@@ -1537,7 +1539,109 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
 ```
 :::
 
-## 7.Profile of Age and Vehicle Age of selected Policy Type Claims
+Comprehensive without Excess plan
+- there is a prominent, severe vertical band of activation for Property Claims, followed closely by high activation in Glass and Liability Property claims.
+
+Third-Party with Two or More Coverages
+- there is a distinct, razor-sharp vertical concentration exclusively under Liability Property Claims and Liability Injury Claims. Other features like theft, fire, or glass show almost zero activation.
+
+Basic Third party Claims
+- Most claims are concentrated in liability protection. In spain. As expected as Basic Third party also known as [civil obligatoria](https://www.giambronelaw.com/site/advice/personal-injury-advice/personal-injury-spain/driving-in-spain/) covers legal protection, liability property and liability injury to the people or property caused by you.
+
+Overview
+liability property claims are the most common due to Spains' [compensation agreement](https://www.ofesauto.es/en/know-the-spanish-direct-compensation-agreement-cide-to-determine-which-vehicle-is-the-responsible/). This agreement makes liability property damage easy to file.
+
+## 7. Correlation
+
+::: panel-tabset
+### Continous Variable
+
+```{r}
+
+ corr_data <- df_transformed %>%
+  select(
+    driver_age, 
+    vehicle_age, 
+    age_driving_licence,
+    vehicle_value,
+    total_premium, 
+    power_to_weight_ratio,
+    liability_property_claims  # Your target claim count metric
+  ) %>%
+  # Ensure all selected features are strictly evaluated as numeric matrices
+  mutate(across(everything(), as.numeric)) %>%
+  # Handle missing records safely to maintain clean row-counts
+  mutate(across(everything(), ~tidyr::replace_na(.x, 0)))
+
+# 2. Generate the statistical correlation matrix
+ggcorrmat(
+  data = corr_data,
+  type = "spearman",          # Use "nonparametric" for Spearman or "bayesian" if preferred
+  colors = c("#2c7bb6", "#ffffbf", "#d7191c"), # Classic blue-to-red diverging scale
+  title = "Portfolio Risk Profile: Correlation Matrix Matrix",
+  subtitle = "Evaluating linear relationships across driver metrics, vehicle assets, and claim outcomes",
+  show.legend = TRUE,
+  matrix.type = "upper",        # Shows top triangle to remove visual redundancy
+  lab.size = 3.5,               # Size of correlation coefficients inside the squares
+  ggtheme = ggplot2::theme_minimal()
+)
+```
+
+### Categorical Variables
+
+```{r}
+
+# 1. Isolate and clean the factors
+cramer_df <- df_transformed %>%
+  filter(policy_type == "Basic Third-Party") %>%
+  select(
+    policy_status, business_type, payment_frequency, 
+    bonus_score, fuel_type, vehicle_brand, 
+    municipality_type, circulation_area
+  ) %>%
+  mutate(across(everything(), as.factor))
+
+# 2. Compute the exact 8x8 Cramér's V matrix mathematically
+cat_vars <- colnames(cramer_df)
+n_vars <- length(cat_vars)
+v_matrix <- matrix(NA, nrow = n_vars, ncol = n_vars, dimnames = list(cat_vars, cat_vars))
+
+for (i in 1:n_vars) {
+  for (j in 1:n_vars) {
+    # Generate cross-tabulation table
+    contingency_table <- table(cramer_df[[cat_vars[i]]], cramer_df[[cat_vars[j]]])
+    # Store the scalar Cramer's V value
+    v_matrix[i, j] <- assocstats(contingency_table)$cramer
+  }
+}
+
+# 3. Convert the matrix to a long data frame format for ggplot
+v_long <- as.data.frame(v_matrix) %>%
+  mutate(Variable1 = rownames(.)) %>%
+  pivot_longer(cols = -Variable1, names_to = "Variable2", values_to = "CramersV")
+
+# 4. Plot a clean, beautifully spaced association tile grid
+ggplot(v_long, aes(x = Variable1, y = Variable2, fill = CramersV)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  scale_fill_gradient2(low = "#ffffbf", mid = "#fdae61", high = "#d7191c", 
+                       midpoint = 0.5, limit = c(0, 1), name = "Cramér's V") +
+  geom_text(aes(label = round(CramersV, 2)), color = "black", fontface = "bold", size = 4) +
+  labs(
+    title = "Clean Categorical Feature Association Matrix",
+    subtitle = "Calculated via global chi-square contingencies | Exactly 8x8 Dimensions",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
+    axis.text.y = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+```
+:::
+
+
+## 8.Profile of Age and Vehicle Age of selected Policy Type Claims
 
 This section performs multi-variate analysis to understand the relationship between drivers age, vehicle age and claims.
 
@@ -1675,94 +1779,7 @@ ggplot(heatmap_data, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
 ```
 :::
 
-## 8. Correlation
 
-::: panel-tabset
-### Continous Variable
-
-```{r}
-
- corr_data <- df_transformed %>%
-  select(
-    driver_age, 
-    vehicle_age, 
-    age_driving_licence,
-    vehicle_value,
-    total_premium, 
-    power_to_weight_ratio,
-    liability_property_claims  # Your target claim count metric
-  ) %>%
-  # Ensure all selected features are strictly evaluated as numeric matrices
-  mutate(across(everything(), as.numeric)) %>%
-  # Handle missing records safely to maintain clean row-counts
-  mutate(across(everything(), ~tidyr::replace_na(.x, 0)))
-
-# 2. Generate the statistical correlation matrix
-ggcorrmat(
-  data = corr_data,
-  type = "spearman",          # Use "nonparametric" for Spearman or "bayesian" if preferred
-  colors = c("#2c7bb6", "#ffffbf", "#d7191c"), # Classic blue-to-red diverging scale
-  title = "Portfolio Risk Profile: Correlation Matrix Matrix",
-  subtitle = "Evaluating linear relationships across driver metrics, vehicle assets, and claim outcomes",
-  show.legend = TRUE,
-  matrix.type = "upper",        # Shows top triangle to remove visual redundancy
-  lab.size = 3.5,               # Size of correlation coefficients inside the squares
-  ggtheme = ggplot2::theme_minimal()
-)
-```
-
-### Categorical Variables
-
-```{r}
-
-# 1. Isolate and clean the factors
-cramer_df <- df_transformed %>%
-  filter(policy_type == "Basic Third-Party") %>%
-  select(
-    policy_status, business_type, payment_frequency, 
-    bonus_score, fuel_type, vehicle_brand, 
-    municipality_type, circulation_area
-  ) %>%
-  mutate(across(everything(), as.factor))
-
-# 2. Compute the exact 8x8 Cramér's V matrix mathematically
-cat_vars <- colnames(cramer_df)
-n_vars <- length(cat_vars)
-v_matrix <- matrix(NA, nrow = n_vars, ncol = n_vars, dimnames = list(cat_vars, cat_vars))
-
-for (i in 1:n_vars) {
-  for (j in 1:n_vars) {
-    # Generate cross-tabulation table
-    contingency_table <- table(cramer_df[[cat_vars[i]]], cramer_df[[cat_vars[j]]])
-    # Store the scalar Cramer's V value
-    v_matrix[i, j] <- assocstats(contingency_table)$cramer
-  }
-}
-
-# 3. Convert the matrix to a long data frame format for ggplot
-v_long <- as.data.frame(v_matrix) %>%
-  mutate(Variable1 = rownames(.)) %>%
-  pivot_longer(cols = -Variable1, names_to = "Variable2", values_to = "CramersV")
-
-# 4. Plot a clean, beautifully spaced association tile grid
-ggplot(v_long, aes(x = Variable1, y = Variable2, fill = CramersV)) +
-  geom_tile(color = "white", linewidth = 0.5) +
-  scale_fill_gradient2(low = "#ffffbf", mid = "#fdae61", high = "#d7191c", 
-                       midpoint = 0.5, limit = c(0, 1), name = "Cramér's V") +
-  geom_text(aes(label = round(CramersV, 2)), color = "black", fontface = "bold", size = 4) +
-  labs(
-    title = "Clean Categorical Feature Association Matrix",
-    subtitle = "Calculated via global chi-square contingencies | Exactly 8x8 Dimensions",
-    x = NULL, y = NULL
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
-    axis.text.y = element_text(face = "bold"),
-    panel.grid = element_blank()
-  )
-```
-:::
 
 ## 9. Premium Exposure By Drivers Age and Vehicle Age
 
@@ -2110,3 +2127,19 @@ p2 <-ggplot(premium_exposure_analysis, aes(x = v_age_bin, y = avg_premium_per_ex
 p1 + p2
 ```
 :::
+
+Comprehensive without Excess:
+There is a distinct pricing mismatch within the Third-Party with two or more Coverages portfolio. While underwriting successfully charges a steep risk premium on young drivers (18–25) and brand-new vehicles (0–3 years), it severely underprices the mid-aged driver segment (36–55) operating mid-age vehicles (4–6 years).
+
+This exact underpriced demographic is likely to be driving the portfolio's exposure, peaking at a 37.1% claim frequency. To stabilize the portfolio's margin, the underwriting team should review the pricing tiers upward for drivers aged 36–55 who operate vehicles under 6 years old.
+
+
+Third-Party with two or more coverage:
+While the pricing structure successfully accounts for high-risk young drivers (18–25), it completely fails to protect against a major risk spike in senior operators.
+
+Drivers aged 66+ operating 4–6 year old vehicles generate the portfolio's highest liability claim rate at 26.1%, yet this demographic pays below-average baseline premiums. Because basic plans have thin margins by design, this unpriced exposure severely compromises the product's profitability.
+
+Basic Third Party:
+The underwriter successfully priced in premiums for the 18-25 age groups with newer vehicles from 0 -6 years.
+
+However, a critical underwriting leakage exists in the mature segment: drivers aged 56–65 operating 7–10 year old cars run a highly elevated 21.4% claim rate, yet they are granted below-average premium rates.

@@ -297,8 +297,8 @@ window.Quarto = {
   <li><a href="#age-of-cars" id="toc-age-of-cars" class="nav-link" data-scroll-target="#age-of-cars">Age of cars</a></li>
   </ul></li>
   <li><a href="#identifying-the-type-of-claims-triggered" id="toc-identifying-the-type-of-claims-triggered" class="nav-link" data-scroll-target="#identifying-the-type-of-claims-triggered">Identifying the type of claims triggered</a></li>
-  <li><a href="#profile-of-age-and-vehicle-age-of-selected-policy-type-claims" id="toc-profile-of-age-and-vehicle-age-of-selected-policy-type-claims" class="nav-link" data-scroll-target="#profile-of-age-and-vehicle-age-of-selected-policy-type-claims">7.Profile of Age and Vehicle Age of selected Policy Type Claims</a></li>
-  <li><a href="#correlation" id="toc-correlation" class="nav-link" data-scroll-target="#correlation">8. Correlation</a></li>
+  <li><a href="#correlation" id="toc-correlation" class="nav-link" data-scroll-target="#correlation">7. Correlation</a></li>
+  <li><a href="#profile-of-age-and-vehicle-age-of-selected-policy-type-claims" id="toc-profile-of-age-and-vehicle-age-of-selected-policy-type-claims" class="nav-link" data-scroll-target="#profile-of-age-and-vehicle-age-of-selected-policy-type-claims">8.Profile of Age and Vehicle Age of selected Policy Type Claims</a></li>
   <li><a href="#premium-exposure-by-drivers-age-and-vehicle-age" id="toc-premium-exposure-by-drivers-age-and-vehicle-age" class="nav-link" data-scroll-target="#premium-exposure-by-drivers-age-and-vehicle-age">9. Premium Exposure By Drivers Age and Vehicle Age</a></li>
   </ul>
 </nav>
@@ -332,7 +332,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 23, 2026</p>
+      <p class="date-modified">May 24, 2026</p>
     </div>
   </div>
     
@@ -1233,7 +1233,7 @@ window.Quarto = {
 </section>
 <section id="identify-if-the-missingness-has-a-pattern." class="level3">
 <h3 class="anchored" data-anchor-id="identify-if-the-missingness-has-a-pattern.">Identify if the missingness has a pattern.</h3>
-<p>An Upset-plot is generated to identify if the missingness of value has a pattern. We observe that the missing values for vehicle values and fuel_type are likely independent. Whereas vehicle and age are missing together but there are only 2 rows affected by it. If we are using vehicle values and fuel_type Missing at Random seems to be in play here</p>
+<p>An Upset-plot is generated to identify if the missingness of value has a pattern. We observe that the missing values for vehicle values and fuel_type are likely independent. Whereas vehicle and age are missing together but there are only 2 rows affected by it. If we are using vehicle values and fuel_type <a href="https://medium.com/@adnan.mazraeh1993/type-of-missing-data-c52b7788da52">Missing at Random</a> seems to be in play here</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2500,7 +2500,7 @@ window.Quarto = {
 <p>⚠️Third-Party with two or more Cov:</p>
 <ul>
 <li><p>Total Premium Distribution change is associated with more lower priced premiums, although the median remain relatively similar.</p></li>
-<li><p>Median of claims stayed the same from 2022 to 2024 but the number of $1000 (log scale) claims increases sharply. There are also more variation of claims below the 25th percentile of all claims</p></li>
+<li><p>Median of claims stayed the same from 2022 to 2024 but the number of $1000 (log scale) claims is more concentrated. There are also more variation of claims below the 25th percentile of all claims</p></li>
 </ul>
 <p>✅Comprehensive with excess:</p>
 <ul>
@@ -2528,13 +2528,14 @@ window.Quarto = {
 </div>
 <p>✅Third Party with Glass Cov</p>
 <ul>
-<li><p>Although this is change in distribution when comparing the 3 years. The year 2022 and 2024 (<span class="math inline">\(p-value = 0.043\)</span>) is very close to the alpha value tolerance level of 0.05. This could mean that the distribution is nearing the distribution from 2024 to 2022.</p></li>
+<li><p>Although there is change in distribution when comparing the 3 years. The year 2022 and 2024 (<span class="math inline">\(p-value = 0.043\)</span>) is very close to the alpha value tolerance level of 0.05. This could mean that the distribution is nearing the distribution from 2024 to 2022.</p></li>
 <li><p>Claims stayed relative stable and predictable.</p></li>
 </ul>
 <p>⚠️Basic Third Party Plan:</p>
 <ul>
-<li><p>The Interquartile range of this price plan shortern and differs from 2022 and 2023. We also observed a split peak for the distribution for 2024 meaning there could be another sub group in this product. It is also likely the case that the 2024 total premiums has remain the same as 2022 as per the (<span class="math inline">\(p-value = 0.062\)</span>)</p></li>
+<li><p>The Interquartile Range (IQR) for premiums compressed significantly in 2024 compared to prior years. Notably, the 2024 violin plot exhibits a clear bimodal (split) peak, indicating emerging sub-groups or distinct risk segmentation within the product line. Pairwise testing indicates that while overall historical changes are decisive , the shift in mean premiums between 2023 and 2024 was not statistically significant (<span class="math inline">\(p = 0.062\)</span>).</p></li>
 <li><p>Claim pattern have change as well from the bulge in claims around the medium claims in 2024 as compared to 2022 and 2023. IQR now is longer and less predictable.</p></li>
+<li><p>This also means that this portfolio will need to be revisited as more claims hit the median and the overall range of claims are wider and less predictable</p></li>
 </ul>
 </section>
 </section>
@@ -2644,7 +2645,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The above treemap suggest that it is brand agnostic when it comes to vehicle brand, municipality type, and circulation area</p>
+<p>Our high-volume segments (left) exhibit a stable, controlled claim rate of approximately 10-12%, However, the treemap reveals significant risk volatility in our low-volume, niche segments (bottom-right), where claim rates swing drastically up to 25%. This indicates a need to either consolidate these micro-segments or apply stricter pricing loading to these volatile pockets.”</p>
 </section>
 <section id="profile-of-drivers-for-low-profitability-plans" class="level2">
 <h2 class="anchored" data-anchor-id="profile-of-drivers-for-low-profitability-plans">6. Profile of Drivers for low profitability plans</h2>
@@ -3028,55 +3029,47 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>Comprehensive without Excess plan - there is a prominent, severe vertical band of activation for Property Claims, followed closely by high activation in Glass and Liability Property claims.</p>
+<p>Third-Party with Two or More Coverages - there is a distinct, razor-sharp vertical concentration exclusively under Liability Property Claims and Liability Injury Claims. Other features like theft, fire, or glass show almost zero activation.</p>
+<p>Basic Third party Claims - Most claims are concentrated in liability protection. In spain. As expected as Basic Third party also known as <a href="https://www.giambronelaw.com/site/advice/personal-injury-advice/personal-injury-spain/driving-in-spain/">civil obligatoria</a> covers legal protection, liability property and liability injury to the people or property caused by you.</p>
+<p>Overview liability property claims are the most common due to Spains’ <a href="https://www.ofesauto.es/en/know-the-spanish-direct-compensation-agreement-cide-to-determine-which-vehicle-is-the-responsible/">compensation agreement</a>. This agreement makes liability property damage easy to file.</p>
 </section>
-<section id="profile-of-age-and-vehicle-age-of-selected-policy-type-claims" class="level2">
-<h2 class="anchored" data-anchor-id="profile-of-age-and-vehicle-age-of-selected-policy-type-claims">7.Profile of Age and Vehicle Age of selected Policy Type Claims</h2>
-<p>This section performs multi-variate analysis to understand the relationship between drivers age, vehicle age and claims.</p>
+<section id="correlation" class="level2">
+<h2 class="anchored" data-anchor-id="correlation">7. Correlation</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Comprehensive without Excess</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Third-Party with two or more Cov</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">Basic Third-Party</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Continous Variable</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Categorical Variables</a></li></ul>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Comprehensive without Excess"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create logical bins for your continuous variables</span></span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_bin =</span> <span class="fu">cut</span>(driver_age, </span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">17</span>, <span class="dv">25</span>, <span class="dv">35</span>, <span class="dv">45</span>, <span class="dv">55</span>, <span class="dv">65</span>, <span class="cn">Inf</span>), </span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-25"</span>, <span class="st">"26-35"</span>, <span class="st">"36-45"</span>, <span class="st">"46-55"</span>, <span class="st">"56-65"</span>, <span class="st">"66+"</span>)),</span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">v_age_bin =</span> <span class="fu">cut</span>(vehicle_age, </span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="cn">Inf</span>), </span>
-<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0-3 yrs"</span>, <span class="st">"4-6 yrs"</span>, <span class="st">"7-10 yrs"</span>, <span class="st">"11-15 yrs"</span>, <span class="st">"16+ yrs"</span>))</span>
-<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age_bin, v_age_bin) <span class="sc">%&gt;%</span></span>
-<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_policies =</span> <span class="fu">n</span>(),</span>
-<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_liability_claims =</span> <span class="fu">sum</span>(liability_property_claims, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">claim_rate =</span> total_liability_claims <span class="sc">/</span> total_policies,</span>
-<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_policies <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
-<span id="cb62-20"><a href="#cb62-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Plot the binned matrix</span></span>
-<span id="cb62-22"><a href="#cb62-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_data, <span class="fu">aes</span>(<span class="at">x =</span> v_age_bin, <span class="at">y =</span> age_bin, <span class="at">fill =</span> claim_rate)) <span class="sc">+</span></span>
-<span id="cb62-23"><a href="#cb62-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb62-24"><a href="#cb62-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"inferno"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">name =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
-<span id="cb62-25"><a href="#cb62-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">percent</span>(claim_rate, <span class="at">accuracy =</span> <span class="fl">0.1</span>)), </span>
-<span id="cb62-26"><a href="#cb62-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
-<span id="cb62-27"><a href="#cb62-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb62-28"><a href="#cb62-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Liability Claim Frequency Matrix"</span>,</span>
-<span id="cb62-29"><a href="#cb62-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Identifying localized risk spikes across driver and vehicle age pockets"</span>,</span>
-<span id="cb62-30"><a href="#cb62-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Vehicle Age Group"</span>,</span>
-<span id="cb62-31"><a href="#cb62-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Driver Age Group"</span></span>
-<span id="cb62-32"><a href="#cb62-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb62-33"><a href="#cb62-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb62-34"><a href="#cb62-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb62-35"><a href="#cb62-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb62-36"><a href="#cb62-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb62-37"><a href="#cb62-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb62-38"><a href="#cb62-38" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a> corr_data <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    driver_age, </span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    vehicle_age, </span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    age_driving_licence,</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    vehicle_value,</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>    total_premium, </span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>    power_to_weight_ratio,</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>    liability_property_claims  <span class="co"># Your target claim count metric</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure all selected features are strictly evaluated as numeric matrices</span></span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), as.numeric)) <span class="sc">%&gt;%</span></span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Handle missing records safely to maintain clean row-counts</span></span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span>tidyr<span class="sc">::</span><span class="fu">replace_na</span>(.x, <span class="dv">0</span>)))</span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Generate the statistical correlation matrix</span></span>
+<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
+<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> corr_data,</span>
+<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"spearman"</span>,          <span class="co"># Use "nonparametric" for Spearman or "bayesian" if preferred</span></span>
+<span id="cb62-20"><a href="#cb62-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"#2c7bb6"</span>, <span class="st">"#ffffbf"</span>, <span class="st">"#d7191c"</span>), <span class="co"># Classic blue-to-red diverging scale</span></span>
+<span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Portfolio Risk Profile: Correlation Matrix Matrix"</span>,</span>
+<span id="cb62-22"><a href="#cb62-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">subtitle =</span> <span class="st">"Evaluating linear relationships across driver metrics, vehicle assets, and claim outcomes"</span>,</span>
+<span id="cb62-23"><a href="#cb62-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">show.legend =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb62-24"><a href="#cb62-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">matrix.type =</span> <span class="st">"upper"</span>,        <span class="co"># Shows top triangle to remove visual redundancy</span></span>
+<span id="cb62-25"><a href="#cb62-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab.size =</span> <span class="fl">3.5</span>,               <span class="co"># Size of correlation coefficients inside the squares</span></span>
+<span id="cb62-26"><a href="#cb62-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>()</span>
+<span id="cb62-27"><a href="#cb62-27" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -3091,44 +3084,52 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Third-Party with two or more Cov"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create logical bins for your continuous variables</span></span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_bin =</span> <span class="fu">cut</span>(driver_age, </span>
-<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">17</span>, <span class="dv">25</span>, <span class="dv">35</span>, <span class="dv">45</span>, <span class="dv">55</span>, <span class="dv">65</span>, <span class="cn">Inf</span>), </span>
-<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-25"</span>, <span class="st">"26-35"</span>, <span class="st">"36-45"</span>, <span class="st">"46-55"</span>, <span class="st">"56-65"</span>, <span class="st">"66+"</span>)),</span>
-<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">v_age_bin =</span> <span class="fu">cut</span>(vehicle_age, </span>
-<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="cn">Inf</span>), </span>
-<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0-3 yrs"</span>, <span class="st">"4-6 yrs"</span>, <span class="st">"7-10 yrs"</span>, <span class="st">"11-15 yrs"</span>, <span class="st">"16+ yrs"</span>))</span>
-<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age_bin, v_age_bin) <span class="sc">%&gt;%</span></span>
-<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_policies =</span> <span class="fu">n</span>(),</span>
-<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_liability_claims =</span> <span class="fu">sum</span>(liability_property_claims, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">claim_rate =</span> total_liability_claims <span class="sc">/</span> total_policies,</span>
-<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_policies <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
-<span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-21"><a href="#cb63-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Plot the binned matrix</span></span>
-<span id="cb63-22"><a href="#cb63-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_data, <span class="fu">aes</span>(<span class="at">x =</span> v_age_bin, <span class="at">y =</span> age_bin, <span class="at">fill =</span> claim_rate)) <span class="sc">+</span></span>
-<span id="cb63-23"><a href="#cb63-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb63-24"><a href="#cb63-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"inferno"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">name =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
-<span id="cb63-25"><a href="#cb63-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">percent</span>(claim_rate, <span class="at">accuracy =</span> <span class="fl">0.1</span>)), </span>
-<span id="cb63-26"><a href="#cb63-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
-<span id="cb63-27"><a href="#cb63-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb63-28"><a href="#cb63-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Liability Claim Frequency Matrix"</span>,</span>
-<span id="cb63-29"><a href="#cb63-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Identifying localized risk spikes across driver and vehicle age pockets"</span>,</span>
-<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Vehicle Age Group"</span>,</span>
-<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Driver Age Group"</span></span>
-<span id="cb63-32"><a href="#cb63-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb63-33"><a href="#cb63-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb63-34"><a href="#cb63-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb63-35"><a href="#cb63-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb63-36"><a href="#cb63-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb63-37"><a href="#cb63-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb63-38"><a href="#cb63-38" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Isolate and clean the factors</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>cramer_df <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Basic Third-Party"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    policy_status, business_type, payment_frequency, </span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    bonus_score, fuel_type, vehicle_brand, </span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    municipality_type, circulation_area</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), as.factor))</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Compute the exact 8x8 Cramér's V matrix mathematically</span></span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>cat_vars <span class="ot">&lt;-</span> <span class="fu">colnames</span>(cramer_df)</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>n_vars <span class="ot">&lt;-</span> <span class="fu">length</span>(cat_vars)</span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>v_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> n_vars, <span class="at">ncol =</span> n_vars, <span class="at">dimnames =</span> <span class="fu">list</span>(cat_vars, cat_vars))</span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_vars) {</span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_vars) {</span>
+<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate cross-tabulation table</span></span>
+<span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a>    contingency_table <span class="ot">&lt;-</span> <span class="fu">table</span>(cramer_df[[cat_vars[i]]], cramer_df[[cat_vars[j]]])</span>
+<span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store the scalar Cramer's V value</span></span>
+<span id="cb63-21"><a href="#cb63-21" aria-hidden="true" tabindex="-1"></a>    v_matrix[i, j] <span class="ot">&lt;-</span> <span class="fu">assocstats</span>(contingency_table)<span class="sc">$</span>cramer</span>
+<span id="cb63-22"><a href="#cb63-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb63-23"><a href="#cb63-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-24"><a href="#cb63-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-25"><a href="#cb63-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Convert the matrix to a long data frame format for ggplot</span></span>
+<span id="cb63-26"><a href="#cb63-26" aria-hidden="true" tabindex="-1"></a>v_long <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(v_matrix) <span class="sc">%&gt;%</span></span>
+<span id="cb63-27"><a href="#cb63-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Variable1 =</span> <span class="fu">rownames</span>(.)) <span class="sc">%&gt;%</span></span>
+<span id="cb63-28"><a href="#cb63-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Variable1, <span class="at">names_to =</span> <span class="st">"Variable2"</span>, <span class="at">values_to =</span> <span class="st">"CramersV"</span>)</span>
+<span id="cb63-29"><a href="#cb63-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Plot a clean, beautifully spaced association tile grid</span></span>
+<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(v_long, <span class="fu">aes</span>(<span class="at">x =</span> Variable1, <span class="at">y =</span> Variable2, <span class="at">fill =</span> CramersV)) <span class="sc">+</span></span>
+<span id="cb63-32"><a href="#cb63-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb63-33"><a href="#cb63-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"#ffffbf"</span>, <span class="at">mid =</span> <span class="st">"#fdae61"</span>, <span class="at">high =</span> <span class="st">"#d7191c"</span>, </span>
+<span id="cb63-34"><a href="#cb63-34" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="fl">0.5</span>, <span class="at">limit =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">name =</span> <span class="st">"Cramér's V"</span>) <span class="sc">+</span></span>
+<span id="cb63-35"><a href="#cb63-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(CramersV, <span class="dv">2</span>)), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb63-36"><a href="#cb63-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb63-37"><a href="#cb63-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Clean Categorical Feature Association Matrix"</span>,</span>
+<span id="cb63-38"><a href="#cb63-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Calculated via global chi-square contingencies | Exactly 8x8 Dimensions"</span>,</span>
+<span id="cb63-39"><a href="#cb63-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span></span>
+<span id="cb63-40"><a href="#cb63-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb63-41"><a href="#cb63-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb63-42"><a href="#cb63-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb63-43"><a href="#cb63-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb63-44"><a href="#cb63-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb63-45"><a href="#cb63-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb63-46"><a href="#cb63-46" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -3138,14 +3139,22 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Our liability property claim spike is being driven by two specific operational pockets: middle-aged to senior drivers operating brand-new or modern vehicles (0–6 years old), alongside a high, persistent baseline risk from our under-35 cohort across all car ages.</p>
 </div>
-<div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
+</div>
+</div>
+</section>
+<section id="profile-of-age-and-vehicle-age-of-selected-policy-type-claims" class="level2">
+<h2 class="anchored" data-anchor-id="profile-of-age-and-vehicle-age-of-selected-policy-type-claims">8.Profile of Age and Vehicle Age of selected Policy Type Claims</h2>
+<p>This section performs multi-variate analysis to understand the relationship between drivers age, vehicle age and claims.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Comprehensive without Excess</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Third-Party with two or more Cov</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">Basic Third-Party</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Basic Third-Party"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Comprehensive without Excess"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create logical bins for your continuous variables</span></span>
 <span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_bin =</span> <span class="fu">cut</span>(driver_age, </span>
@@ -3192,45 +3201,48 @@ window.Quarto = {
 </div>
 </div>
 </div>
-</div>
-</div>
-</section>
-<section id="correlation" class="level2">
-<h2 class="anchored" data-anchor-id="correlation">8. Correlation</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Continous Variable</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Categorical Variables</a></li></ul>
-<div class="tab-content">
-<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a> corr_data <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>    driver_age, </span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>    vehicle_age, </span>
-<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    age_driving_licence,</span>
-<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>    vehicle_value,</span>
-<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>    total_premium, </span>
-<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    power_to_weight_ratio,</span>
-<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>    liability_property_claims  <span class="co"># Your target claim count metric</span></span>
-<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure all selected features are strictly evaluated as numeric matrices</span></span>
-<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), as.numeric)) <span class="sc">%&gt;%</span></span>
-<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Handle missing records safely to maintain clean row-counts</span></span>
-<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span>tidyr<span class="sc">::</span><span class="fu">replace_na</span>(.x, <span class="dv">0</span>)))</span>
-<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Generate the statistical correlation matrix</span></span>
-<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
-<span id="cb65-18"><a href="#cb65-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> corr_data,</span>
-<span id="cb65-19"><a href="#cb65-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"spearman"</span>,          <span class="co"># Use "nonparametric" for Spearman or "bayesian" if preferred</span></span>
-<span id="cb65-20"><a href="#cb65-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"#2c7bb6"</span>, <span class="st">"#ffffbf"</span>, <span class="st">"#d7191c"</span>), <span class="co"># Classic blue-to-red diverging scale</span></span>
-<span id="cb65-21"><a href="#cb65-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Portfolio Risk Profile: Correlation Matrix Matrix"</span>,</span>
-<span id="cb65-22"><a href="#cb65-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">subtitle =</span> <span class="st">"Evaluating linear relationships across driver metrics, vehicle assets, and claim outcomes"</span>,</span>
-<span id="cb65-23"><a href="#cb65-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">show.legend =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb65-24"><a href="#cb65-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">matrix.type =</span> <span class="st">"upper"</span>,        <span class="co"># Shows top triangle to remove visual redundancy</span></span>
-<span id="cb65-25"><a href="#cb65-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab.size =</span> <span class="fl">3.5</span>,               <span class="co"># Size of correlation coefficients inside the squares</span></span>
-<span id="cb65-26"><a href="#cb65-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>()</span>
-<span id="cb65-27"><a href="#cb65-27" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Third-Party with two or more Cov"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create logical bins for your continuous variables</span></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_bin =</span> <span class="fu">cut</span>(driver_age, </span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">17</span>, <span class="dv">25</span>, <span class="dv">35</span>, <span class="dv">45</span>, <span class="dv">55</span>, <span class="dv">65</span>, <span class="cn">Inf</span>), </span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-25"</span>, <span class="st">"26-35"</span>, <span class="st">"36-45"</span>, <span class="st">"46-55"</span>, <span class="st">"56-65"</span>, <span class="st">"66+"</span>)),</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">v_age_bin =</span> <span class="fu">cut</span>(vehicle_age, </span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="cn">Inf</span>), </span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0-3 yrs"</span>, <span class="st">"4-6 yrs"</span>, <span class="st">"7-10 yrs"</span>, <span class="st">"11-15 yrs"</span>, <span class="st">"16+ yrs"</span>))</span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age_bin, v_age_bin) <span class="sc">%&gt;%</span></span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_policies =</span> <span class="fu">n</span>(),</span>
+<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_liability_claims =</span> <span class="fu">sum</span>(liability_property_claims, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">claim_rate =</span> total_liability_claims <span class="sc">/</span> total_policies,</span>
+<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb65-18"><a href="#cb65-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb65-19"><a href="#cb65-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_policies <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb65-20"><a href="#cb65-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-21"><a href="#cb65-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Plot the binned matrix</span></span>
+<span id="cb65-22"><a href="#cb65-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_data, <span class="fu">aes</span>(<span class="at">x =</span> v_age_bin, <span class="at">y =</span> age_bin, <span class="at">fill =</span> claim_rate)) <span class="sc">+</span></span>
+<span id="cb65-23"><a href="#cb65-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb65-24"><a href="#cb65-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"inferno"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">name =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
+<span id="cb65-25"><a href="#cb65-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">percent</span>(claim_rate, <span class="at">accuracy =</span> <span class="fl">0.1</span>)), </span>
+<span id="cb65-26"><a href="#cb65-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb65-27"><a href="#cb65-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb65-28"><a href="#cb65-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Liability Claim Frequency Matrix"</span>,</span>
+<span id="cb65-29"><a href="#cb65-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Identifying localized risk spikes across driver and vehicle age pockets"</span>,</span>
+<span id="cb65-30"><a href="#cb65-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Vehicle Age Group"</span>,</span>
+<span id="cb65-31"><a href="#cb65-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Driver Age Group"</span></span>
+<span id="cb65-32"><a href="#cb65-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb65-33"><a href="#cb65-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb65-34"><a href="#cb65-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb65-35"><a href="#cb65-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb65-36"><a href="#cb65-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb65-37"><a href="#cb65-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb65-38"><a href="#cb65-38" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -3240,57 +3252,50 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>Our liability property claim spike is being driven by two specific operational pockets: middle-aged to senior drivers operating brand-new or modern vehicles (0–6 years old), alongside a high, persistent baseline risk from our under-35 cohort across all car ages.</p>
 </div>
-<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Isolate and clean the factors</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>cramer_df <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Basic Third-Party"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    policy_status, business_type, payment_frequency, </span>
-<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>    bonus_score, fuel_type, vehicle_brand, </span>
-<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>    municipality_type, circulation_area</span>
-<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), as.factor))</span>
-<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Compute the exact 8x8 Cramér's V matrix mathematically</span></span>
-<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>cat_vars <span class="ot">&lt;-</span> <span class="fu">colnames</span>(cramer_df)</span>
-<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>n_vars <span class="ot">&lt;-</span> <span class="fu">length</span>(cat_vars)</span>
-<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>v_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> n_vars, <span class="at">ncol =</span> n_vars, <span class="at">dimnames =</span> <span class="fu">list</span>(cat_vars, cat_vars))</span>
-<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_vars) {</span>
-<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_vars) {</span>
-<span id="cb66-18"><a href="#cb66-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate cross-tabulation table</span></span>
-<span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a>    contingency_table <span class="ot">&lt;-</span> <span class="fu">table</span>(cramer_df[[cat_vars[i]]], cramer_df[[cat_vars[j]]])</span>
-<span id="cb66-20"><a href="#cb66-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store the scalar Cramer's V value</span></span>
-<span id="cb66-21"><a href="#cb66-21" aria-hidden="true" tabindex="-1"></a>    v_matrix[i, j] <span class="ot">&lt;-</span> <span class="fu">assocstats</span>(contingency_table)<span class="sc">$</span>cramer</span>
-<span id="cb66-22"><a href="#cb66-22" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb66-23"><a href="#cb66-23" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb66-24"><a href="#cb66-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb66-25"><a href="#cb66-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Convert the matrix to a long data frame format for ggplot</span></span>
-<span id="cb66-26"><a href="#cb66-26" aria-hidden="true" tabindex="-1"></a>v_long <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(v_matrix) <span class="sc">%&gt;%</span></span>
-<span id="cb66-27"><a href="#cb66-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Variable1 =</span> <span class="fu">rownames</span>(.)) <span class="sc">%&gt;%</span></span>
-<span id="cb66-28"><a href="#cb66-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Variable1, <span class="at">names_to =</span> <span class="st">"Variable2"</span>, <span class="at">values_to =</span> <span class="st">"CramersV"</span>)</span>
-<span id="cb66-29"><a href="#cb66-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb66-30"><a href="#cb66-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Plot a clean, beautifully spaced association tile grid</span></span>
-<span id="cb66-31"><a href="#cb66-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(v_long, <span class="fu">aes</span>(<span class="at">x =</span> Variable1, <span class="at">y =</span> Variable2, <span class="at">fill =</span> CramersV)) <span class="sc">+</span></span>
-<span id="cb66-32"><a href="#cb66-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb66-33"><a href="#cb66-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"#ffffbf"</span>, <span class="at">mid =</span> <span class="st">"#fdae61"</span>, <span class="at">high =</span> <span class="st">"#d7191c"</span>, </span>
-<span id="cb66-34"><a href="#cb66-34" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="fl">0.5</span>, <span class="at">limit =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">name =</span> <span class="st">"Cramér's V"</span>) <span class="sc">+</span></span>
-<span id="cb66-35"><a href="#cb66-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(CramersV, <span class="dv">2</span>)), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb66-36"><a href="#cb66-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb66-37"><a href="#cb66-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Clean Categorical Feature Association Matrix"</span>,</span>
-<span id="cb66-38"><a href="#cb66-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Calculated via global chi-square contingencies | Exactly 8x8 Dimensions"</span>,</span>
-<span id="cb66-39"><a href="#cb66-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span></span>
-<span id="cb66-40"><a href="#cb66-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb66-41"><a href="#cb66-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb66-42"><a href="#cb66-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb66-43"><a href="#cb66-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb66-44"><a href="#cb66-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb66-45"><a href="#cb66-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb66-46"><a href="#cb66-46" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> df_transformed <span class="sc">%&gt;%</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(policy_type <span class="sc">==</span> <span class="st">"Basic Third-Party"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create logical bins for your continuous variables</span></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_bin =</span> <span class="fu">cut</span>(driver_age, </span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">17</span>, <span class="dv">25</span>, <span class="dv">35</span>, <span class="dv">45</span>, <span class="dv">55</span>, <span class="dv">65</span>, <span class="cn">Inf</span>), </span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-25"</span>, <span class="st">"26-35"</span>, <span class="st">"36-45"</span>, <span class="st">"46-55"</span>, <span class="st">"56-65"</span>, <span class="st">"66+"</span>)),</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">v_age_bin =</span> <span class="fu">cut</span>(vehicle_age, </span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="cn">Inf</span>), </span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0-3 yrs"</span>, <span class="st">"4-6 yrs"</span>, <span class="st">"7-10 yrs"</span>, <span class="st">"11-15 yrs"</span>, <span class="st">"16+ yrs"</span>))</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age_bin, v_age_bin) <span class="sc">%&gt;%</span></span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_policies =</span> <span class="fu">n</span>(),</span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_liability_claims =</span> <span class="fu">sum</span>(liability_property_claims, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">claim_rate =</span> total_liability_claims <span class="sc">/</span> total_policies,</span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb66-18"><a href="#cb66-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_policies <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb66-20"><a href="#cb66-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-21"><a href="#cb66-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Plot the binned matrix</span></span>
+<span id="cb66-22"><a href="#cb66-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_data, <span class="fu">aes</span>(<span class="at">x =</span> v_age_bin, <span class="at">y =</span> age_bin, <span class="at">fill =</span> claim_rate)) <span class="sc">+</span></span>
+<span id="cb66-23"><a href="#cb66-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb66-24"><a href="#cb66-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"inferno"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">name =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
+<span id="cb66-25"><a href="#cb66-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">percent</span>(claim_rate, <span class="at">accuracy =</span> <span class="fl">0.1</span>)), </span>
+<span id="cb66-26"><a href="#cb66-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb66-27"><a href="#cb66-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb66-28"><a href="#cb66-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Liability Claim Frequency Matrix"</span>,</span>
+<span id="cb66-29"><a href="#cb66-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Identifying localized risk spikes across driver and vehicle age pockets"</span>,</span>
+<span id="cb66-30"><a href="#cb66-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Vehicle Age Group"</span>,</span>
+<span id="cb66-31"><a href="#cb66-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Driver Age Group"</span></span>
+<span id="cb66-32"><a href="#cb66-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb66-33"><a href="#cb66-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb66-34"><a href="#cb66-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb66-35"><a href="#cb66-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb66-36"><a href="#cb66-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb66-37"><a href="#cb66-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb66-38"><a href="#cb66-38" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -3668,6 +3673,12 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>Comprehensive without Excess: There is a distinct pricing mismatch within the Third-Party with two or more Coverages portfolio. While underwriting successfully charges a steep risk premium on young drivers (18–25) and brand-new vehicles (0–3 years), it severely underprices the mid-aged driver segment (36–55) operating mid-age vehicles (4–6 years).</p>
+<p>This exact underpriced demographic is likely to be driving the portfolio’s exposure, peaking at a 37.1% claim frequency. To stabilize the portfolio’s margin, the underwriting team should review the pricing tiers upward for drivers aged 36–55 who operate vehicles under 6 years old.</p>
+<p>Third-Party with two or more coverage: While the pricing structure successfully accounts for high-risk young drivers (18–25), it completely fails to protect against a major risk spike in senior operators.</p>
+<p>Drivers aged 66+ operating 4–6 year old vehicles generate the portfolio’s highest liability claim rate at 26.1%, yet this demographic pays below-average baseline premiums. Because basic plans have thin margins by design, this unpriced exposure severely compromises the product’s profitability.</p>
+<p>Basic Third Party: The underwriter successfully priced in premiums for the 18-25 age groups with newer vehicles from 0 -6 years.</p>
+<p>However, a critical underwriting leakage exists in the mature segment: drivers aged 56–65 operating 7–10 year old cars run a highly elevated 21.4% claim rate, yet they are granted below-average premium rates.</p>
 
 
 </section>

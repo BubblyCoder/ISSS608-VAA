@@ -5,10 +5,1270 @@ date: "May 15, 2026"
 date-modified: "last-modified"
 format: 
   revealjs:
-    code-fold: true     # Enables the expandable/collapsible 'Code' buttons on your slides
-    echo: true          # Ensures the code chunks are visible on the slides
+    logo: motor_insurance_logo.png
+    theme: simple        
+    code-fold: true      
+    echo: false
 execute:
-  eval: true            # Runs your code live and displays the visual outputs/plots
-  warning: false        # Hides annoying package loading warnings from ruining slide aesthetics
-  freeze: true          # Crucial for Vercel: preserves existing slides; only builds your latest edits
+  eval: true            
+  warning: false        
+  freeze: true          
 ---
+
+## Content page{.smaller}
+
+-   1.Financial health of the business
+-   2.Product profitability
+-   3.Total Premiums payment over the years
+-   4.Total Premiums payment over the years \n Third-Party with Glass Cov
+-   5.Total Premiums payment over the years \n Basic Third-Party
+-   6.Types of claims per low profitability portfolios
+-   7.Profile of Driver and Vehicle age against claims: Comprehensive without Excess 
+-   8.Profile of Driver and Vehicle age against claims: Third Party with two or more coverage 
+-   9.Profile of Driver and Vehicle age against claims: Basic Third Party coverage
+-   10.Vehicle Type and District claim rate
+-   11.Data Issues
+-   12.Conclusion
+
+```{r}
+pacman::p_load(ggstatsplot, 
+               ggdist,
+               see,
+               tidyverse,
+               skimr,
+               naniar,
+               scales,
+               arrow,
+               patchwork,
+               GGally,
+               glue,
+               ggpubr,
+               treemapify,
+               vcd)
+
+df_transformed <- read_parquet("df_transformed.parquet")
+
+
+plot_policy_distribution <- function(data, target_policy, target_metric = "total_premium") {
+  
+  # 1. Dynamically filter and prepare data based on function arguments
+  plot_data <- data %>%
+    filter(
+      policy_type == target_policy,
+      .data[[target_metric]] > 0
+    ) %>%
+    mutate(year = factor(year))
+  
+  # Determine dynamic text for labels
+  metric_label <- gsub("_", " ", target_metric) %>% tools::toTitleCase()
+  
+  # 2. Safe Zero-Data Check (Replacing the Kruskal check)
+  if (nrow(plot_data) == 0) {
+    warning(paste0("No data found for policy type: '", target_policy, "' with ", metric_label, " > 0."))
+    return(NULL)
+  }
+  
+  # 3. Generate the Plot
+  p <- ggplot(plot_data, aes(x = year, y = .data[[target_metric]], fill = year)) +
+    
+    # The Half-Eye distribution view
+    stat_halfeye(
+      adjust = 0.5,
+      width = 0.6,
+      .width = c(0.66, 0.95),
+      point_color = "black",
+      interval_color = "black",
+      alpha = 0.7
+    ) +
+    
+    # Scale and formatting
+    scale_y_log10(labels = scales::label_comma(prefix = "$")) +
+    scale_fill_brewer(palette = "Blues", guide = "none") +
+    
+    # Informative labels without the statistical test string
+    labs(
+      title = paste0(metric_label, " Distribution across Years"),
+      subtitle = target_policy,
+      x = "Year",
+      y = paste0(metric_label, " (Log Scale)")
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(color = "gray30", size = 10, face = "italic"),
+      panel.grid.minor = element_blank(),
+      axis.text = element_text(face = "bold")
+    ) +
+    coord_flip() 
+  
+  return(p)
+}
+
+
+plot_claims_distribution <- function(data, target_policy, target_metric = "total_incurred") {
+  
+  # 1. Dynamically filter and prepare data based on function arguments
+  # We use .data[[target_metric]] to allow passing the column name as a string
+  plot_data <- data %>%
+    filter(
+      policy_type == target_policy,
+      .data[[target_metric]] > 0
+    ) %>%
+    mutate(year = factor(year))
+  
+  # Determine dynamic text for labels
+  metric_label <- gsub("_", " ", target_metric) %>% tools::toTitleCase()
+  
+  # 2. Safe Zero-Data Check (Replacing the Kruskal check)
+  if (nrow(plot_data) == 0) {
+    warning(paste0("No data found for policy type: '", target_policy, "' with ", metric_label, " > 0."))
+    return(NULL)
+  }
+  
+  # 3. Generate the Plot
+  p <- ggplot(plot_data, aes(x = year, y = .data[[target_metric]], fill = year)) +
+    
+    # The Half-Eye distribution view
+    stat_halfeye(
+      width = 0.6,
+      .width = c(0.66, 0.95),
+      point_color = "black",
+      interval_color = "black",
+      alpha = 0.7
+    )  + 
+    
+    # Scale and formatting
+    scale_y_log10(
+      limits = c(0.10, 500000), 
+      labels = scales::label_dollar(),
+      breaks = c(0.10, 1, 10, 100, 1000, 10000, 100000, 500000)
+    ) +
+    scale_fill_brewer(palette = "Reds", guide = "none") +
+    
+    # Informative labels that update dynamically based on your inputs
+    labs(
+      title = paste0(metric_label, " Distribution across Years"),
+      subtitle = target_policy,
+      x = "Year",
+      y = paste0(metric_label, " (Log Scale)")
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(color = "gray30", size = 10, face = "italic"),
+      panel.grid.minor = element_blank(),
+      axis.text = element_text(face = "bold")
+    ) +
+    coord_flip() 
+  
+  return(p)
+}
+
+```
+
+::: notes
+
+:::
+
+## **1. Financial health of the business**
+
+```{r}
+#| echo: false
+#| fig-width: 16
+#| fig-height: 8
+yearly_summary <- df_transformed %>%
+  group_by(year) %>%
+  summarize(
+    sum_premium = sum(total_premium, na.rm = TRUE),
+    sum_incurred = sum(total_incurred, na.rm = TRUE),
+    underwriting_profit = sum_premium - sum_incurred,
+    avg_rev_per_exposure = sum_premium / sum(total_exposure, na.rm = TRUE)
+  ) %>%
+  arrange(year) %>%
+  # Calculate YoY changes
+  mutate(
+    premium_yoy = (sum_premium - lag(sum_premium)) / lag(sum_premium) * 100,
+    incurred_yoy = (sum_incurred - lag(sum_incurred)) / lag(sum_incurred) * 100
+  )
+
+# =========================================================================
+# STEP 2: Pivot & Format Labels for Plot 1 (Grouped Bars)
+# =========================================================================
+p1_data <- yearly_summary %>%
+  select(year, `Total Premium` = sum_premium, `Total Incurred Claims` = sum_incurred, premium_yoy, incurred_yoy) %>%
+  pivot_longer(
+    cols = c(`Total Premium`, `Total Incurred Claims`), 
+    names_to = "Metric", 
+    values_to = "Amount"
+  ) %>%
+  # Assign the correct YoY percentage to the correct metric row
+  mutate(
+    yoy_val = if_else(Metric == "Total Premium", premium_yoy, incurred_yoy),
+    # Format text: If it's the first year, just show amount. Otherwise, show amount + YoY %
+    label_text = case_when(
+      is.na(yoy_val) ~ label_number(accuracy = 0.1, scale_cut = cut_short_scale(), prefix = "$")(Amount),
+      yoy_val >= 0   ~ paste0(label_number(accuracy = 0.1, scale_cut = cut_short_scale(), prefix = "$")(Amount), "\n(+", round(yoy_val, 1), "%)"),
+      TRUE           ~ paste0(label_number(accuracy = 0.1, scale_cut = cut_short_scale(), prefix = "$")(Amount), "\n(", round(yoy_val, 1), "%)")
+    )
+  )
+
+# =========================================================================
+# STEP 3: Build Plot 1 - Grouped Bar Chart with Value & % Labels
+# =========================================================================
+# Explicitly defining bar positioning width so the text alignments align flawlessly
+bar_width <- 0.6
+dodge_width <- 0.7
+
+p1 <- ggplot(p1_data, aes(x = factor(year), y = Amount, fill = Metric)) +
+  geom_bar(stat = "identity", position = position_dodge(width = dodge_width), width = bar_width) +
+  
+  # Add dynamic text labels on top of bars
+  geom_text(
+    aes(label = label_text),
+    position = position_dodge(width = dodge_width),
+    vjust = -0.25,       
+    size = 3,            
+    fontface = "bold",
+    lineheight = 0.85    
+  ) +
+  
+  scale_fill_manual(values = c("Total Premium" = "#2ca02c", "Total Incurred Claims" = "#d9534f")) +
+  scale_y_continuous(
+    labels = label_number(scale_cut = cut_short_scale(), prefix = "$"),
+    expand = expansion(mult = c(0, 0.15)) # Adds 15% headroom at the top so labels don't clip
+  ) +
+  labs(
+    title = "A: Premium Inflow vs. Claims Outflow",
+    x = NULL, 
+    y = "Total Financial Amount (Y-O-Y % Increase)", 
+    fill = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    legend.position = "top",
+    plot.title = element_text(face = "bold", size = 12),
+    panel.grid.minor = element_blank()
+  )
+
+# =========================================================================
+# STEP 4: Build Plot 2 - Net Underwriting Profit Trend with Labels
+# =========================================================================
+yearly_summary <- yearly_summary %>%
+  mutate(
+    profit_label = label_number(accuracy = 0.1, scale_cut = cut_short_scale(), prefix = "$")(underwriting_profit)
+  )
+
+p2 <- ggplot(yearly_summary, aes(x = factor(year), y = underwriting_profit, fill = underwriting_profit > 0)) +
+  geom_bar(stat = "identity", width = 0.5, alpha = 0.9) +
+  geom_text(
+    aes(label = profit_label, vjust = if_else(underwriting_profit >= 0, -0.4, 1.4)),
+    size = 3,
+    fontface = "bold"
+  ) +
+  scale_fill_manual(values = c("TRUE" = "#2ca02c", "FALSE" = "#d9534f"), guide = "none") +
+  scale_y_continuous(
+    labels = label_number(scale_cut = cut_short_scale(), prefix = "$"),
+    expand = expansion(mult = c(0.15, 0.15))
+  ) +
+  labs(
+    title = "B: Net Underwriting Profit Trend",
+    subtitle = "Green = Profitable | Red = Underwriting Loss",
+    x = NULL, 
+    y = "Net Profit"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 9, color = "gray30"),
+    panel.grid.minor = element_blank()
+  )
+
+# =========================================================================
+# STEP 5: Build Plot 3 - Average Revenue Per Unit of Exposure
+# =========================================================================
+p3 <- ggplot(yearly_summary, aes(x = factor(year), y = avg_rev_per_exposure, group = 1)) +
+  geom_line(color = "#D4AF37", linewidth = 1.2) +
+  geom_point(color = "#1c3b57", size = 3) +
+  geom_text(
+    aes(label = paste0("$", round(avg_rev_per_exposure, 1))), 
+    vjust = -1, 
+    size = 3.5, 
+    fontface = "bold"
+  ) +
+  scale_y_continuous(
+    labels = label_number(prefix = "$"),
+    expand = expansion(mult = c(0.1, 0.2))
+  ) +
+  labs(
+    title = "C: Average Premium Revenue per Unit of Exposure Year",
+    x = "Year", 
+    y = "Avg Premium / Exposure"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    panel.grid.minor = element_blank()
+  )
+
+# =========================================================================
+# STEP 6: Assemble Framework Dashboard Layout and Print
+# =========================================================================
+dashboard <- (p1 | p2) / p3 + 
+  plot_annotation(
+    title = "Overall Financial Health",
+    subtitle = "Year-on-Year metrics tracking revenue growth, claims impact, and net margin",
+    theme = theme(
+      plot.title = element_text(face = "bold", size = 16, margin = margin(b = 5)),
+      plot.subtitle = element_text(color = "gray25", size = 11, margin = margin(b = 15))
+    )
+  )
+
+# Preview the clean dashboard
+print(dashboard)
+```
+::: notes
+- On the top left we can observed the premiums and claims outflow from the business.
+
+- On the top right, we also observe the net profit margin has slowed significantly since 2023 to 2024
+
+- Lastly, we are receiving lower average premiums per exposure year. This signals we need to relook at how we are pricing our policies
+:::
+
+## **2. Product profitability**
+
+```{r}
+premium_summary <- df_transformed %>%
+  group_by(policy_type) %>%
+  summarize(total_premium_sum = sum(total_premium, na.rm = TRUE))
+
+
+incurred_summary <- df_transformed %>%
+  group_by(policy_type) %>%
+  summarize(total_incurred_sum = sum(total_incurred, na.rm = TRUE))
+
+# Merge and calculate cumulative metrics based on Premium Rank
+pareto_combined <- premium_summary %>%
+  left_join(incurred_summary, by = "policy_type") %>%
+  arrange(desc(total_premium_sum)) %>%
+  mutate(
+    policy_type = factor(policy_type, levels = policy_type),
+    
+    # Premium Tail Metrics
+    cum_sum_prem = cumsum(total_premium_sum),
+    total_sum_prem = sum(total_premium_sum),
+    cum_pct_prem = (cum_sum_prem / total_sum_prem) * 100,
+    remaining_pct_prem = 100 - lag(cum_pct_prem, default = 0),
+    
+    # Claims Tail Metrics
+    cum_sum_inc = cumsum(total_incurred_sum),
+    total_sum_inc = sum(total_incurred_sum),
+    cum_pct_inc = (cum_sum_inc / total_sum_inc) * 100,
+    remaining_pct_inc = 100 - lag(cum_pct_inc, default = 0)
+  )
+
+# Master anchors for dual-axis transformation
+total_premium_total <- sum(pareto_combined$total_premium_sum)
+max_y_limit <- total_premium_total * 1.1
+
+# Pivot long for side-by-side dodge bars
+bar_data <- pareto_combined %>%
+  select(policy_type, Premium = total_premium_sum, Claims = total_incurred_sum) %>%
+  pivot_longer(cols = c(Premium, Claims), names_to = "Metric", values_to = "Amount") %>%
+  mutate(Metric = factor(Metric, levels = c("Premium", "Claims")))
+
+# --- 2. GENERATE OVERLAYED PLOT ---
+ggplot() +
+  # Side-by-side grouped bars for Premium vs Claims
+  geom_bar(data = bar_data, aes(x = policy_type, y = Amount, fill = Metric), 
+           stat = "identity", position = position_dodge(width = 0.8), alpha = 0.85, width = 0.7) +
+  
+  # Gold Line: Remaining Revenue Tail
+  geom_line(data = pareto_combined, aes(x = as.numeric(policy_type) - 0.2, 
+                                        y = remaining_pct_prem * (total_premium_total / 100), group = 1, color = "Remaining Revenue Tail"), 
+            linewidth = 1.2) +
+  geom_point(data = pareto_combined, aes(x = as.numeric(policy_type) - 0.2, 
+                                         y = remaining_pct_prem * (total_premium_total / 100)), color = "#D4AF37", size = 2.5) +
+  
+  # Dual Axis Configuration
+  scale_y_continuous(
+    name = "Financial Amount ($)",
+    limits = c(0, max_y_limit),
+    breaks = seq(0, max_y_limit, by = 10000000),
+    labels = label_comma(),
+    sec.axis = sec_axis(
+      trans = ~ . / total_premium_total * 100,
+      name = "Remaining Portfolio Percentage (%)",
+      breaks = seq(0, 100, by = 10)
+    )
+  ) +
+  
+  # Styling and Legends
+  scale_fill_manual(values = c("Premium" = "#2ca02c", "Claims" = "#d9534f")) +
+  scale_color_manual(values = c("Remaining Revenue Tail" = "#D4AF37", "Remaining Claims Tail" = "grey25")) +
+  
+  labs(
+    title = "Portfolio Premium & Incurred Claims",
+    subtitle = "Bars show Total Premium (Green)/ Claims (Red).\n Gold Line shows the propotion of portfolio.",
+    x = "Policy Type",
+    fill = "Financial Metrics",
+    color = "Portfolio Tails"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom",
+    legend.box = "vertical",
+    panel.grid.minor = element_blank()
+  )
+```
+::: notes
+- In this slide, we observed 2 critical observation.
+
+A performance review of the product portfolio reveals a dangerous concentration risk, with over 80% of total premiums heavily reliant on just two offerings: Third Party (2 or more coverage) and Comprehensive with Excess.
+
+The remaining product lines demonstrate severe profitability distress.
+
+Comprehensive without Excess is currently operating at an breakeven. 
+Concurrently, Third Party with Glass Coverage and basic Third Party plans are yielding razor-thin margins, failing to contribute meaningfully to the bottom line despite their operational footprint. 
+
+We will further investigate the cause for these 3 portfolios in subsequent slides.
+:::
+
+## **3. Total Premiums payment over the years \n Comprehensive without Excess**
+
+
+
+```{r}
+#| fig-width: 16
+#| fig-height: 8
+
+p1 <- plot_policy_distribution(df_transformed, "Comprehensive without Excess")
+p2 <- plot_claims_distribution(df_transformed,"Comprehensive without Excess")
+
+p1 + p2
+```
+
+
+::: notes
+
+Note: The scale is in log, but the x axis is in actual dollars
+
+Key insight:
+Comprehensive insurance without excess shows a stable distribution for both premiums and claims from 2022 through 2024, explaining why it is barely making a profit on an aggregate level. Crucially, the multi-peaked distributions across all years confirm the existence of distinct customer sub-groups (e.g., a distinct low-premium tier and a high-premium tier).
+
+Because year-over-year premium growth has remained stagnant, strategic adjustments are required. Further monitoring and tweaking of this policy are needed to intentionally pull more customers into the higher-tier, higher-margin brackets to improve profitability."
+:::
+
+## **4. Total Premiums payment over the years \n Third-Party with Glass Cov**
+
+```{r}
+#| fig-width: 16
+#| fig-height: 8
+p1 <- ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"), 
+       aes(x = factor(year), y = total_premium, fill = factor(year))) +
+  
+  # Keeps your original smooth halfeye
+  ggdist::stat_halfeye(
+    adjust = 0.5,
+    width = 0.6,
+    .width = c(0.66, 0.95),
+    point_color = "black",
+    interval_color = "black",
+    alpha = 0.7
+  ) +
+  
+  scale_y_continuous(labels = scales::label_comma(prefix = "$")) +
+
+  coord_cartesian(ylim = c(0, 200)) + 
+  
+  scale_fill_brewer(palette = "Blues", guide = "none") +
+  
+  labs(
+    title = "Total Premium Distribution across Years",
+    subtitle = "Third-Party with Glass Cov",
+    x = "Year",
+    y = "Total Premium"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(color = "gray30", size = 10, face = "italic"),
+    panel.grid.minor = element_blank(),
+    axis.text = element_text(face = "bold")
+  ) +
+  
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 1.5) +
+  coord_flip() 
+p2 <- plot_claims_distribution(df_transformed,"Third-Party with Glass Cov")
+
+ p1+p2
+```
+::: notes
+Note: The scale is in log, but the x axis is in actual dollars
+
+Third-Party with Glass Coverage shows an increasing volume of lower-priced premiums over the years, though the median premium remains stable around $200 On the claims side, while the median has held steady at approximately $1,000 from 2022 to 2024, the structure of the risk has shifted significantly. Claims have become much more heavily concentrated right at the $1,000 mark in 2024, alongside a wider variation of smaller claims emerging below the 25th percentile.
+
+Based on the shifting claims structure, it is highly recommended to conduct a targeted risk and underwriting review focused on two areas
+:::
+
+
+## **5. Total Premiums payment over the years \n Basic Third-Party**
+
+```{r}
+#| fig-width: 16
+#| fig-height: 8
+p1 <- plot_policy_distribution(df_transformed, "Basic Third-Party")
+
+p2 <- plot_claims_distribution(df_transformed,"Basic Third-Party")
+
+p1+p2
+```
+
+::: notes
+Note: The scale is in log, but the x axis is in actual dollars
+
+The premium structure for this plan experienced significant compression in 2024, shifting away from the wider variations of previous years into a distinct bimodal distribution.
+
+This structural change strongly indicates the emergence of two polarized risk segments or sub-groups within the same product line, even though the overall average premium level has stabilized between 2023 and 2024.
+
+Concurrently, the portfolio's claim experience underwent a critical upward migration. While prior years were dominated by low-value "background" claims, 2024 losses heavily bottlenecked near a much higher median payout while maintaining highly volatile outer boundaries. 
+
+This combination of a rising baseline cost per claim warrants a review of this insurance policy.
+:::
+
+## **6. Types of claims per low profitability portfolios**
+
+```{r}
+#| fig-width: 15
+#| fig-height: 4.5
+df_claims_p1 <- df_transformed %>%
+  filter(policy_type == "Comprehensive without Excess") %>%
+  select(
+    insured_id, year,
+    liability_property_claims, liability_injury_claims,
+    property_claims, theft_claims, fire_claims,
+    glass_claims, legal_protection_claims, occupants_claims
+  ) %>%
+  filter(rowSums(select(., ends_with("_claims"))) > 0)
+
+set.seed(123) 
+df_sample_p1 <- df_claims_p1 %>% 
+  mutate(policy_row_index = row_number())
+
+df_heatmap_p1 <- df_sample_p1 %>%
+  pivot_longer(
+    cols = ends_with("_claims"), 
+    names_to = "Claim_Type", 
+    values_to = "Claim_Present"
+  ) %>%
+  mutate(
+    Claim_Type = str_remove(Claim_Type, "_claims"),
+    Claim_Type = str_replace_all(Claim_Type, "_", " "),
+    Claim_Status = ifelse(Claim_Present == 1, "Claim Filed (1)", "No Claim (0)")
+  )
+
+
+p1 <- ggplot(df_heatmap_p1, aes(x = Claim_Type, y = factor(policy_row_index), fill = Claim_Status)) +
+  geom_tile() + 
+  scale_fill_manual(values = c("Claim Filed (1)" = "#E46726", "No Claim (0)" = "#F0F0F0")) +  
+  theme_minimal(base_size = 12) +
+  labs(
+    title = "Comprehensive without Excess Claims",
+    x = "Coverage Type",
+    y = "",
+    fill = "Status"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_line(color = "white", linewidth = 0.5),
+    legend.position = "top"
+  )
+
+
+
+df_claims_p2 <- df_transformed %>%
+  filter(policy_type == "Third-Party with two or more Cov") %>%
+  select(
+    insured_id, year,
+    liability_property_claims, liability_injury_claims,
+    property_claims, theft_claims, fire_claims,
+    glass_claims, legal_protection_claims, occupants_claims
+  ) %>%
+  filter(rowSums(select(., ends_with("_claims"))) > 0)
+
+set.seed(123) 
+df_sample_p2 <- df_claims_p2 %>% 
+  mutate(policy_row_index = row_number())
+
+df_heatmap_p2 <- df_sample_p2 %>%
+  pivot_longer(
+    cols = ends_with("_claims"), 
+    names_to = "Claim_Type", 
+    values_to = "Claim_Present"
+  ) %>%
+  mutate(
+    Claim_Type = str_remove(Claim_Type, "_claims"),
+    Claim_Type = str_replace_all(Claim_Type, "_", " "),
+    Claim_Status = ifelse(Claim_Present == 1, "Claim Filed (1)", "No Claim (0)")
+  )
+
+
+p2 <- ggplot(df_heatmap_p2, aes(x = Claim_Type, y = factor(policy_row_index), fill = Claim_Status)) +
+  geom_tile() + 
+  scale_fill_manual(values = c("Claim Filed (1)" = "#E46726", "No Claim (0)" = "#F0F0F0")) +  
+  theme_minimal(base_size = 12) +
+  labs(
+    title = "Third-Party with two or more Coverage Claims",
+    x = "Coverage Type",
+    y = "",
+    fill = "Status"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_line(color = "white", linewidth = 0.5),
+    legend.position = "top"
+  )
+
+
+df_claims_p3 <- df_transformed %>%
+  filter(policy_type == "Basic Third-Party") %>%
+  select(
+    insured_id, year,
+    liability_property_claims, liability_injury_claims,
+    property_claims, theft_claims, fire_claims,
+    glass_claims, legal_protection_claims, occupants_claims
+  ) %>%
+  filter(rowSums(select(., ends_with("_claims"))) > 0)
+
+set.seed(123) 
+df_sample_p3 <- df_claims_p3 %>% 
+  mutate(policy_row_index = row_number())
+
+df_heatmap_p3 <- df_sample_p3 %>%
+  pivot_longer(
+    cols = ends_with("_claims"), 
+    names_to = "Claim_Type", 
+    values_to = "Claim_Present"
+  ) %>%
+  mutate(
+    Claim_Type = str_remove(Claim_Type, "_claims"),
+    Claim_Type = str_replace_all(Claim_Type, "_", " "),
+    Claim_Status = ifelse(Claim_Present == 1, "Claim Filed (1)", "No Claim (0)")
+  )
+
+
+p3 <- ggplot(df_heatmap_p3, aes(x = Claim_Type, y = factor(policy_row_index), fill = Claim_Status)) +
+  geom_tile() + 
+  scale_fill_manual(values = c("Claim Filed (1)" = "#E46726", "No Claim (0)" = "#F0F0F0")) +  
+  theme_minimal(base_size = 12) +
+  labs(
+    title = "Basic Third-Party Claims",
+    x = "Coverage Type",
+    y = "",
+    fill = "Status"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, face = "bold"),
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_line(color = "white", linewidth = 0.5),
+    legend.position = "top"
+  )
+
+p1 + p2 + p3
+```
+::: notes
+
+The Comprehensive without Excess plan exhibits widespread, high-frequency claims, with severe activation bands across Property, Glass, and Liability Property claims
+
+In stark contrast, Third-Party with Two or More Coverages shows a highly localized, sparse risk profile, with claims strictly concentrated within third-party property and bodily injury liabilities, indicating a lower-frequency but potentially higher-severity exposure.
+
+For Basic Third-Party policies, claims are almost exclusively restricted to a vertical band of liability protection. This pattern aligns precisely with Spanish legal mandates, where entry-level insurance operates under Responsabilidad Civil Obligatoria
+:::
+
+## **7. Profile of Driver and Vehicle age against claims \nComprehensive without Excess **
+
+```{r}
+#| fig-width: 15
+#| fig-height: 4.5
+#| out-width: "100%"
+
+# =========================================================================
+# CHART 1: Liability Claim Frequency Matrix (Heatmap)
+# =========================================================================
+heatmap_data_comp <- df_transformed %>%
+  filter(policy_type == "Comprehensive without Excess") %>%
+  mutate(
+    age_bin = cut(driver_age, 
+                  breaks = c(17, 25, 35, 45, 55, 65, Inf), 
+                  labels = c("18-25", "26-35", "36-45", "46-55", "56-65", "66+")),
+    v_age_bin = cut(vehicle_age, 
+                    breaks = c(-1, 3, 6, 10, 15, Inf), 
+                    labels = c("0-3 yrs", "4-6 yrs", "7-10 yrs", "11-15 yrs", "16+ yrs"))
+  ) %>%
+  group_by(age_bin, v_age_bin) %>%
+  summarise(
+    total_policies = n(),
+    total_liability_claims = sum(liability_property_claims, na.rm = TRUE),
+    claim_rate = total_liability_claims / total_policies,
+    .groups = "drop"
+  ) %>%
+  filter(total_policies > 10)
+
+p1 <- ggplot(heatmap_data_comp, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
+  geom_tile(color = "white", lwd = 0.5, linetype = 1) +
+  scale_fill_viridis_c(option = "inferno", direction = -1, name = "Claim Rate") +
+  geom_text(aes(label = scales::percent(claim_rate, accuracy = 0.1)), 
+            color = "white", size = 3, fontface = "bold") +
+  labs(
+    title = "Liability Claim Frequency Matrix",
+    subtitle = "Risk spikes across driver and vehicle age segments",
+    x = "Vehicle Age Group",
+    y = "Driver Age Group"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text = element_text(size = 9),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    panel.grid = element_blank(),
+    legend.position = "bottom"
+  )
+
+# =========================================================================
+# CHART 2: Premium Revenue by Driver Age
+# =========================================================================
+premium_driver_comp <- df_transformed %>%
+  filter(policy_type == "Comprehensive without Excess") %>%
+  mutate(
+    age_bin = cut(driver_age, 
+                  breaks = c(17, 25, 35, 45, 55, 65, Inf), 
+                  labels = c("18-25", "26-35", "36-45", "46-55", "56-65", "66+"))) %>%
+  group_by(age_bin) %>%
+  summarise(
+    total_premium  = sum(total_premium, na.rm = TRUE),
+    total_exposure = sum(liability_exposure, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(total_exposure > 0) %>%
+  mutate(avg_premium_per_exposure = total_premium / total_exposure)
+
+plan_avg_premium_driver_comp <- sum(premium_driver_comp$total_premium) / sum(premium_driver_comp$total_exposure)
+
+premium_driver_comp_final <- premium_driver_comp %>%
+  mutate(
+    pricing_status = ifelse(
+      avg_premium_per_exposure >= plan_avg_premium_driver_comp, 
+      "Above/At Plan Average", 
+      "Below Plan Average"
+    )
+  )
+
+p2 <- ggplot(premium_driver_comp_final, aes(x = age_bin, y = avg_premium_per_exposure, fill = pricing_status)) +
+  geom_col(width = 0.6, color = "white", lwd = 0.5) +
+  geom_hline(yintercept = plan_avg_premium_driver_comp, linetype = "dashed", color = "gray40", linewidth = 0.8) +
+  annotate("text", x = 3.5, y = plan_avg_premium_driver_comp + 25, 
+           label = paste0("Avg Baseline: $", round(plan_avg_premium_driver_comp, 2)), 
+           color = "gray30", fontface = "italic", size = 2.8) +
+  scale_fill_manual(
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
+  ) +
+  labs(
+    title = "Premium Revenue by Driver Age",
+    subtitle = "Spotting sub-group underpricing segments",
+    x = "Driver Age Group",
+    y = "Premium Revenue / Exposure Year ($)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.position = "bottom"
+  )
+
+# =========================================================================
+# CHART 3: Premium Revenue by Vehicle Age
+# =========================================================================
+premium_vehicle_comp <- df_transformed %>%
+  filter(policy_type == "Comprehensive without Excess") %>%
+  mutate(
+    v_age_bin = cut(vehicle_age, 
+                    breaks = c(-1, 3, 6, 10, 15, Inf), 
+                    labels = c("0-3 yrs", "4-6 yrs", "7-10 yrs", "11-15 yrs", "16+ yrs"))) %>%
+  group_by(v_age_bin) %>%
+  summarise(
+    total_premium  = sum(total_premium, na.rm = TRUE),
+    total_exposure = sum(liability_exposure, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(total_exposure > 0) %>%
+  mutate(avg_premium_per_exposure = total_premium / total_exposure)
+
+plan_avg_premium_vehicle_comp <- sum(premium_vehicle_comp$total_premium) / sum(premium_vehicle_comp$total_exposure)
+
+premium_vehicle_comp_final <- premium_vehicle_comp %>%
+  mutate(
+    pricing_status = ifelse(
+      avg_premium_per_exposure >= plan_avg_premium_vehicle_comp, 
+      "Above/At Plan Average", 
+      "Below Plan Average"
+    )
+  )
+
+p3 <- ggplot(premium_vehicle_comp_final, aes(x = v_age_bin, y = avg_premium_per_exposure, fill = pricing_status)) +
+  geom_col(width = 0.6, color = "white", lwd = 0.5) +
+  geom_hline(yintercept = plan_avg_premium_vehicle_comp, linetype = "dashed", color = "gray40", linewidth = 0.8) +
+  annotate("text", x = 3, y = plan_avg_premium_vehicle_comp + 25, 
+           label = paste0("Avg Baseline: $", round(plan_avg_premium_vehicle_comp, 2)), 
+           color = "gray30", fontface = "italic", size = 2.8) +
+  scale_fill_manual(
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
+  ) +
+  labs(
+    title = "Premium Revenue by Vehicle Age",
+    subtitle = "Spotting sub-group underpricing segments",
+    x = "Vehicle Age Group",
+    y = "Premium Revenue / Exposure Year ($)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.position = "bottom"
+  )
+
+# =========================================================================
+# EXECUTE DOCK SIDE-BY-SIDE PANELS
+# =========================================================================
+p1 + p2 + p3 + plot_layout(guides = "collect") & theme(legend.position = "bottom")
+```
+:::notes
+There is a distinct pricing mismatch within the Third-Party with two or more Coverages portfolio. While underwriting successfully charges a steep risk premium on young drivers (18–25) and brand-new vehicles (0–3 years), it severely underprices the mid-aged driver segment (36–55) operating mid-age vehicles (4–6 years).
+
+This exact underpriced demographic is likely to be driving the portfolio's exposure, peaking at a 37.1% claim frequency. To stabilize the portfolio's margin, the underwriting team should review the pricing tiers upward for drivers aged 36–55 who operate vehicles under 6 years old.
+
+:::
+
+## **8. Profile of Driver and Vehicle age against claims \n Third Party with two or more coverage **
+
+
+```{r}
+#| fig-width: 15
+#| fig-height: 4.5
+#| out-width: "100%"
+
+
+heatmap_data_tp2 <- df_transformed %>%
+  filter(policy_type == "Third-Party with two or more Cov") %>%
+  mutate(
+    age_bin = cut(driver_age, 
+                  breaks = c(17, 25, 35, 45, 55, 65, Inf), 
+                  labels = c("18-25", "26-35", "36-45", "46-55", "56-65", "66+")),
+    v_age_bin = cut(vehicle_age, 
+                    breaks = c(-1, 3, 6, 10, 15, Inf), 
+                    labels = c("0-3 yrs", "4-6 yrs", "7-10 yrs", "11-15 yrs", "16+ yrs"))
+  ) %>%
+  group_by(age_bin, v_age_bin) %>%
+  summarise(
+    total_policies = n(),
+    total_liability_claims = sum(liability_property_claims, na.rm = TRUE),
+    claim_rate = total_liability_claims / total_policies,
+    .groups = "drop"
+  ) %>%
+  filter(total_policies > 10)
+
+p1 <- ggplot(heatmap_data_tp2, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
+  geom_tile(color = "white", lwd = 0.5, linetype = 1) +
+  scale_fill_viridis_c(option = "inferno", direction = -1, name = "Claim Rate") +
+  geom_text(aes(label = scales::percent(claim_rate, accuracy = 0.1)), 
+            color = "white", size = 3, fontface = "bold") +
+  labs(
+    title = "Liability Claim Frequency Matrix",
+    subtitle = "Risk spikes across driver and vehicle age segments",
+    x = "Vehicle Age Group",
+    y = "Driver Age Group"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text = element_text(size = 9),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    panel.grid = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+premium_driver_tp2 <- df_transformed %>%
+  filter(policy_type == "Third-Party with two or more Cov") %>%
+  mutate(
+    age_bin = cut(driver_age, 
+                  breaks = c(17, 25, 35, 45, 55, 65, Inf), 
+                  labels = c("18-25", "26-35", "36-45", "46-55", "56-65", "66+"))) %>%
+  group_by(age_bin) %>%
+  summarise(
+    total_premium  = sum(total_premium, na.rm = TRUE),
+    total_exposure = sum(liability_exposure, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(total_exposure > 0) %>%
+  mutate(avg_premium_per_exposure = total_premium / total_exposure)
+
+plan_avg_premium_driver_tp2 <- sum(premium_driver_tp2$total_premium) / sum(premium_driver_tp2$total_exposure)
+
+premium_driver_tp2_final <- premium_driver_tp2 %>%
+  mutate(
+    pricing_status = ifelse(
+      avg_premium_per_exposure >= plan_avg_premium_driver_tp2, 
+      "Above/At Plan Average", 
+      "Below Plan Average"
+    )
+  )
+
+p2 <- ggplot(premium_driver_tp2_final, aes(x = age_bin, y = avg_premium_per_exposure, fill = pricing_status)) +
+  geom_col(width = 0.6, color = "white", lwd = 0.5) +
+  geom_hline(yintercept = plan_avg_premium_driver_tp2, linetype = "dashed", color = "gray40", linewidth = 0.8) +
+  annotate("text", x = 3.5, y = plan_avg_premium_driver_tp2 + 15, 
+           label = paste0("Avg Baseline: $", round(plan_avg_premium_driver_tp2, 2)), 
+           color = "gray30", fontface = "italic", size = 2.8) +
+  scale_fill_manual(
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
+  ) +
+  labs(
+    title = "Premium Revenue by Driver Age",
+    subtitle = "Spotting sub-group underpricing segments",
+    x = "Driver Age Group",
+    y = "Premium Revenue / Exposure Year ($)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.position = "bottom"
+  )
+
+# =========================================================================
+# CHART 3: Premium Revenue by Vehicle Age
+# =========================================================================
+premium_vehicle_tp2 <- df_transformed %>%
+  filter(policy_type == "Third-Party with two or more Cov") %>%
+  mutate(
+    v_age_bin = cut(vehicle_age, 
+                    breaks = c(-1, 3, 6, 10, 15, Inf), 
+                    labels = c("0-3 yrs", "4-6 yrs", "7-10 yrs", "11-15 yrs", "16+ yrs"))) %>%
+  group_by(v_age_bin) %>%
+  summarise(
+    total_premium  = sum(total_premium, na.rm = TRUE),
+    total_exposure = sum(liability_exposure, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(total_exposure > 0) %>%
+  mutate(avg_premium_per_exposure = total_premium / total_exposure)
+
+plan_avg_premium_vehicle_tp2 <- sum(premium_vehicle_tp2$total_premium) / sum(premium_vehicle_tp2$total_exposure)
+
+premium_vehicle_tp2_final <- premium_vehicle_tp2 %>%
+  mutate(
+    pricing_status = ifelse(
+      avg_premium_per_exposure >= plan_avg_premium_vehicle_tp2, 
+      "Above/At Plan Average", 
+      "Below Plan Average"
+    )
+  )
+
+p3 <- ggplot(premium_vehicle_tp2_final, aes(x = v_age_bin, y = avg_premium_per_exposure, fill = pricing_status)) +
+  geom_col(width = 0.6, color = "white", lwd = 0.5) +
+  geom_hline(yintercept = plan_avg_premium_vehicle_tp2, linetype = "dashed", color = "gray40", linewidth = 0.8) +
+  annotate("text", x = 3, y = plan_avg_premium_vehicle_tp2 + 15, 
+           label = paste0("Avg Baseline: $", round(plan_avg_premium_vehicle_tp2, 2)), 
+           color = "gray30", fontface = "italic", size = 2.8) +
+  scale_fill_manual(
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
+  ) +
+  labs(
+    title = "Premium Revenue by Vehicle Age",
+    subtitle = "Spotting sub-group underpricing segments",
+    x = "Vehicle Age Group",
+    y = "Premium Revenue / Exposure Year ($)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.position = "bottom"
+  )
+
+# =========================================================================
+# ASSEMBLE PANEL SIDE-BY-SIDE
+# =========================================================================
+p1 + p2 + p3 + plot_layout(guides = "collect") & theme(legend.position = "bottom")
+  
+```
+
+::: notes
+While the pricing structure successfully accounts for high-risk young drivers (18–25), it completely fails to protect against a major risk spike in senior operators.
+
+Drivers aged 66+ operating 4–6 year old vehicles generate the portfolio's highest liability claim rate at 26.1%, yet this demographic pays below-average baseline premiums. Because basic plans have thin margins by design, this unpriced exposure severely compromises the product's profitability.
+:::
+
+
+
+## **9. Profile of Driver and Vehicle age against claims \n Basic Third party **
+
+```{r}
+#| fig-width: 15
+#| fig-height: 4.5
+#| out-width: "100%"
+
+heatmap_data_basic <- df_transformed %>%
+  filter(policy_type == "Basic Third-Party") %>%
+  mutate(
+    age_bin = cut(driver_age, 
+                  breaks = c(17, 25, 35, 45, 55, 65, Inf), 
+                  labels = c("18-25", "26-35", "36-45", "46-55", "56-65", "66+")),
+    v_age_bin = cut(vehicle_age, 
+                    breaks = c(-1, 3, 6, 10, 15, Inf), 
+                    labels = c("0-3 yrs", "4-6 yrs", "7-10 yrs", "11-15 yrs", "16+ yrs"))
+  ) %>%
+  group_by(age_bin, v_age_bin) %>%
+  summarise(
+    total_policies = n(),
+    total_liability_claims = sum(liability_property_claims, na.rm = TRUE),
+    claim_rate = total_liability_claims / total_policies,
+    .groups = "drop"
+  ) %>%
+  filter(total_policies > 10)
+
+p1 <- ggplot(heatmap_data_basic, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
+  geom_tile(color = "white", lwd = 0.5, linetype = 1) +
+  scale_fill_viridis_c(option = "inferno", direction = -1, name = "Claim Rate") +
+  geom_text(aes(label = scales::percent(claim_rate, accuracy = 0.1)), 
+            color = "white", size = 3, fontface = "bold") +
+  labs(
+    title = "Liability Claim Frequency Matrix",
+    subtitle = "Risk spikes across driver and vehicle age segments",
+    x = "Vehicle Age Group",
+    y = "Driver Age Group"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text = element_text(size = 9),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    panel.grid = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+premium_driver_basic <- df_transformed %>%
+  filter(policy_type == "Basic Third-Party") %>%
+  mutate(
+    age_bin = cut(driver_age, 
+                  breaks = c(17, 25, 35, 45, 55, 65, Inf), 
+                  labels = c("18-25", "26-35", "36-45", "46-55", "56-65", "66+"))) %>%
+  group_by(age_bin) %>%
+  summarise(
+    total_premium  = sum(total_premium, na.rm = TRUE),
+    total_exposure = sum(liability_exposure, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(total_exposure > 0) %>%
+  mutate(avg_premium_per_exposure = total_premium / total_exposure)
+
+plan_avg_premium_driver_basic <- sum(premium_driver_basic$total_premium) / sum(premium_driver_basic$total_exposure)
+
+premium_driver_basic_final <- premium_driver_basic %>%
+  mutate(
+    pricing_status = ifelse(
+      avg_premium_per_exposure >= plan_avg_premium_driver_basic, 
+      "Above/At Plan Average", 
+      "Below Plan Average"
+    )
+  )
+
+p2 <- ggplot(premium_driver_basic_final, aes(x = age_bin, y = avg_premium_per_exposure, fill = pricing_status)) +
+  geom_col(width = 0.6, color = "white", lwd = 0.5) +
+  geom_hline(yintercept = plan_avg_premium_driver_basic, linetype = "dashed", color = "gray40", linewidth = 0.8) +
+  annotate("text", x = 3.5, y = plan_avg_premium_driver_basic + 15, 
+           label = paste0("Avg Baseline: $", round(plan_avg_premium_driver_basic, 2)), 
+           color = "gray30", fontface = "italic", size = 2.8) +
+  scale_fill_manual(
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
+  ) +
+  labs(
+    title = "Premium Revenue by Driver Age",
+    subtitle = "Spotting sub-group underpricing segments",
+    x = "Driver Age Group",
+    y = "Premium Revenue / Exposure Year ($)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.position = "bottom"
+  )
+
+
+premium_vehicle_basic <- df_transformed %>%
+  filter(policy_type == "Basic Third-Party") %>% 
+  mutate(
+    v_age_bin = cut(vehicle_age, 
+                    breaks = c(-1, 3, 6, 10, 15, Inf), 
+                    labels = c("0-3 yrs", "4-6 yrs", "7-10 yrs", "11-15 yrs", "16+ yrs"))) %>%
+  group_by(v_age_bin) %>%
+  summarise(
+    total_premium  = sum(total_premium, na.rm = TRUE),
+    total_exposure = sum(liability_exposure, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(total_exposure > 0) %>%
+  mutate(avg_premium_per_exposure = total_premium / total_exposure)
+
+plan_avg_premium_vehicle_basic <- sum(premium_vehicle_basic$total_premium) / sum(premium_vehicle_basic$total_exposure)
+
+premium_vehicle_basic_final <- premium_vehicle_basic %>%
+  mutate(
+    pricing_status = ifelse(
+      avg_premium_per_exposure >= plan_avg_premium_vehicle_basic, 
+      "Above/At Plan Average", 
+      "Below Plan Average"
+    )
+  )
+
+p3 <- ggplot(premium_vehicle_basic_final, aes(x = v_age_bin, y = avg_premium_per_exposure, fill = pricing_status)) +
+  geom_col(width = 0.6, color = "white", lwd = 0.5) +
+  geom_hline(yintercept = plan_avg_premium_vehicle_basic, linetype = "dashed", color = "gray40", linewidth = 0.8) +
+  annotate("text", x = 3, y = plan_avg_premium_vehicle_basic + 15, 
+           label = paste0("Avg Baseline: $", round(plan_avg_premium_vehicle_basic, 2)), 
+           color = "gray30", fontface = "italic", size = 2.8) +
+  scale_fill_manual(
+    values = c("Above/At Plan Average" = "#2ca02c", "Below Plan Average" = "#d9534f")
+  ) +
+  labs(
+    title = "Premium Revenue by Vehicle Age",
+    subtitle = "Spotting sub-group underpricing segments",
+    x = "Vehicle Age Group",
+    y = "Premium Revenue / Exposure Year ($)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8, color = "gray30"),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.position = "bottom"
+  )
+
+# =========================================================================
+# ASSEMBLE PANEL SIDE-BY-SIDE
+# =========================================================================
+p1 + p2 + p3 + plot_layout(guides = "collect") & theme(legend.position = "bottom")
+
+```
+::: notes
+
+The underwriter successfully priced in premiums for the 18-25 age groups with newer vehicles from 0 -6 years.
+
+However, a critical underwriting leakage exists in the mature segment: drivers aged 56–65 operating 7–10 year old cars run a highly elevated 21.4% claim rate, yet they are granted below-average premium rates.
+
+:::
+
+
+## 10. Vehicle Type and District claim rate
+
+```{r}
+# Aggregate data by categorical segments
+treemap_data <- df_transformed %>%
+  filter(policy_type == "Third-Party with two or more Cov") %>%
+  group_by(vehicle_brand, municipality_type, circulation_area) %>%
+  summarise(
+    total_policies = n(),
+    total_liability_claims = sum(liability_property_claims, na.rm = TRUE),
+    # Calculate the Claim Rate for color-mapping
+    claim_rate = total_liability_claims / total_policies,
+    .groups = "drop"
+  ) %>%
+  # Filter out tiny segments (e.g., fewer than 5 policies) to keep the visual clean
+  filter(total_policies >= 5) %>%
+  # Create a clean text label for each tile
+  mutate(tile_label = paste0(vehicle_brand, "\n", municipality_type, "-", circulation_area))
+
+ggplot(treemap_data, aes(area = total_policies, fill = claim_rate, label = tile_label)) +
+  geom_treemap(color = "white", start = "topleft") +
+  # Using the same intense color scale to easily contrast with your previous heatmap
+  scale_fill_viridis_c(option = "inferno", direction = -1, name = "Claim Rate",
+                       labels = scales::percent_format(accuracy = 1)) +
+  # Dynamic text wrapping inside the tiles
+  geom_treemap_text(fontface = "bold", color = "white", place = "center", 
+                    grow = FALSE, size = 11, min.size = 6) +
+  labs(
+    title = "Multivariate Portfolio Risk Treemap",
+    subtitle = "Tile Size = Volume of Policies | Tile Color = Liability Property Claim Rate",
+    caption = "Filtered for segments with 5+ policies"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "right"
+  )
+```
+
+:::notes
+Our high-volume segments (left) exhibit a stable, controlled claim rate of approximately 10-12%,  However, the treemap reveals significant risk volatility in our low-volume, niche segments (bottom-right), where claim rates swing drastically up to 25%. This indicates a need to either consolidate these micro-segments or apply stricter pricing loading to these volatile pockets."
+:::
+
+## **11. Data Issues**
+
+```{r}
+df <-read.csv2("Dataset of motor insurance portfolio.csv")
+  
+gg_miss_upset(df, nsets = 4)
+```
+:::notes
+Missing values in vehicle_value and fuel_type stem from systematic pipeline anomalies rather than random omissions. Engineering investigation is underway; missing fields were temporarily imputed to preserve data integrity for modeling
+:::
+
+## 12. Conclusion{.smaller .scrollable}
+
+### Overall Findings 
+
+- Over 80% of total premium revenue is reliant on just two offerings: Third-Party two or more coverages and Comprehensive with Excess.
+
+- Year-on-year premium growth has flattened, and we are receiving a lower average premium per exposure year across the business, signaling an urgent need to relook at baseline pricing.
+
+### Plug Critical Underwriting Price Leakages
+
+Granular subgroup analysis reveals that while high-risk young drivers ($18\text{--}25$) are priced correctly, we are severely underpricing specific high-risk mature demographics:
+
+- Drivers aged $36\text{--}55$ operating vehicles aged $4\text{--}6$ years peak at a massive 37.1% claim frequency but are currently charged below-average premiums.
+
+- Senior operators aged $66+$ driving vehicles aged $4\text{--}6$ years generate a 26.1% claim rate while paying low baseline premiums.The Mature Leakage: Drivers aged $56\text{--}65$ with vehicles aged $7\text{--}10$ years run an elevated 21.4% claim rate but are granted below-average premium rates.
+
+- Drivers aged $56\text{--}65$ with vehicles aged $7\text{--}10$ years run an elevated 21.4% claim rate but are granted below-average premium rates
+
+### Data Issues
+
+- To partnering with the engineering team to resolve these collection and validation errors pertaining to 1,287 missing fuel_type records and 513 missing vehicle_value records, ensuring data integrity for future analysis
