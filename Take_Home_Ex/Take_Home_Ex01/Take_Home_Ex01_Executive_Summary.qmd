@@ -19,9 +19,9 @@ execute:
 
 -   1.Financial health of the business
 -   2.Product profitability
--   3.Total Premiums payment over the years
--   4.Total Premiums payment over the years \n Third-Party with Glass Cov
--   5.Total Premiums payment over the years \n Basic Third-Party
+-   3.Total Premiums payment over the years Comprehensive without Excess
+-   4.Total Premiums payment over the years Third-Party with Glass Cov
+-   5.Total Premiums payment over the years Basic Third-Party
 -   6.Types of claims per low profitability portfolios
 -   7.Profile of Driver and Vehicle age against claims: Comprehensive without Excess 
 -   8.Profile of Driver and Vehicle age against claims: Third Party with two or more coverage 
@@ -429,7 +429,7 @@ A performance review of the product portfolio reveals a dangerous concentration 
 
 The remaining product lines demonstrate severe profitability distress.
 
-Comprehensive without Excess is currently operating at an breakeven. 
+Comprehensive without Excess is currently operating at a breakeven. 
 Concurrently, Third Party with Glass Coverage and basic Third Party plans are yielding razor-thin margins, failing to contribute meaningfully to the bottom line despite their operational footprint. 
 
 We will further investigate the cause for these 3 portfolios in subsequent slides.
@@ -457,10 +457,10 @@ Note: The scale is in log, but the x axis is in actual dollars
 Key insight:
 Comprehensive insurance without excess shows a stable distribution for both premiums and claims from 2022 through 2024, explaining why it is barely making a profit on an aggregate level. Crucially, the multi-peaked distributions across all years confirm the existence of distinct customer sub-groups (e.g., a distinct low-premium tier and a high-premium tier).
 
-Because year-over-year premium growth has remained stagnant, strategic adjustments are required. Further monitoring and tweaking of this policy are needed to intentionally pull more customers into the higher-tier, higher-margin brackets to improve profitability."
+Because year-over-year premium growth has remained stagnant, strategic adjustments are required. Further monitoring and tweaking of this policy are needed to intentionally pull more customers into the higher-tier, higher-margin brackets to improve profitability.
 :::
 
-## **4. Total Premiums payment over the years \n Third-Party with Glass Cov**
+## **4. Total Premiums payment over the years \n Third-Party with Glass coverage**
 
 ```{r}
 #| fig-width: 16
@@ -512,7 +512,7 @@ Note: The scale is in log, but the x axis is in actual dollars
 
 Third-Party with Glass Coverage shows an increasing volume of lower-priced premiums over the years, though the median premium remains stable around $200 On the claims side, while the median has held steady at approximately $1,000 from 2022 to 2024, the structure of the risk has shifted significantly. Claims have become much more heavily concentrated right at the $1,000 mark in 2024, alongside a wider variation of smaller claims emerging below the 25th percentile.
 
-Based on the shifting claims structure, it is highly recommended to conduct a targeted risk and underwriting review focused on two areas
+Based on the shifting claims structure, it is highly recommended to conduct a targeted risk and underwriting review focused on the two mentioned two areas
 :::
 
 
@@ -533,7 +533,7 @@ Note: The scale is in log, but the x axis is in actual dollars
 
 The premium structure for this plan experienced significant compression in 2024, shifting away from the wider variations of previous years into a distinct bimodal distribution.
 
-This structural change strongly indicates the emergence of two polarized risk segments or sub-groups within the same product line, even though the overall average premium level has stabilized between 2023 and 2024.
+This structural change strongly indicates the emergence of twosub-groups within the same product line, even though the overall average premium level has stabilized between 2023 and 2024.
 
 Concurrently, the portfolio's claim experience underwent a critical upward migration. While prior years were dominated by low-value "background" claims, 2024 losses heavily bottlenecked near a much higher median payout while maintaining highly volatile outer boundaries. 
 
@@ -698,7 +698,7 @@ p1 + p2 + p3
 
 The Comprehensive without Excess plan exhibits widespread, high-frequency claims, with severe activation bands across Property, Glass, and Liability Property claims
 
-In stark contrast, Third-Party with Two or More Coverages shows a highly localized, sparse risk profile, with claims strictly concentrated within third-party property and bodily injury liabilities, indicating a lower-frequency but potentially higher-severity exposure.
+In stark contrast, Third-Party with Two or More Coverages shows  a critical, highly localized bottleneck. The column for liability property forms a virtually unbroken, solid vertical block of orange, signaling that at least 3/4 of thepolicies in this portfolio subset register a claim here. There is also a moderate, scattered activation band is visible under glass, followed by minor, sparse tracking under liability injury
 
 For Basic Third-Party policies, claims are almost exclusively restricted to a vertical band of liability protection. This pattern aligns precisely with Spanish legal mandates, where entry-level insurance operates under Responsabilidad Civil Obligatoria
 :::
@@ -863,15 +863,13 @@ p3 <- ggplot(premium_vehicle_comp_final, aes(x = v_age_bin, y = avg_premium_per_
 p1 + p2 + p3 + plot_layout(guides = "collect") & theme(legend.position = "bottom")
 ```
 :::notes
-There is a distinct pricing mismatch within the Third-Party with two or more Coverages portfolio. While underwriting successfully charges a steep risk premium on young drivers (18–25) and brand-new vehicles (0–3 years), it severely underprices the mid-aged driver segment (36–55) operating mid-age vehicles (4–6 years).
+There is a pricing mismatch within the Third-Party with two or more coverages portfolio. While underwriting successfully charges a steep risk premium on young drivers (18–25) and brand-new vehicles (0–3 years), it did not address the mid-aged driver segment (36–55) operating mid-age vehicles (4–6 years).
 
-This exact underpriced demographic is likely to be driving the portfolio's exposure, peaking at a 37.1% claim frequency. To stabilize the portfolio's margin, the underwriting team should review the pricing tiers upward for drivers aged 36–55 who operate vehicles under 6 years old.
+This underpriced demographic is likely to be driving the portfolio's exposure, peaking at a 37.1% claim frequency. To stabilize the portfolio's margin, the underwriting team should review the pricing tiers upward for drivers aged 36–55 who operate vehicles under 6 years old.
 
 :::
 
 ## **8. Profile of Driver and Vehicle age against claims \n Third Party with two or more coverage **
-
-
 ```{r}
 #| fig-width: 15
 #| fig-height: 4.5
@@ -1028,9 +1026,9 @@ p1 + p2 + p3 + plot_layout(guides = "collect") & theme(legend.position = "bottom
 ```
 
 ::: notes
-While the pricing structure successfully accounts for high-risk young drivers (18–25), it completely fails to protect against a major risk spike in senior operators.
+While the pricing structure successfully accounts for high-risk young drivers (18–25), it has insufficient risk pricing to protect against a major risk spike in senior operators.
 
-Drivers aged 66+ operating 4–6 year old vehicles generate the portfolio's highest liability claim rate at 26.1%, yet this demographic pays below-average baseline premiums. Because basic plans have thin margins by design, this unpriced exposure severely compromises the product's profitability.
+Drivers aged 66+ operating 4–6 year old vehicles generate the portfolio's highest liability claim rate at 26.1%, yet this demographic pays below-average baseline premiums. This policy have thin margins by design, this exposure likely compromises the product's profitability.
 :::
 
 
@@ -1238,6 +1236,8 @@ ggplot(treemap_data, aes(area = total_policies, fill = claim_rate, label = tile_
 
 :::notes
 Our high-volume segments (left) exhibit a stable, controlled claim rate of approximately 10-12%,  However, the treemap reveals significant risk volatility in our low-volume, niche segments (bottom-right), where claim rates swing drastically up to 25%. This indicates a need to either consolidate these micro-segments or apply stricter pricing loading to these volatile pockets."
+
+Further analysis can be considered to identify these small pockets
 :::
 
 ## **11. Data Issues**
@@ -1261,13 +1261,13 @@ Missing values in vehicle_value and fuel_type stem from systematic pipeline anom
 
 ### Plug Critical Underwriting Price Leakages
 
-Granular subgroup analysis reveals that while high-risk young drivers ($18\text{--}25$) are priced correctly, we are severely underpricing specific high-risk mature demographics:
+Further analysis reveals that while high-risk young drivers ($18\text{-}25$) are priced correctly, we are severely underpricing specific high-risk mature demographics:
 
-- Drivers with Comprehensive without Excess policies aged $36\text{--}55$ operating vehicles aged $4\text{--}6$ years peak at a massive 37.1% claim frequency but are currently charged below-average premiums.
+- Drivers with Comprehensive without Excess policies aged $36\text{-}55$ operating vehicles aged $4\text{-}6$ years peak at a massive 37.1% claim frequency but are currently charged below-average premiums.
 
-- Senior operators with Comprehensive without Excess policies aged $66+$ driving vehicles aged $4\text{--}6$ years generate a 26.1% claim rate while paying low baseline premiums.
+- Senior operators with Comprehensive without Excess policies aged $66+$ driving vehicles aged $4\text{-}6$ years generate a 26.1% claim rate while paying low baseline premiums.
 
-- Drivers with Basic Third Party policies aged $56\text{--}65$ with vehicles aged $7\text{--}10$ years run an elevated 21.4% claim rate but are granted below-average premium rates.
+- Drivers with Basic Third Party policies aged $56\text{-}65$ with vehicles aged $7\text{-}10$ years run an elevated 21.4% claim rate but are granted below-average premium rates.
 
 
 ### Data Issues
