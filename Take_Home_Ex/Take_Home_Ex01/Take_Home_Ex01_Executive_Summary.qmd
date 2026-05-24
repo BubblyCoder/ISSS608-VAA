@@ -1263,12 +1263,13 @@ Missing values in vehicle_value and fuel_type stem from systematic pipeline anom
 
 Granular subgroup analysis reveals that while high-risk young drivers ($18\text{--}25$) are priced correctly, we are severely underpricing specific high-risk mature demographics:
 
-- Drivers aged $36\text{--}55$ operating vehicles aged $4\text{--}6$ years peak at a massive 37.1% claim frequency but are currently charged below-average premiums.
+- Drivers with Comprehensive without Excess policies aged $36\text{--}55$ operating vehicles aged $4\text{--}6$ years peak at a massive 37.1% claim frequency but are currently charged below-average premiums.
 
-- Senior operators aged $66+$ driving vehicles aged $4\text{--}6$ years generate a 26.1% claim rate while paying low baseline premiums.The Mature Leakage: Drivers aged $56\text{--}65$ with vehicles aged $7\text{--}10$ years run an elevated 21.4% claim rate but are granted below-average premium rates.
+- Senior operators with Comprehensive without Excess policies aged $66+$ driving vehicles aged $4\text{--}6$ years generate a 26.1% claim rate while paying low baseline premiums.
 
-- Drivers aged $56\text{--}65$ with vehicles aged $7\text{--}10$ years run an elevated 21.4% claim rate but are granted below-average premium rates
+- Drivers with Basic Third Party policies aged $56\text{--}65$ with vehicles aged $7\text{--}10$ years run an elevated 21.4% claim rate but are granted below-average premium rates.
+
 
 ### Data Issues
 
-- To partner with the engineering team to resolve these collection and validation errors pertaining to 1,287 missing fuel_type records and 513 missing vehicle_value records, ensuring data integrity for future analysis
+- To partner with the engineering team to resolve these collection and validation errors pertaining to 1,287 missing fuel type records and 513 missing vehicle value records, ensuring data integrity for future analysis
