@@ -687,7 +687,7 @@ ggplot() +
 ## Findings
 
 -   Comprehensive without Excess Insurance has very high claims , rendering the product to be either break even or barely profitable
--   Third Party with glass coverage insurance also has very high claim amount, rendering is with thin margins
+-   Third Party with glass coverage insurance also has very high claim amount and thin margins
 -   Basic Third party insurance has razor thin margins
 :::
 
@@ -695,7 +695,7 @@ ggplot() +
 
 -   This is to perform confirmatory data analysis that there is a change in distribution amongst the various product over the years
 
--   Where Null Hypothesis: The distribution of total premium is identical across all three years Alternative Hypothesis: The distribution of total premium is not identical across all three years; at least one year's premium distribution stochastically dominates
+-   Where the Null Hypothesis: The distribution of total premium is identical across all three years Alternative Hypothesis: The distribution of total premium is not identical across all three years; at least one year's premium distribution stochastically dominates
 
 -   We also observed that there are extreme values in total premiums, hence a log is applied to the y axis to help observe the full range of premiums more easily
 
@@ -919,9 +919,9 @@ plot_pairwise_matrix(df_transformed, "Basic Third-Party")
 ```
 :::
 
-### Claims from 2022 to 2024
+## 4. Claims from 2022 to 2024
 
-Function created to ease the coding below. Instead of blue we will use red for claims for the violin plot below. We also remove log in the Y axis as there is less claim variation in price as compared to premiums
+Function created to ease the coding below. Instead of blue we will use red for claims for the violin plot below. We also perform a log in the Y axis to observe the full range of values.
 
 ```{r}
 plot_claims_distribution <- function(data, target_policy, target_metric = "total_incurred") {
@@ -962,7 +962,6 @@ plot_claims_distribution <- function(data, target_policy, target_metric = "total
   # 3. Generate the Plot
   p <- ggplot(plot_data, aes(x = year, y = .data[[target_metric]], fill = year)) +
     
-    # The Half-Eye distribution view
     stat_halfeye(
       width = 0.6,
       .width = c(0.66, 0.95),
@@ -976,8 +975,7 @@ plot_claims_distribution <- function(data, target_policy, target_metric = "total
     breaks = c(0.10, 1, 10, 100, 1000, 10000, 100000, 500000)
   ) +
     scale_fill_brewer(palette = "Reds", guide = "none") +
-    
-    # Informative labels that update dynamically based on your inputs
+
     labs(
       title = paste0(metric_label, " Distribution across Years"),
       subtitle = paste0(target_policy, "\n", stat_label),
@@ -1061,9 +1059,7 @@ plot_pairwise_matrix(df_transformed, "Basic Third-Party","total_incurred")
 
 ### Additional charts for stakeholders (Premiums and claims from 2022 to 2024)
 
-This is to emphasise the peak of the for Third-Party with Glass Cov
-
-For Third Party With Glass Coverage
+This is to emphasise and focus on the peak of for Third-Party with Glass Coverage
 
 ```{r}
 
@@ -1109,15 +1105,21 @@ ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"),
 
 ### Observation from Customer Plans
 
+::: callout-note
+! important
+Note: The scale is in log, but the x axis is in actual dollars
+
+:::
+
 ⚠️Third-Party with two or more Cov:
 
 -   Total Premium Distribution change is associated with more lower priced premiums, although the median remain relatively similar.
 
--   Median of claims stayed the same from 2022 to 2024 but the number of \$1000 (log scale) claims is more concentrated. There are also more variation of claims below the 25th percentile of all claims
+-   Median of claims stayed the same from 2022 to 2024 but the number of $1000  claims is more concentrated. There are also more variation of claims below the 25th percentile of all claims
 
 ✅Comprehensive with excess:
 
--   Distribution change seems to be associated with more lower priced premiums, although the medium remain relatively similar.
+-   Distribution change seems to be associated with more lower priced premiums, although the median remain relatively similar.
 
 -   On a year on year basis, there is no big change in the claims and its stable
 
@@ -1149,7 +1151,7 @@ Although on an aggregate level, Comprehensive insurance without excess is barely
 
 - This also means that this portfolio will need to be revisited as more claims hit the median and the overall range of claims are wider and less predictable 
 
-## 4. Overall Age Groups that has the most claims
+## 5. Overall Age Groups that has the most claims
 
 ```{r}
 heatmap_data <- df_transformed %>%
@@ -1197,7 +1199,7 @@ ggplot(heatmap_data, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
   )
 ```
 
-## 5. Overall Relationship between car brands and claims
+## 6. Overall Relationship between car brands and claims
 
 ```{r}
 # Aggregate data by categorical segments
@@ -1238,9 +1240,9 @@ ggplot(treemap_data, aes(area = total_policies, fill = claim_rate, label = tile_
 
 Our high-volume segments (left) exhibit a stable, controlled claim rate of approximately 10-12%,  However, the treemap reveals significant risk volatility in our low-volume, niche segments (bottom-right), where claim rates swing drastically up to 25%. This indicates a need to either consolidate these micro-segments or apply stricter pricing loading to these volatile pockets."
 
-## 6. Profile of Drivers for low profitability plans
+## 7. Profile of Drivers for low profitability plans
 
-In the previous section we determine that the above mentioned products warrants further study We will look into the profile of the drivers within this segments -
+In the previous section we determine that the above mentioned products warrants further study We will look into the profile of the drivers within this segments
 
 ### Age of low profitability plans
 
@@ -1344,6 +1346,20 @@ ggstatsplot::gghistostats(
 )
 ```
 :::
+
+Observation
+
+Comprehensive without Exces
+
+- While a baseline evaluation shows a vehicle age median close to the general portfolio target of 25 ($\hat{\mu}_{\text{MAP}} = 24.63$), Bayesian test metrics confirm a severe structural drift ($\log_{e}(\text{BF}_{01}) = -100.82$). The underlying data exhibits a highly pronounced bimodal distribution, splitting into a modern cohort (peaking at ~22 years) and a legacy asset cohort (peaking at ~36 years).
+
+Third-Party with two or more Cov
+
+- Bayesian test metrics confirm a severe and foundational demographic shift away from the portfolio median of 25 ($\log_{e}(\text{BF}_{01}) = -631.14$). The segment exhibits a highly pronounced bimodal distribution that heavily skews younger, with its primary risk peak established at 19 years ($\hat{\mu}_{\text{MAP}} = 19.02$). This massive structural drift indicates that the product line is predominantly absorbing a younger asset class, separated by a sharp structural valley from a secondary legacy fleet segment near 35 years. Standardized baseline underwriting assumptions must be updated for this product line to reflect this younger, highly distinct distribution profile
+
+Basic Third-Party
+
+- Bayesian analysis decisively rejects the assumption that this segment matches our baseline portfolio median of 25 ($\log_{e}(\text{BF}_{01}) = -75.69$), despite the empirical median matching the target almost exactly ($\hat{\mu}_{\text{MAP}} = 24.85$). The underlying distribution has fractured into a complex, multimodal profile consisting of an emerging entry-level fleet (~10 years), a dominant modern cohort peaking at ~20 years, and a highly volatile, fragmented legacy asset cohort spanning 34–45 years. Relying on aggregate point estimates (like the median) for this specific plan creates severe underwriting exposure, as it treats three distinct, highly polarized risk demographics as a single homogeneous group.
 
 ## Identifying the type of claims triggered
 
@@ -1551,7 +1567,7 @@ Basic Third party Claims
 Overview
 liability property claims are the most common due to Spains' [compensation agreement](https://www.ofesauto.es/en/know-the-spanish-direct-compensation-agreement-cide-to-determine-which-vehicle-is-the-responsible/). This agreement makes liability property damage easy to file.
 
-## 7. Correlation
+## 8. Correlation
 
 ::: panel-tabset
 ### Continous Variable
@@ -1641,7 +1657,7 @@ ggplot(v_long, aes(x = Variable1, y = Variable2, fill = CramersV)) +
 :::
 
 
-## 8.Profile of Age and Vehicle Age of selected Policy Type Claims
+## 9.Profile of Age and Vehicle Age of selected Policy Type Claims
 
 This section performs multi-variate analysis to understand the relationship between drivers age, vehicle age and claims.
 
@@ -1781,7 +1797,7 @@ ggplot(heatmap_data, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
 
 
 
-## 9. Premium Exposure By Drivers Age and Vehicle Age
+## 10. Premium Exposure By Drivers Age and Vehicle Age
 
 In this section we will take into account the exposure column. Create variables to address the "Average Premium Revenue per Unit of Exposure Year" in section 1 and we will compare this new variable against Drivers Age and Vehicle Age.
 
