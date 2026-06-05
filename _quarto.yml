@@ -42,6 +42,8 @@ website:
             href: "Take_Home_Ex/Take_Home_Ex01/Take_Home_Ex01_Technical_Report.qmd"
           - text: "Executive Summary 01"
             href: "Take_Home_Ex/Take_Home_Ex01/Take_Home_Ex01_Executive_Summary.qmd" 
+          - text: "Technical Report 02: VAST 2026"
+            href: "Take_Home_Ex/Take_Home_Ex02/Take_Home_Ex02_Technical_Report.qmd"
 
     right:
       - text: Home

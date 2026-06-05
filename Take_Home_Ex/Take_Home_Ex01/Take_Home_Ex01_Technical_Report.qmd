@@ -88,7 +88,6 @@ knitr::kable(color_preview_table, format = "markdown")
 
 ### Read in Data
 
-
 ```{r}
 #| code-fold: false
 df <-read.csv2("Dataset of motor insurance portfolio.csv")
@@ -1106,16 +1105,14 @@ ggplot(df_transformed %>% filter(policy_type == "Third-Party with Glass Cov"),
 ### Observation from Customer Plans
 
 ::: callout-note
-! important
-Note: The scale is in log, but the x axis is in actual dollars
-
+! important Note: The scale is in log, but the x axis is in actual dollars
 :::
 
 ⚠️Third-Party with two or more Cov:
 
 -   Total Premium Distribution change is associated with more lower priced premiums, although the median remain relatively similar.
 
--   Median of claims stayed the same from 2022 to 2024 but the number of $1000  claims is more concentrated. There are also more variation of claims below the 25th percentile of all claims
+-   Median of claims stayed the same from 2022 to 2024 but the number of \$1000 claims is more concentrated. There are also more variation of claims below the 25th percentile of all claims
 
 ✅Comprehensive with excess:
 
@@ -1149,7 +1146,7 @@ Although on an aggregate level, Comprehensive insurance without excess is barely
 
 -   Claim pattern have change as well from the bulge in claims around the medium claims in 2024 as compared to 2022 and 2023. IQR now is longer and less predictable.
 
-- This also means that this portfolio will need to be revisited as more claims hit the median and the overall range of claims are wider and less predictable 
+-   This also means that this portfolio will need to be revisited as more claims hit the median and the overall range of claims are wider and less predictable
 
 ## 5. Overall Age Groups that has the most claims
 
@@ -1238,7 +1235,7 @@ ggplot(treemap_data, aes(area = total_policies, fill = claim_rate, label = tile_
   )
 ```
 
-Our high-volume segments (left) exhibit a stable, controlled claim rate of approximately 10-12%,  However, the treemap reveals significant risk volatility in our low-volume, niche segments (bottom-right), where claim rates swing drastically up to 25%. This indicates a need to either consolidate these micro-segments or apply stricter pricing loading to these volatile pockets."
+Our high-volume segments (left) exhibit a stable, controlled claim rate of approximately 10-12%, However, the treemap reveals significant risk volatility in our low-volume, niche segments (bottom-right), where claim rates swing drastically up to 25%. This indicates a need to either consolidate these micro-segments or apply stricter pricing loading to these volatile pockets."
 
 ## 7. Profile of Drivers for low profitability plans
 
@@ -1351,15 +1348,15 @@ Observation
 
 Comprehensive without Exces
 
-- While a baseline evaluation shows a vehicle age median close to the general portfolio target of 25 ($\hat{\mu}_{\text{MAP}} = 24.63$), Bayesian test metrics confirm a severe structural drift ($\log_{e}(\text{BF}_{01}) = -100.82$). The underlying data exhibits a highly pronounced bimodal distribution, splitting into a modern cohort (peaking at ~22 years) and a legacy asset cohort (peaking at ~36 years).
+-   While a baseline evaluation shows a vehicle age median close to the general portfolio target of 25 ($\hat{\mu}_{\text{MAP}} = 24.63$), Bayesian test metrics confirm a severe structural drift ($\log_{e}(\text{BF}_{01}) = -100.82$). The underlying data exhibits a highly pronounced bimodal distribution, splitting into a modern cohort (peaking at \~22 years) and a legacy asset cohort (peaking at \~36 years).
 
 Third-Party with two or more Cov
 
-- Bayesian test metrics confirm a severe and foundational demographic shift away from the portfolio median of 25 ($\log_{e}(\text{BF}_{01}) = -631.14$). The segment exhibits a highly pronounced bimodal distribution that heavily skews younger, with its primary risk peak established at 19 years ($\hat{\mu}_{\text{MAP}} = 19.02$). This massive structural drift indicates that the product line is predominantly absorbing a younger asset class, separated by a sharp structural valley from a secondary legacy fleet segment near 35 years. Standardized baseline underwriting assumptions must be updated for this product line to reflect this younger, highly distinct distribution profile
+-   Bayesian test metrics confirm a severe and foundational demographic shift away from the portfolio median of 25 ($\log_{e}(\text{BF}_{01}) = -631.14$). The segment exhibits a highly pronounced bimodal distribution that heavily skews younger, with its primary risk peak established at 19 years ($\hat{\mu}_{\text{MAP}} = 19.02$). This massive structural drift indicates that the product line is predominantly absorbing a younger asset class, separated by a sharp structural valley from a secondary legacy fleet segment near 35 years. Standardized baseline underwriting assumptions must be updated for this product line to reflect this younger, highly distinct distribution profile
 
 Basic Third-Party
 
-- Bayesian analysis decisively rejects the assumption that this segment matches our baseline portfolio median of 25 ($\log_{e}(\text{BF}_{01}) = -75.69$), despite the empirical median matching the target almost exactly ($\hat{\mu}_{\text{MAP}} = 24.85$). The underlying distribution has fractured into a complex, multimodal profile consisting of an emerging entry-level fleet (~10 years), a dominant modern cohort peaking at ~20 years, and a highly volatile, fragmented legacy asset cohort spanning 34–45 years. Relying on aggregate point estimates (like the median) for this specific plan creates severe underwriting exposure, as it treats three distinct, highly polarized risk demographics as a single homogeneous group.
+-   Bayesian analysis decisively rejects the assumption that this segment matches our baseline portfolio median of 25 ($\log_{e}(\text{BF}_{01}) = -75.69$), despite the empirical median matching the target almost exactly ($\hat{\mu}_{\text{MAP}} = 24.85$). The underlying distribution has fractured into a complex, multimodal profile consisting of an emerging entry-level fleet (\~10 years), a dominant modern cohort peaking at \~20 years, and a highly volatile, fragmented legacy asset cohort spanning 34–45 years. Relying on aggregate point estimates (like the median) for this specific plan creates severe underwriting exposure, as it treats three distinct, highly polarized risk demographics as a single homogeneous group.
 
 ## Identifying the type of claims triggered
 
@@ -1555,17 +1552,13 @@ ggplot(df_heatmap_ready, aes(x = Claim_Type, y = factor(policy_row_index), fill 
 ```
 :::
 
-Comprehensive without Excess plan
-- there is a prominent, severe vertical band of activation for Property Claims, followed closely by high activation in Glass and Liability Property claims.
+Comprehensive without Excess plan - there is a prominent, severe vertical band of activation for Property Claims, followed closely by high activation in Glass and Liability Property claims.
 
-Third-Party with Two or More Coverages
-- there is a distinct, razor-sharp vertical concentration exclusively under Liability Property Claims and Liability Injury Claims. Other features like theft, fire, or glass show almost zero activation.
+Third-Party with Two or More Coverages - there is a distinct, razor-sharp vertical concentration exclusively under Liability Property Claims and Liability Injury Claims. Other features like theft, fire, or glass show almost zero activation.
 
-Basic Third party Claims
-- Most claims are concentrated in liability protection. In spain. As expected as Basic Third party also known as [civil obligatoria](https://www.giambronelaw.com/site/advice/personal-injury-advice/personal-injury-spain/driving-in-spain/) covers legal protection, liability property and liability injury to the people or property caused by you.
+Basic Third party Claims - Most claims are concentrated in liability protection. In spain. As expected as Basic Third party also known as [civil obligatoria](https://www.giambronelaw.com/site/advice/personal-injury-advice/personal-injury-spain/driving-in-spain/) covers legal protection, liability property and liability injury to the people or property caused by you.
 
-Overview
-liability property claims are the most common due to Spains' [compensation agreement](https://www.ofesauto.es/en/know-the-spanish-direct-compensation-agreement-cide-to-determine-which-vehicle-is-the-responsible/). This agreement makes liability property damage easy to file.
+Overview liability property claims are the most common due to Spains' [compensation agreement](https://www.ofesauto.es/en/know-the-spanish-direct-compensation-agreement-cide-to-determine-which-vehicle-is-the-responsible/). This agreement makes liability property damage easy to file.
 
 ## 8. Correlation
 
@@ -1655,7 +1648,6 @@ ggplot(v_long, aes(x = Variable1, y = Variable2, fill = CramersV)) +
   )
 ```
 :::
-
 
 ## 9.Profile of Age and Vehicle Age of selected Policy Type Claims
 
@@ -1794,8 +1786,6 @@ ggplot(heatmap_data, aes(x = v_age_bin, y = age_bin, fill = claim_rate)) +
   )
 ```
 :::
-
-
 
 ## 10. Premium Exposure By Drivers Age and Vehicle Age
 
@@ -2144,18 +2134,14 @@ p1 + p2
 ```
 :::
 
-Comprehensive without Excess:
-There is a distinct pricing mismatch within the Third-Party with two or more Coverages portfolio. While underwriting successfully charges a steep risk premium on young drivers (18–25) and brand-new vehicles (0–3 years), it severely underprices the mid-aged driver segment (36–55) operating mid-age vehicles (4–6 years).
+Comprehensive without Excess: There is a distinct pricing mismatch within the Third-Party with two or more Coverages portfolio. While underwriting successfully charges a steep risk premium on young drivers (18–25) and brand-new vehicles (0–3 years), it severely underprices the mid-aged driver segment (36–55) operating mid-age vehicles (4–6 years).
 
 This exact underpriced demographic is likely to be driving the portfolio's exposure, peaking at a 37.1% claim frequency. To stabilize the portfolio's margin, the underwriting team should review the pricing tiers upward for drivers aged 36–55 who operate vehicles under 6 years old.
 
-
-Third-Party with two or more coverage:
-While the pricing structure successfully accounts for high-risk young drivers (18–25), it completely fails to protect against a major risk spike in senior operators.
+Third-Party with two or more coverage: While the pricing structure successfully accounts for high-risk young drivers (18–25), it completely fails to protect against a major risk spike in senior operators.
 
 Drivers aged 66+ operating 4–6 year old vehicles generate the portfolio's highest liability claim rate at 26.1%, yet this demographic pays below-average baseline premiums. Because basic plans have thin margins by design, this unpriced exposure severely compromises the product's profitability.
 
-Basic Third Party:
-The underwriter successfully priced in premiums for the 18-25 age groups with newer vehicles from 0 -6 years.
+Basic Third Party: The underwriter successfully priced in premiums for the 18-25 age groups with newer vehicles from 0 -6 years.
 
 However, a critical underwriting leakage exists in the mature segment: drivers aged 56–65 operating 7–10 year old cars run a highly elevated 21.4% claim rate, yet they are granted below-average premium rates.
