@@ -16,7 +16,7 @@ execute:
 ## Set Up
 
 ```{r}
-pacman::p_load(jsonlite,dplyr,tidyr,skimr, knitr,kableExtra,ggplot2,stringr,tidyverse,tidygraph,ggraph,patchwork,scales,tidytext,ggalluvial,gt,visNetwork)
+pacman::p_load(jsonlite,dplyr,tidyr,skimr, knitr,kableExtra,ggplot2,stringr,tidyverse,tidygraph,ggraph,patchwork,scales,tidytext,ggalluvial,gt,visNetwork,lubridate)
 ```
 
 ### Read Data
@@ -719,13 +719,15 @@ We also notice that intern_agent and pr_intern_agent suddenly link through a hea
 
 ## Q3
 3. Were there leading indicators that such a release was possible?
-	○ Are there prior occasions where agent’s actual behaviors differ from their expected behavior? When? Which behaviors were observed?
-	○ Were there other occasions where the agent system exhibited behaviors like those that led to the release? When? Which behaviors were observed?
+- Are there prior occasions where agent’s actual behaviors differ from their expected behavior? When? Which behaviors were observed?
+- Were there other occasions where the agent system exhibited behaviors like those that led to the release? When? Which behaviors were observed?
 Why didn’t the prior occasions result in noticeable action?
 
 ```{r}
-#| fig-width: 30
-#| fig-height: 15
+#| fig-width: 14
+#| fig-height: 9
+#| column: page
+#| out-width: "100%"
 
 df_heatmap_prep <- df_communications %>%
   mutate(
@@ -746,7 +748,7 @@ ggplot(df_heatmap_prep, aes(x = hour_of_day, y = factor(date_label), fill = mess
   facet_wrap(~ agent_id, scales = "free_y", ncol = 2) +
   theme_minimal(base_family = "Arial") +
   theme(
-    strip.text = element_text(face = "bold", linewidth = 11),
+    strip.text = element_text(face = "bold", size  = 11),
     axis.text = element_text(size = 9),
     panel.spacing = unit(1, "lines"),
     legend.position = "bottom"
