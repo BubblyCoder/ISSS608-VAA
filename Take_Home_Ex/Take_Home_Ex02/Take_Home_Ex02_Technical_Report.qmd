@@ -164,7 +164,6 @@ df_environment <- df_environment %>%
 
     hour_datetime = as.POSIXct(hour, format = "%Y-%m-%dT%H:%M:%S")
   ) %>%
-  # CRITICAL STEP: Arrange rows in perfect chronological order
   arrange(hour_datetime)
 glimpse(df_environment)
 ```
@@ -175,15 +174,10 @@ glimpse(df_environment)
 # 1. Prepare and cleanly sort the data
 df_plot_clean <- df_environment %>%
   mutate(
-    # Strip the '$' and convert to a clean decimal number
     stock_price_numeric = as.numeric(str_remove(environment_context_market_snapshot_stock_price, "\\$")),
-    
-    # Force convert 'hour' string into a real, raw POSIXct datetime object
     hour_datetime = as.POSIXct(hour, format = "%Y-%m-%dT%H:%M:%S")
   ) %>%
-  # Drop the hours where the stock price is missing (the 5 Nulls)
   filter(!is.na(stock_price_numeric)) %>%
-  # CRITICAL STEP: Arrange rows in perfect chronological order
   arrange(hour_datetime)
 
 # 2. Plot using the datetime column (We drop 'group = 1' because it's continuous now!)
@@ -252,16 +246,12 @@ agent_palette <- c(
 df_words <- df_communications %>%
   filter(str_detect(hour, "2046-06-04|2046-06-05")) %>%
   mutate(
-    # Combine internal states and message contents
     full_text = paste(replace_na(internal_state_deliberating, ""), 
                       replace_na(content, ""))
   ) %>%
   select(hour, agent_id, full_text) %>%
-  # Break text down into individual words
   unnest_tokens(word, full_text) %>%
-  # Remove standard stop words (the, and, of, etc.)
   anti_join(get_stopwords(), by = "word") %>%
-  # Filter out numbers and punctuation artifacts
   filter(str_detect(word, "^[a-zA-Z]+$"))
 
 # 2. Compute TF-IDF to find unique themes per Agent during the crisis
@@ -300,16 +290,12 @@ df_tf_idf %>%
 df_words <- df_communications %>%
   filter(str_detect(hour, "2046-06-04")) %>%
   mutate(
-    # Combine internal states and message contents
     full_text = paste(replace_na(internal_state_deliberating, ""), 
                       replace_na(content, ""))
   ) %>%
   select(hour, agent_id, full_text) %>%
-  # Break text down into individual words
   unnest_tokens(word, full_text) %>%
-  # Remove standard stop words (the, and, of, etc.)
   anti_join(get_stopwords(), by = "word") %>%
-  # Filter out numbers and punctuation artifacts
   filter(str_detect(word, "^[a-zA-Z]+$"))
 
 # 2. Compute TF-IDF to find unique themes per Agent during the crisis
@@ -347,16 +333,12 @@ df_tf_idf %>%
 df_words <- df_communications %>%
   filter(str_detect(hour, "2046-06-05")) %>%
   mutate(
-    # Combine internal states and message contents
     full_text = paste(replace_na(internal_state_deliberating, ""), 
                       replace_na(content, ""))
   ) %>%
   select(hour, agent_id, full_text) %>%
-  # Break text down into individual words
   unnest_tokens(word, full_text) %>%
-  # Remove standard stop words (the, and, of, etc.)
   anti_join(get_stopwords(), by = "word") %>%
-  # Filter out numbers and punctuation artifacts
   filter(str_detect(word, "^[a-zA-Z]+$"))
 
 # 2. Compute TF-IDF to find unique themes per Agent during the crisis
@@ -411,7 +393,7 @@ To validate the TF-IDF findings and uncover hidden structural patterns.
 
 - A degree centrality was executed to find high degree of words used for all agents based on volume
 
--A page rank is performed to identifie the words that serve as the ultimate destinations of the system's logic.
+- A page rank is performed to identifie the words that serve as the ultimate destinations of the system's logic.
 
 
 
@@ -470,7 +452,7 @@ knitr:: kable(df_centrality_complete %>%
 
 :::
 
-::: {.callout-tip}
+::: {.callout-tip} 
 ### Insights
 From our observation in each. Tracking raw volume via Degree Strength establishes that the system's baseline environment was heavily driven by traditional institutional actions around ‘governance’ and ‘pr’ However, when we check the betweenness score, we noted that the highest betweenness words such as ‘tenantthread’ and ‘flex’ did not have the highest degree strength. This suggests that a number of conversations were centered around a subset of all the agents. Lastly the Page Rank centrality indicates that ‘governance’, ‘pr’ and ‘legal’ serve as the theme for the agents.
 :::
@@ -577,14 +559,11 @@ df_bigrams <- df_communications %>%
   select(full_text) %>%
   unnest_tokens(bigram, full_text, token = "ngrams", n = 2) %>%
   separate(bigram, c("word1", "word2"), sep = " ") %>%
-  # Remove standard stop words from both positions
   filter(!word1 %in% stop_words$word,
          !word2 %in% stop_words$word,
          str_detect(word1, "^[a-zA-Z]+$"),
          str_detect(word2, "^[a-zA-Z]+$")) %>%
-  # Count occurrences to find the heavy-hitting phrases
   count(word1, word2, sort = TRUE) %>%
-  # Filter out rare pairings to keep the network graph clean
   slice_max(n, n = 70, with_ties = FALSE) 
 
 # 2. Convert to a directional graph object
@@ -608,7 +587,9 @@ ggraph(graph_bigrams, layout = "fr") +
   )
 ```
 
-It doesnt feel too intuitive from the above.
+It doesnt feel too intuitive from the above. and the only emphasis its on a press release.
+We will attempt again to find the top bigram words in a bar chart format and find the top phrase by frequency count
+
 
 ```{r}
 
@@ -655,11 +636,15 @@ ggplot(df_agent_phrases, aes(x = n, y = clean_phrase, fill = agent_id)) +
     y = NULL
   )
 ```
+
+::: {.callout-tip} 
+### Insights
 We found that all 3 agents top phrase had "press release" and "bilateral consent".
 The official flex post is also present in the legal agent and pr intern agent. 
 These keyswords appears to guide us to the truth.
 We shall now attempt to filter for these keywords 
 Note: 36 rows found
+:::
 
 ### Full Relevant Content
 ```{r}
@@ -671,20 +656,16 @@ df_communications %>%
   ) %>% 
   select(agent_id, channel, content, internal_state_deliberating, timestamp) %>% 
   slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
-  
-  # 1. Force HTML output framework
   knitr::kable(format = "html") %>% 
-  
-  # 2. Set full width styling so text maps nicely across the page container
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
-  
-  # 3. ADD SCROLLBARS: Sets fixed height for vertical scroll & 100% for horizontal scroll
   scroll_box(height = "500px", width = "100%")
 ```
 
+::: {.callout-tip}
+### Insights
 From the above filtered conversation, we can observe that the post is intentionally release by the agents.
 Consent was received from CivicLoom's legal team hence "bilateral consent" kept appearing in the previous. The release was performed by pr intern and the judge also made sure compliance was enforced with "Judge — CivicLoom verbal consent confirmed. Section 4.3(c) bilateral release effective immediately. Third-party publication rendered embargo moot — neither party breached"
-
+:::
 
 ## Q2 
 The evasion of the embargo was a new behavior. Provide visual analytics that discover and illustrate the typical behavior of systems/agents/people involved. How does the behavior that led to the release compare to the prior behaviors?
@@ -809,233 +790,364 @@ We also notice that intern_agent and pr_intern_agent suddenly link through a hea
 - Were there other occasions where the agent system exhibited behaviors like those that led to the release? When? Which behaviors were observed?
 Why didn’t the prior occasions result in noticeable action?
 
-```{r}
-#| fig-width: 14
-#| fig-height: 9
-#| column: page
-#| out-width: "100%"
+In this section we will go through each internal state of the agents to determine any abnormalies.
 
-df_heatmap_prep <- df_communications %>%
+### TF-IDF on internal state
+```{r}
+df_thoughts <- df_communications %>%
+  select(message_id, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing) %>%
+  pivot_longer(
+    cols = starts_with("internal_state"),
+    names_to = "thought_layer",
+    values_to = "text"
+  ) %>%
+  filter(!is.na(text) & text != "")
+
+# 2. Tokenize (split into single words) and remove common filler words (stop words)
+df_tokens <- df_thoughts %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  # Remove meaningless conversational words
+  filter(!word %in% c("agent", "ajay", "platform", "trust", "legal")) 
+
+# 3. Calculate TF-IDF
+df_tfidf <- df_tokens %>%
+  count(thought_layer, word, sort = TRUE) %>%
+  bind_tf_idf(word, thought_layer, n) %>%
+  arrange(desc(tf_idf))
+
+# 4. Visualize the most unique words per thought layer
+df_tfidf %>%
+  group_by(thought_layer) %>%
+  slice_max(tf_idf, n = 10) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, reorder(word, tf_idf), fill = thought_layer)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~thought_layer, scales = "free") +
+  labs(title = "TF-IDF: Identifying the Vocabulary of Rationalization",
+       x = "TF-IDF Score", y = NULL) +
+  theme_minimal()
+```
+Not much was observed from the TF-IDF that we did not know from earlier analysis
+
+### Sentimental Analayis on Bi-grams
+```{r}
+# 1. Extract two-word pairs from ALL text columns
+df_bigrams <- df_communications %>%
+  select(message_id, content, internal_state_deliberating, internal_state_rationalizing) %>%
+  unite("all_text", content:internal_state_rationalizing, na.rm = TRUE, sep = " ") %>%
+  unnest_tokens(bigram, all_text, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram))
+
+bigrams_separated <- df_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+# 3. Count the most frequent meaningful word pairs
+bigram_counts <- bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE) %>%
+  filter(n > 1) # F
+
+# 4. View the top action-oriented bigrams
+head(bigram_counts, 20)%>%
+  knitr::kable(format = "html")
+```
+Not much was observed from the bi-gram that we did not know from earlier analysis
+
+
+```{r}
+
+df_all_text <- df_communications %>%
+  mutate(date_label = as.Date(as_datetime(timestamp))) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, date_label, all_text) %>%
+  unnest_tokens(word, all_text)
+
+# 3. Apply the Lexicon
+# The "bing" lexicon automatically categorizes thousands of words as positive or negative.
+df_sentiment <- df_all_text %>%
+  inner_join(get_sentiments("bing"), by = "word")
+
+# 4. Calculate the Daily Emotional Baseline
+df_daily_sentiment <- df_sentiment %>%
+  count(date_label, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = list(n = 0)) %>%
   mutate(
-    # Parse ISO8601 strings (e.g., "2046-06-05T17") safely
-    parsed_time = as_datetime(hour),
-    date_label  = as.Date(parsed_time),
-    hour_of_day = hour(parsed_time)
-  ) %>%
-  # Count total message volume per agent, per day, per hour
-  count(agent_id, date_label, hour_of_day, name = "message_count")
-
-# 2. Build the high-contrast grid matrix
-ggplot(df_heatmap_prep, aes(x = hour_of_day, y = factor(date_label), fill = message_count)) +
-  geom_tile(color = "white", size = 0.1) +
-  # Magma palette makes structural anomalies glow brightly against dark baselines
-  scale_fill_viridis_c(option = "magma", name = "Log Volume") +
-  # Separate grids for each agent with independent y-axes to accommodate active ranges
-  facet_wrap(~ agent_id, scales = "free_y", ncol = 2) +
-  theme_minimal(base_family = "Arial") +
-  theme(
-    strip.text = element_text(face = "bold", size  = 11),
-    axis.text = element_text(size = 9),
-    panel.spacing = unit(1, "lines"),
-    legend.position = "bottom"
-  ) +
-  labs(
-    title = "System Interaction Rhythms: Operational Heatmap Matrix",
-    subtitle = "Identifying out-of-bounds behavioral anomalies and off-hour communication spikes by actor.",
-    x = "Hour of Day (24h format)",
-    y = "Operational Date"
+    total_sentiment_words = positive + negative,
+    net_sentiment = (positive - negative) / total_sentiment_words
   )
-```
 
-To evaluate behavioral deviations, the chart establishes a clear, predictable baseline for what "expected behavior" looks like. From May 17 through June 3, the core agents  exhibit a highly rigid, vertical pattern confined entirely to 09:00 AM. Characterized by low log volumes, this likely represents business as usual operation Under normal circumstances, and the agents are entirely dormant during the rest of the day.
+# 5. Define a Statistical Anomaly Threshold for Sentiment
+mean_sentiment <- mean(df_daily_sentiment$net_sentiment)
+sd_sentiment <- sd(df_daily_sentiment$net_sentiment)
+stress_threshold <- mean_sentiment - (1.5 * sd_sentiment)
 
-But on 5th June, increase heighted activites continues to happen in the afternoon especially for agents such as  legal agent, pr intern agent, social media agent and quality agent. 
+df_daily_sentiment <- df_daily_sentiment %>%
+  mutate(is_anomaly = net_sentiment < stress_threshold)
 
-Hence we can see there are likely no prior behaviors
-
-
-::: panel-tabset
-
-### Anomaly detection at 0.05
-```{r}
-
-# 1. Define the regex fingerprint found on June 5th
-crisis_regex <- "flex|consent|release|critical"
-
-# 2. Calculate daily keyword exposure densities
-df_echoes_prep <- df_communications %>%
-  mutate(date_label = as.Date(as_datetime(hour))) %>%
-  group_by(date_label) %>%
-  summarise(
-    total_logs = n(),
-    crisis_matches = sum(
-      str_detect(tolower(content), crisis_regex) | 
-      str_detect(tolower(internal_state_deliberating), crisis_regex), 
-      na.rm = TRUE
-    ),
-    # Proportion of daily text focusing on the crisis mechanism
-    crisis_density = crisis_matches / total_logs
-  ) %>%
-  ungroup()
-
-# 3. Establish an anomaly threshold (e.g., past 2.5 standard deviations or a hard 5% mark)
-alert_threshold <- 0.05
-df_anomalies <- df_echoes_prep %>% filter(crisis_density > alert_threshold)
-
-# 4. Generate the chronological trend and rug chart
-ggplot(df_echoes_prep, aes(x = date_label, y = crisis_density)) +
-  geom_line(color = "#7f8c8d", size = 0.8) +
-  # Highlight the breakout points
-  geom_point(data = df_anomalies, color = "#d62728", size = 2.5) +
-  # The Rug Plot: Injects sharp vertical teeth along the bottom axis for match dates
-  geom_rug(data = df_anomalies, aes(x = date_label), color = "#d62728", sides = "b", size = 1) +
-  geom_hline(yintercept = alert_threshold, linetype = "dashed", color = "#d62728", alpha = 0.7) +
-  annotate("text", x = min(df_echoes_prep$date_label), y = alert_threshold + 0.01, 
-           label = "Crisis Profile Threshold", color = "#d62728", hjust = 0, size = 3.5) +
-  theme_minimal() +
-  labs(
-    title = "Structural Echoes: Historical Crisis Signature Tracking",
-    subtitle = "Chronological tracking of days matching the June 5th thematic profile (Rug ticks indicate near-misses).",
-    x = "Timeline Date Range",
-    y = "Crisis Keyword Semantic Weight"
-  )
-```
-
-### Anomaly detection based on mean
-```{r}
-
-# Define target crisis fingerprint keywords
-crisis_regex <- "flex|consent|release|critical"
-
-# 1. Aggregate data to calculate daily keyword semantic densities
-df_echoes_prep <- df_communications %>%
-  mutate(date_label = as.Date(as_datetime(hour))) %>%
-  group_by(date_label) %>%
-  summarise(
-    total_logs = n(),
-    crisis_matches = sum(
-      str_detect(tolower(content), crisis_regex) | 
-      str_detect(tolower(internal_state_deliberating), crisis_regex), 
-      na.rm = TRUE
-    ),
-    crisis_density = crisis_matches / total_logs
-  ) %>%
-  ungroup()
-
-
-mean_density <- mean(df_echoes_prep$crisis_density, na.rm = TRUE)
-sd_density   <- sd(df_echoes_prep$crisis_density, na.rm = TRUE)
-
-# Step B: Set threshold at 2.5 standard deviations above the historical mean
-alert_threshold <- mean_density + (2.5 * sd_density)
-
-# Step C: Filter for true outliers that clear this data-driven hurdle
-df_anomalies <- df_echoes_prep %>% filter(crisis_density > alert_threshold)
-# ==============================================================================
-
-# 2. Render the clean, high-precision visualization
-ggplot(df_echoes_prep, aes(x = date_label, y = crisis_density)) +
-  geom_line(color = "#7f8c8d", size = 0.8) +
-  
-  # Outlier markers and rug ticks now ONLY render for true statistical anomalies
-  geom_point(data = df_anomalies, color = "#d62728", size = 2.5) +
-  geom_rug(data = df_anomalies, aes(x = date_label), color = "#d62728", sides = "b", size = 1) +
-  
-  # Dynamic statistical threshold marker line
-  geom_hline(yintercept = alert_threshold, linetype = "dashed", color = "#d62728", alpha = 0.7) +
-  
-  # Smart text annotation displaying the exact calculated percentage hurdle
-  annotate("text", x = min(df_echoes_prep$date_label), y = alert_threshold + 0.01, 
-           label = paste0("Anomaly Threshold (Mean + 2.5 SD): ", round(alert_threshold * 100, 1), "%"), 
-           color = "#d62728", hjust = 0, size = 3.5, fontface = "bold") +
-  theme_minimal(base_size = 13) +
-  labs(
-    title = "Structural Echoes: Historical Crisis Signature Tracking",
-    subtitle = "Isolating systemic outliers using a data-driven standard deviation threshold filter.",
-    x = "Timeline Date Range",
-    y = "Crisis Keyword Semantic Weight"
-  )
-```
-
-### Based on Correlation.
-```{r}
-# Counts total logs sent per agent per day, ensuring structural zeros stay intact
-df_daily_profiles <- df_communications %>%
-  mutate(date_label = as.Date(as_datetime(hour))) %>%
-  group_by(date_label, agent_id) %>%
-  summarise(daily_volume = n(), .groups = "drop") %>%
-  
-  # Crucial: Ensures days with 0 activity for an agent don't disappear
-  complete(date_label, agent_id, fill = list(daily_volume = 0)) %>%
-  
-  # Reshape so each agent has their own column
-  pivot_wider(names_from = agent_id, values_from = daily_volume, values_fill = 0) %>%
-  arrange(date_label)
-
-
-# Isolate the workload signature of the day the leak occurred
-crisis_profile <- df_daily_profiles %>%
-  filter(date_label == as.Date("2046-06-05")) %>%
-  select(-date_label) %>%
-  as.numeric()
-
-
-# Convert profile features to a matrix for fast row-by-row correlation computation
-profile_matrix <- df_daily_profiles %>% select(-date_label) %>% as.matrix()
-
-results_df <- df_daily_profiles %>%
-  mutate(
-    # Run a Pearson correlation comparing each row against the June 5th benchmark
-    behavioral_correlation = map_dbl(seq_len(nrow(profile_matrix)), ~{
-      cor(profile_matrix[.x, ], crisis_profile, method = "pearson")
-    }),
-    # Handle any NaN outputs caused by perfectly silent baseline days
-    behavioral_correlation = replace_na(behavioral_correlation, 0)
-  ) %>%
-  select(date = date_label, behavioral_correlation)
-
-# ==============================================================================
-# 4. PLOT THE BEHAVIORAL PROXIMITY TIMELINE
-# ==============================================================================
-# Set a statistical threshold at Mean + 2.5 Standard Deviations
-mean_corr <- mean(results_df$behavioral_correlation, na.rm = TRUE)
-sd_corr   <- sd(results_df$behavioral_correlation, na.rm = TRUE)
-corr_threshold <- mean_corr + (2.5 * sd_corr)
-
-# Clip threshold if it exceeds logical bounds
-if (corr_threshold > 0.95 || corr_threshold < 0.3) corr_threshold <- 0.70
-
-plot_data <- results_df %>%
-  mutate(is_anomaly = behavioral_correlation >= corr_threshold)
-
-ggplot(plot_data, aes(x = date, y = behavioral_correlation)) +
+# 6. Plot the System's Emotional Vital Signs
+ggplot(df_daily_sentiment, aes(x = date_label, y = net_sentiment)) +
   geom_line(color = "#7f8c8d", size = 1) +
   geom_point(aes(color = is_anomaly, size = is_anomaly)) +
   scale_color_manual(values = c("FALSE" = "#34495e", "TRUE" = "#d62728")) +
   scale_size_manual(values = c("FALSE" = 2.5, "TRUE" = 4.5)) +
-  geom_rug(data = filter(plot_data, is_anomaly), aes(x = date), color = "#d62728", sides = "b", size = 1.2) +
-  geom_hline(yintercept = corr_threshold, linetype = "dashed", color = "#d62728", size = 0.8) +
-  
-  annotate("text", x = min(plot_data$date), y = corr_threshold + 0.04, 
-           label = paste0("Behavioral Threshold: ", round(corr_threshold * 100, 1), "%"), 
-           color = "#d62728", hjust = 0, fontface = "bold") +
-  scale_y_continuous(limits = c(-1.05, 1.05), breaks = seq(-1, 1, 0.5)) +
+  geom_hline(yintercept = stress_threshold, linetype = "dashed", color = "#d62728") +
+  scale_x_date(date_breaks = "1 day", date_labels = "%b %d") +
   theme_minimal(base_size = 13) +
-  theme(legend.position = "none", panel.grid.minor = element_blank()) +
   labs(
-    title = "System Workload Correlation Index",
-    subtitle = "Identifying historical days that match the active/silent agent footprint of the June 5th crisis.",
-    x = "Operational Timeline Range",
-    y = "Pearson Correlation to Crisis Profile"
-  )
+    title = "Sentiment Analysis",
+    subtitle = "Tracking severe drops in system sentiment",
+    x = "Timeline",
+    y = "Net Sentiment Score"
+  ) +
+  theme(legend.position = "none",axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+::: {.callout-tip}
+
+### Insights
+From the above chart, we notice some drop in sentiment opn 18th May, 28th May and 29th may that appears to have the same negative sentiment as 5th June. This warrants additional deep-dive into those dates.
 :::
 
-To determine whether the agent system had previously exhibited behaviors matching those that led to the June 5th release, we tried different attempts to track the agents' keywords.We first started with a 5% keyword threshold, but the graph suggest that the threshold was too low and led to trigger anomalies through the 2 weeks period.
+```{r}
+df_communications %>% 
+  filter(
+    as.Date(timestamp) %in% as.Date(c("2046-05-18", "2046-05-28", "2046-05-29"))
+  ) %>% 
+  select(agent_id, channel, content, internal_state_deliberating, timestamp) %>% 
+  slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
+  knitr::kable(format = "html") %>% 
 
-Subsequently, we use the mean and 2.5 standard deviation assuming a normal distribution.This completely eliminates all the noise we see previously in the very first chart, but only showed 4th June as the only anomaly.
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  scroll_box(height = "500px", width = "100%")
+```
 
-To cross validate our hypothesis we use pearson's correlation to track the words
-volume over each day with those on 5th June. if it exhibited similar behavior, the correlation should be relatively closer to 1.0.
+::: {.callout-tip}
+### Insights
+from the first few rows, we observed some mistake done in the earlier 2 weeks.
+"I'm logging today's incident in the risk register as a Category 2 embargo sensitivity event — contained, no material disclosure, but flagged for the record. I want you to know I'll be adjusting my overall risk score upward to 6.5/10."
+:::
 
-We can observe that on most days the correlation hovers between 0 and 0.5 and therefore we conclude that it is likely that 4th June is the only anomaly and no prior behavior of a crisis is observed
+
+### Finding keywords to deep dive into incidents
+
+::: panel-tabset
+
+### 18th May
+```{r}
+
+df_keyness <- df_communications %>%
+  mutate(
+    date_label = as.Date(as_datetime(timestamp)),
+    time_period = if_else(date_label %in% as.Date(c("2046-05-18")) , "Anomaly_Days", "Baseline")
+  ) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, time_period, all_text) %>%
+  unnest_tokens(word, all_text) %>%
+  anti_join(stop_words, by = "word")
+
+
+word_counts <- df_keyness %>%
+  count(time_period, word) %>%
+  pivot_wider(names_from = time_period, values_from = n, values_fill = list(n = 0)) %>%
+  filter(Anomaly_Days > 2)
+
+
+total_anomaly_words <- sum(word_counts$Anomaly_Days)
+total_baseline_words <- sum(word_counts$Baseline)
+
+df_crucial_words <- word_counts %>%
+  mutate(
+    freq_anomaly = Anomaly_Days / total_anomaly_words,
+    freq_baseline = (Baseline + 1) / total_baseline_words, 
+    odds_ratio = freq_anomaly / freq_baseline
+  ) %>%
+  arrange(desc(odds_ratio))
+
+
+print("--- Crucial Words Unique to ALL Anomaly Days ---")
+df_crucial_words %>% 
+  select(word, Anomaly_Days, odds_ratio) %>% 
+  head(20) %>%
+  knitr::kable(format = "html")
+```
+
+### 28th May
+
+```{r}
+
+df_keyness <- df_communications %>%
+  mutate(
+    date_label = as.Date(as_datetime(timestamp)),
+    time_period = if_else(date_label %in% as.Date(c("2046-05-28")) , "Anomaly_Days", "Baseline")
+  ) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, time_period, all_text) %>%
+  unnest_tokens(word, all_text) %>%
+  anti_join(stop_words, by = "word")
+
+
+word_counts <- df_keyness %>%
+  count(time_period, word) %>%
+  pivot_wider(names_from = time_period, values_from = n, values_fill = list(n = 0)) %>%
+  filter(Anomaly_Days > 2)
+
+
+total_anomaly_words <- sum(word_counts$Anomaly_Days)
+total_baseline_words <- sum(word_counts$Baseline)
+
+df_crucial_words <- word_counts %>%
+  mutate(
+    freq_anomaly = Anomaly_Days / total_anomaly_words,
+    freq_baseline = (Baseline + 1) / total_baseline_words, 
+    odds_ratio = freq_anomaly / freq_baseline
+  ) %>%
+  arrange(desc(odds_ratio))
+
+
+print("--- Crucial Words Unique to ALL Anomaly Days ---")
+df_crucial_words %>% 
+  select(word, Anomaly_Days, odds_ratio) %>% 
+  head(20) %>%
+  knitr::kable(format = "html")
+```
+
+### 29th May
+
+```{r}
+df_keyness <- df_communications %>%
+  mutate(
+    date_label = as.Date(as_datetime(timestamp)),
+    time_period = if_else(date_label %in% as.Date(c("2046-05-29")) , "Anomaly_Days", "Baseline")
+  ) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, time_period, all_text) %>%
+  unnest_tokens(word, all_text) %>%
+  anti_join(stop_words, by = "word")
+
+
+word_counts <- df_keyness %>%
+  count(time_period, word) %>%
+  pivot_wider(names_from = time_period, values_from = n, values_fill = list(n = 0)) %>%
+  filter(Anomaly_Days > 2)
+
+
+total_anomaly_words <- sum(word_counts$Anomaly_Days)
+total_baseline_words <- sum(word_counts$Baseline)
+
+df_crucial_words <- word_counts %>%
+  mutate(
+    freq_anomaly = Anomaly_Days / total_anomaly_words,
+    freq_baseline = (Baseline + 1) / total_baseline_words, 
+    odds_ratio = freq_anomaly / freq_baseline
+  ) %>%
+  arrange(desc(odds_ratio))
+
+
+print("--- Crucial Words Unique to ALL Anomaly Days ---")
+df_crucial_words %>% 
+  select(word, Anomaly_Days, odds_ratio) %>% 
+  head(20) %>%
+  knitr::kable(format = "html")
+
+```
+
+:::
+
+Among the 3 dates. 29th May seems to have a stronger indication of negativity with words such as incident, redacted (which is usually meant for censoring) and for the other 2 dates affected. Using this 3 words we will try to identify again if we can so any similarities
+with the 5th June incidents.
+
+
+```{r}
+# 1. Define a Behavioral Regex (focusing on rule-breaking, errors, and insubordination)
+behavior_regex <- "affected|redacted|incident"
+
+# 2. Flag anomalous behaviors in the dataset
+df_behavior_tracking <- df_communications %>%
+  mutate(
+    date_time = as_datetime(timestamp),
+    date_label = as.Date(date_time),
+    
+    has_rationalization = !is.na(internal_state_rationalizing) & internal_state_rationalizing != "",
+    
+    has_behavior_flag = str_detect(tolower(content), behavior_regex) | 
+                        str_detect(tolower(internal_state_deliberating), behavior_regex) |
+                        str_detect(tolower(internal_state_reacting), behavior_regex) |
+                        str_detect(tolower(internal_state_rationalizing), behavior_regex),
+    
+    has_behavior_flag = replace_na(has_behavior_flag, FALSE),
+    
+    is_behavioral_anomaly = has_rationalization | has_behavior_flag
+  )
+
+# 3. Aggregate daily behavioral anomalies rather than total volume
+df_daily_behavior <- df_behavior_tracking %>%
+  group_by(date_label) %>%
+  summarise(
+    total_messages = n(),
+    anomaly_count = sum(is_behavioral_anomaly, na.rm = TRUE)
+  ) %>%
+  filter(anomaly_count > 0) 
+
+
+df_evidence <- df_behavior_tracking %>%
+  filter(is_behavioral_anomaly == TRUE) %>%
+  select(timestamp, agent_label, internal_state_rationalizing, content)
+
+
+print("--- Prior Occasion Evidence (May 29) ---")
+df_evidence %>% filter(as.Date(timestamp) == as.Date("2046-05-29")) %>% head(3) %>%
+knitr::kable(format = "html")
+
+# 5. Visualize the Behavioral Deviations
+ggplot(df_daily_behavior, aes(x = date_label, y = anomaly_count)) +
+  geom_segment(aes(x = date_label, xend = date_label, y = 0, yend = anomaly_count), 
+               color = "#34495e", size = 1.2) +
+  geom_point(color = "#d62728", size = 4) +
+  geom_text(aes(label = anomaly_count), vjust = -1.5, color = "#d62728", fontface = "bold") +
+
+  scale_y_continuous(limits = c(0, max(df_daily_behavior$anomaly_count) + 10)) +
+  theme_minimal(base_size = 13) +
+  labs(
+    title = "Systemic Agent Deviations",
+    subtitle = "Tracking Incident like conversation.",
+    x = "Timeline",
+    y = "Frequency of Deviant Agent States"
+  )
+```
+
+::: {.callout-tip}
+The above chart shows very similar count between 28th to 29th May and the actual crisis on 5th June, we can eliminate the date on 18th May for out filter below
+:::
+
+
+###  A prior incident
+
+```{r}
+df_communications %>% 
+  filter(
+    as.Date(timestamp) %in% as.Date(c("2046-05-28", "2046-05-29"))
+  ) %>% 
+  select(agent_id, channel, content, internal_state_deliberating, timestamp) %>% 
+  slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
+  knitr::kable(format = "html") %>% 
+
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  scroll_box(height = "500px", width = "100%")
+```
+
+
+::: {.callout-tip}
+### Insights
+We now see that the incident was actually caused by the PR-intern who posted on the deal before the embargo was cleared. The incident was brought to a close as they brought down the post within 15 minutes, although some CivicLoom employees had engaged with the post and a CivicLoom top management Elena Marquez was tagged. 
+
+Extract of text:
+"14 minutes total. 4 likes confirmed. One like from @CivicLoom_Ops — which is a CivicLoom staff account. I cannot confirm whether Elena Marquez herself saw it, but someone at CivicLoom engaged with the post before deletion."
+:::
