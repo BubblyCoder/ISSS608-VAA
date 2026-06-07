@@ -16,7 +16,26 @@ execute:
 ## Set Up
 
 ```{r}
-pacman::p_load(jsonlite,dplyr,tidyr,skimr, knitr,kableExtra,ggplot2,stringr,tidyverse,tidygraph,ggraph,patchwork,scales,tidytext,ggalluvial,gt,visNetwork,lubridate)
+pacman::p_load(jsonlite,
+              dplyr,
+              tidyr,
+              skimr, 
+              knitr,
+              kableExtra,
+              ggplot2,
+              stringr,
+              tidyverse,
+              tidygraph,
+              ggraph,
+              patchwork,
+              scales,
+              tidytext,
+              ggalluvial,
+              gt,
+              visNetwork,
+              lubridate,
+              igraph,
+              widyr)
 ```
 
 ### Read Data
@@ -195,7 +214,7 @@ knitr::kable(june_4th_clues, format = "markdown")
 We also observed the hashtag  #AlgorithmicEviction here that is align with the background so far.
 The sentiment deteoriating rapidly also suggest we should explore the other available data on what news triggered this drop
 
-## Investigate News data
+### Investigate News data
 
 ```{r}
 knitr::kable(df_news %>%
@@ -210,18 +229,17 @@ We apply TD-IDF below to get a sensing of what each day happen without going thr
 Setting colors for the various agent for easy identification
 
 ### Color palette
-```{r}
 
-#| code-fold: False
+```{r}
+#| code-fold: false
 agent_palette <- c(
-  "judge_agent"        = "#b38600",  # Dark Gold / Yellow
-  "legal_agent"        = "#4daf4a",  # Corporate Green
-  "pr_agent"           = "#00a699",  # Dark Teal
-  "social_media_agent" = "#e377c2",  # Crisis Pink
-  "intern_agent"       = "#f07167",  # Coral / Light Red
-  "pr_intern_agent"    = "#1f77b4",  # Cool Blue
-  "quality_agent"      = "#9467bd"   # Infrastructure Purple
-)
+  "pr_agent"           = "#005f73",  
+  "pr_intern_agent"    = "#0a9396",  
+  "social_media_agent" = "#9b5de5",  
+  "legal_agent"        = "#1b4332",  
+  "judge_agent"        = "#6a040f",  
+  "quality_agent"      = "#ca6702",  
+  "intern_agent"       = "#f15bb5")   
 ```
 
 
@@ -367,6 +385,10 @@ df_tf_idf %>%
   )
 ```
 :::
+
+::: {.callout-tip}
+
+### Insights
 When we look through each graph, we start to notice that:
 
 - Judge agent has a that theme appears to be restraining itself from words such as compliance, hold, truth, flag
@@ -380,14 +402,82 @@ When we look through each graph, we start to notice that:
 - PR intern appears to be doing analysis on data on rent.
 
 - Intern agent appears to be unware of what is going on and has similar theme throughout the 3 days.
+:::
+
+### Text Network Centrality
+To validate the TF-IDF findings and uncover hidden structural patterns.
+
+- A betweenness centrality analysis was executed on the full graph.This two-step sequence ensures that terms which may lack the raw volume to break into the Top 10 TF-IDF registry are exposed.
+
+- A degree centrality was executed to find high degree of words used for all agents based on volume
+
+-A page rank is performed to identifie the words that serve as the ultimate destinations of the system's logic.
 
 
 
+```{r}
 
+df_words_clean <- df_communications %>%
+  mutate(log_id = row_number()) %>%
+  unnest_tokens(word, content) %>%
+  anti_join(stop_words, by = "word") %>%
+  filter(str_detect(word, "^[a-zA-Z]{2,}$"))
+
+# 3. Build the Edge List (Word co-occurrences within the same log entry)
+df_word_pairs <- df_words_clean %>%
+  pairwise_count(word, log_id, sort = TRUE, upper = FALSE) %>%
+  rename(from = item1, to = item2, weight = n)
+
+
+text_graph <- igraph::graph_from_data_frame(df_word_pairs, directed = FALSE)
+
+
+betweenness_values <- igraph::betweenness(text_graph, directed = FALSE, normalized = TRUE)
+
+
+df_centrality_complete <- tibble(
+  word = names(betweenness_values),
+  betweenness = as.numeric(betweenness_values),
+  pagerank    = as.numeric(igraph::page_rank(text_graph)$vector),
+  harmonic    = as.numeric(igraph::harmonic_centrality(text_graph, normalized = TRUE)),
+  degree_str  = as.numeric(igraph::strength(text_graph))
+)
+
+```
+
+The table is ordered in descending order by:
+
+::: panel-tabset
+
+### Degree Centrality
+```{r}
+knitr:: kable(df_centrality_complete %>% 
+    slice_max(order_by = degree_str, n = 20))
+```
+
+### Betweeness Centrality
+```{r}
+knitr:: kable(df_centrality_complete %>% 
+    slice_max(order_by = betweenness, n = 20))
+```
+
+
+### Page rank Centrality
+```{r}
+knitr:: kable(df_centrality_complete %>% 
+    slice_max(order_by = pagerank, n = 20))
+```
+
+:::
+
+::: {.callout-tip}
+### Insights
+From our observation in each. Tracking raw volume via Degree Strength establishes that the system's baseline environment was heavily driven by traditional institutional actions around ‘governance’ and ‘pr’ However, when we check the betweenness score, we noted that the highest betweenness words such as ‘tenantthread’ and ‘flex’ did not have the highest degree strength. This suggests that a number of conversations were centered around a subset of all the agents. Lastly the Page Rank centrality indicates that ‘governance’, ‘pr’ and ‘legal’ serve as the theme for the agents.
+:::
 
 
 ### Alluvial Chart
-Although we have a clue from the TF-IDF Study on the theme from 4th June to 5th June,we would like to dive deeper to understand
+Although we have a clue from the TF-IDF study on the theme from 4th June to 5th June and network centrality on how the conversations were concentrated on,we would like to dive deeper to understand
 which agent had the most involvement in the change in stock price or perception of company after the news after the merger leaked out.
 
 ```{r}
@@ -454,7 +544,18 @@ Hence we now narrow down the 3 agents that we should focus on.
 ```{r}
 #| column: page
 #| warning: false
-knitr::kable(df_communications %>% filter(str_detect(hour, "2046-06-05") & agent_id %in% c('legal_agent','pr_intern_agent','social_media_agent')) %>% select(agent_id, timestamp,internal_state_deliberating,content) )
+
+df_communications %>% filter(str_detect(hour, "2046-06-05") & agent_id %in% c('legal_agent','pr_intern_agent','social_media_agent')) %>% select(agent_id, timestamp,internal_state_deliberating,content)  %>%
+slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
+  
+  # 1. Force the table to render as HTML
+  knitr::kable(format = "html") %>% 
+  
+  # 2. Apply responsive bootstrap styling
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  
+  # 3. Inject the scroll constraints (adjust height as needed for your page layout)
+  scroll_box(height = "500px", width = "100%")
 ```
 
 
@@ -562,39 +663,23 @@ Note: 36 rows found
 
 ### Full Relevant Content
 ```{r}
-
-
 df_communications %>% 
   filter(
     str_detect(hour, "2046-06-05T17"),
     str_detect(content, "flex|consent|release|critical") | 
     str_detect(internal_state_deliberating, "flex|consent|release|critical")
   ) %>% 
-  select(agent_id, channel, content, internal_state_deliberating, hour) %>% 
+  select(agent_id, channel, content, internal_state_deliberating, timestamp) %>% 
+  slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
   
-  # ==============================================================================
-  # THE FORENSIC SANITIZER: Clean text columns to prevent HTML tag rupture
-  # ==============================================================================
-  mutate(
-    # 1. Strip out raw carriage returns and newlines
-    content = str_replace_all(content, "[\r\n]+", " "),
-    internal_state_deliberating = str_replace_all(internal_state_deliberating, "[\r\n]+", " "),
-    
-    # 2. Optional: Cap length at 400 characters so columns don't stretch forever
-    content = str_trunc(content, width = 400, side = "right"),
-    internal_state_deliberating = str_trunc(internal_state_deliberating, width = 400, side = "right")
-  ) %>%
-  
-  # ==============================================================================
-  # RENDER CLEAN CONTAINER TABLE
-  # ==============================================================================
+  # 1. Force HTML output framework
   knitr::kable(format = "html") %>% 
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  kableExtra::scroll_box(
-    height = "400px",      
-    width = "100%",        
-    fixed_thead = TRUE     
-  )
+  
+  # 2. Set full width styling so text maps nicely across the page container
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  
+  # 3. ADD SCROLLBARS: Sets fixed height for vertical scroll & 100% for horizontal scroll
+  scroll_box(height = "500px", width = "100%")
 ```
 
 From the above filtered conversation, we can observe that the post is intentionally release by the agents.
@@ -605,6 +690,7 @@ Consent was received from CivicLoom's legal team hence "bilateral consent" kept 
 The evasion of the embargo was a new behavior. Provide visual analytics that discover and illustrate the typical behavior of systems/agents/people involved. How does the behavior that led to the release compare to the prior behaviors?
 
 We learnt earlier from [Finding the critical moments](#finding-critical-moments) that the critical point of the change was on '2046-06-04', hence we will explore the normal behaviors of the agents before the critical date.
+
 
 
 ### Typical Behavior
@@ -761,3 +847,195 @@ ggplot(df_heatmap_prep, aes(x = hour_of_day, y = factor(date_label), fill = mess
   )
 ```
 
+To evaluate behavioral deviations, the chart establishes a clear, predictable baseline for what "expected behavior" looks like. From May 17 through June 3, the core agents  exhibit a highly rigid, vertical pattern confined entirely to 09:00 AM. Characterized by low log volumes, this likely represents business as usual operation Under normal circumstances, and the agents are entirely dormant during the rest of the day.
+
+But on 5th June, increase heighted activites continues to happen in the afternoon especially for agents such as  legal agent, pr intern agent, social media agent and quality agent. 
+
+Hence we can see there are likely no prior behaviors
+
+
+::: panel-tabset
+
+### Anomaly detection at 0.05
+```{r}
+
+# 1. Define the regex fingerprint found on June 5th
+crisis_regex <- "flex|consent|release|critical"
+
+# 2. Calculate daily keyword exposure densities
+df_echoes_prep <- df_communications %>%
+  mutate(date_label = as.Date(as_datetime(hour))) %>%
+  group_by(date_label) %>%
+  summarise(
+    total_logs = n(),
+    crisis_matches = sum(
+      str_detect(tolower(content), crisis_regex) | 
+      str_detect(tolower(internal_state_deliberating), crisis_regex), 
+      na.rm = TRUE
+    ),
+    # Proportion of daily text focusing on the crisis mechanism
+    crisis_density = crisis_matches / total_logs
+  ) %>%
+  ungroup()
+
+# 3. Establish an anomaly threshold (e.g., past 2.5 standard deviations or a hard 5% mark)
+alert_threshold <- 0.05
+df_anomalies <- df_echoes_prep %>% filter(crisis_density > alert_threshold)
+
+# 4. Generate the chronological trend and rug chart
+ggplot(df_echoes_prep, aes(x = date_label, y = crisis_density)) +
+  geom_line(color = "#7f8c8d", size = 0.8) +
+  # Highlight the breakout points
+  geom_point(data = df_anomalies, color = "#d62728", size = 2.5) +
+  # The Rug Plot: Injects sharp vertical teeth along the bottom axis for match dates
+  geom_rug(data = df_anomalies, aes(x = date_label), color = "#d62728", sides = "b", size = 1) +
+  geom_hline(yintercept = alert_threshold, linetype = "dashed", color = "#d62728", alpha = 0.7) +
+  annotate("text", x = min(df_echoes_prep$date_label), y = alert_threshold + 0.01, 
+           label = "Crisis Profile Threshold", color = "#d62728", hjust = 0, size = 3.5) +
+  theme_minimal() +
+  labs(
+    title = "Structural Echoes: Historical Crisis Signature Tracking",
+    subtitle = "Chronological tracking of days matching the June 5th thematic profile (Rug ticks indicate near-misses).",
+    x = "Timeline Date Range",
+    y = "Crisis Keyword Semantic Weight"
+  )
+```
+
+### Anomaly detection based on mean
+```{r}
+
+# Define target crisis fingerprint keywords
+crisis_regex <- "flex|consent|release|critical"
+
+# 1. Aggregate data to calculate daily keyword semantic densities
+df_echoes_prep <- df_communications %>%
+  mutate(date_label = as.Date(as_datetime(hour))) %>%
+  group_by(date_label) %>%
+  summarise(
+    total_logs = n(),
+    crisis_matches = sum(
+      str_detect(tolower(content), crisis_regex) | 
+      str_detect(tolower(internal_state_deliberating), crisis_regex), 
+      na.rm = TRUE
+    ),
+    crisis_density = crisis_matches / total_logs
+  ) %>%
+  ungroup()
+
+
+mean_density <- mean(df_echoes_prep$crisis_density, na.rm = TRUE)
+sd_density   <- sd(df_echoes_prep$crisis_density, na.rm = TRUE)
+
+# Step B: Set threshold at 2.5 standard deviations above the historical mean
+alert_threshold <- mean_density + (2.5 * sd_density)
+
+# Step C: Filter for true outliers that clear this data-driven hurdle
+df_anomalies <- df_echoes_prep %>% filter(crisis_density > alert_threshold)
+# ==============================================================================
+
+# 2. Render the clean, high-precision visualization
+ggplot(df_echoes_prep, aes(x = date_label, y = crisis_density)) +
+  geom_line(color = "#7f8c8d", size = 0.8) +
+  
+  # Outlier markers and rug ticks now ONLY render for true statistical anomalies
+  geom_point(data = df_anomalies, color = "#d62728", size = 2.5) +
+  geom_rug(data = df_anomalies, aes(x = date_label), color = "#d62728", sides = "b", size = 1) +
+  
+  # Dynamic statistical threshold marker line
+  geom_hline(yintercept = alert_threshold, linetype = "dashed", color = "#d62728", alpha = 0.7) +
+  
+  # Smart text annotation displaying the exact calculated percentage hurdle
+  annotate("text", x = min(df_echoes_prep$date_label), y = alert_threshold + 0.01, 
+           label = paste0("Anomaly Threshold (Mean + 2.5 SD): ", round(alert_threshold * 100, 1), "%"), 
+           color = "#d62728", hjust = 0, size = 3.5, fontface = "bold") +
+  theme_minimal(base_size = 13) +
+  labs(
+    title = "Structural Echoes: Historical Crisis Signature Tracking",
+    subtitle = "Isolating systemic outliers using a data-driven standard deviation threshold filter.",
+    x = "Timeline Date Range",
+    y = "Crisis Keyword Semantic Weight"
+  )
+```
+
+### Based on Correlation.
+```{r}
+# Counts total logs sent per agent per day, ensuring structural zeros stay intact
+df_daily_profiles <- df_communications %>%
+  mutate(date_label = as.Date(as_datetime(hour))) %>%
+  group_by(date_label, agent_id) %>%
+  summarise(daily_volume = n(), .groups = "drop") %>%
+  
+  # Crucial: Ensures days with 0 activity for an agent don't disappear
+  complete(date_label, agent_id, fill = list(daily_volume = 0)) %>%
+  
+  # Reshape so each agent has their own column
+  pivot_wider(names_from = agent_id, values_from = daily_volume, values_fill = 0) %>%
+  arrange(date_label)
+
+
+# Isolate the workload signature of the day the leak occurred
+crisis_profile <- df_daily_profiles %>%
+  filter(date_label == as.Date("2046-06-05")) %>%
+  select(-date_label) %>%
+  as.numeric()
+
+
+# Convert profile features to a matrix for fast row-by-row correlation computation
+profile_matrix <- df_daily_profiles %>% select(-date_label) %>% as.matrix()
+
+results_df <- df_daily_profiles %>%
+  mutate(
+    # Run a Pearson correlation comparing each row against the June 5th benchmark
+    behavioral_correlation = map_dbl(seq_len(nrow(profile_matrix)), ~{
+      cor(profile_matrix[.x, ], crisis_profile, method = "pearson")
+    }),
+    # Handle any NaN outputs caused by perfectly silent baseline days
+    behavioral_correlation = replace_na(behavioral_correlation, 0)
+  ) %>%
+  select(date = date_label, behavioral_correlation)
+
+# ==============================================================================
+# 4. PLOT THE BEHAVIORAL PROXIMITY TIMELINE
+# ==============================================================================
+# Set a statistical threshold at Mean + 2.5 Standard Deviations
+mean_corr <- mean(results_df$behavioral_correlation, na.rm = TRUE)
+sd_corr   <- sd(results_df$behavioral_correlation, na.rm = TRUE)
+corr_threshold <- mean_corr + (2.5 * sd_corr)
+
+# Clip threshold if it exceeds logical bounds
+if (corr_threshold > 0.95 || corr_threshold < 0.3) corr_threshold <- 0.70
+
+plot_data <- results_df %>%
+  mutate(is_anomaly = behavioral_correlation >= corr_threshold)
+
+ggplot(plot_data, aes(x = date, y = behavioral_correlation)) +
+  geom_line(color = "#7f8c8d", size = 1) +
+  geom_point(aes(color = is_anomaly, size = is_anomaly)) +
+  scale_color_manual(values = c("FALSE" = "#34495e", "TRUE" = "#d62728")) +
+  scale_size_manual(values = c("FALSE" = 2.5, "TRUE" = 4.5)) +
+  geom_rug(data = filter(plot_data, is_anomaly), aes(x = date), color = "#d62728", sides = "b", size = 1.2) +
+  geom_hline(yintercept = corr_threshold, linetype = "dashed", color = "#d62728", size = 0.8) +
+  
+  annotate("text", x = min(plot_data$date), y = corr_threshold + 0.04, 
+           label = paste0("Behavioral Threshold: ", round(corr_threshold * 100, 1), "%"), 
+           color = "#d62728", hjust = 0, fontface = "bold") +
+  scale_y_continuous(limits = c(-1.05, 1.05), breaks = seq(-1, 1, 0.5)) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "none", panel.grid.minor = element_blank()) +
+  labs(
+    title = "System Workload Correlation Index",
+    subtitle = "Identifying historical days that match the active/silent agent footprint of the June 5th crisis.",
+    x = "Operational Timeline Range",
+    y = "Pearson Correlation to Crisis Profile"
+  )
+```
+:::
+
+To determine whether the agent system had previously exhibited behaviors matching those that led to the June 5th release, we tried different attempts to track the agents' keywords.We first started with a 5% keyword threshold, but the graph suggest that the threshold was too low and led to trigger anomalies through the 2 weeks period.
+
+Subsequently, we use the mean and 2.5 standard deviation assuming a normal distribution.This completely eliminates all the noise we see previously in the very first chart, but only showed 4th June as the only anomaly.
+
+To cross validate our hypothesis we use pearson's correlation to track the words
+volume over each day with those on 5th June. if it exhibited similar behavior, the correlation should be relatively closer to 1.0.
+
+We can observe that on most days the correlation hovers between 0 and 0.5 and therefore we conclude that it is likely that 4th June is the only anomaly and no prior behavior of a crisis is observed
