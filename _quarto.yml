@@ -7,6 +7,10 @@ website:
     background: primary
     search: true
     left:
+      - text: Home
+        href: index.qmd
+      - text: About
+        href: about.qmd
       - text: "Hands-on Exercise"
         menu:
           - text: "Hands-on Exercise 1: Layered Grammar of Graphics"
@@ -51,11 +55,6 @@ website:
           - text: "Technical Report 02: VAST 2026"
             href: "Take_Home_Ex/Take_Home_Ex02/Take_Home_Ex02_Technical_Report.qmd"
 
-    right:
-      - text: Home
-        href: index.qmd
-      - text: About
-        href: about.qmd
 
 format:
   html:
