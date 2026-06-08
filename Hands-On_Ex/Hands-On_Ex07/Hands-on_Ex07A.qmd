@@ -4,12 +4,13 @@ author: "Alvin Ong Wei Ming"
 date: "June 08, 2026"
 date-modified: "last-modified"
 execute:
-  eval: true # As and when you render the code it will run through and display the output
-  echo: true #when it render the document it will show the code chunk
-  warning: false # this will prevent warning from appearing.
-  freeze: true #everytime you render, it will only render my latest hands on exericse and not the rest of it.
+  eval: true 
+  echo: true 
+  warning: false 
+  freeze: true 
 ---
 
+## Intro
 In this hands-on exercise, four network data modelling and visualisation packages will be installed and launched. They are igraph, tidygraph, ggraph and visNetwork. Beside these four packages, tidyverse and [lubridate](https://lubridate.tidyverse.org/), an R package specially designed to handle and wrangling time data will be installed and launched too.
 
 
