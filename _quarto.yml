@@ -36,7 +36,7 @@ website:
           - text: "Hands-on Exercise 5E: Treemap Visualisation with R"
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05E.qmd"
           - text: "Hands-on Exercise 7: Modelling, Visualising and Analysing Network Data with R"
-            href: "Hands-On_Ex/Hands-on_Ex07/Hands-on_Ex07.qmd"
+            href: "Hands-On_Ex/Hands-on_Ex07/Hands-on_Ex07A.qmd"
 
       - text: "Take-Home Exercise"
         menu:
