@@ -19,7 +19,7 @@ In this hands-on exercise, four network data modelling and visualisation package
 pacman::p_load(igraph, tidygraph, ggraph, 
                visNetwork, lubridate, clock,
                tidyverse, graphlayouts, 
-               concaveman, ggforce,glimpse,kable)
+               concaveman, ggforce,kable)
 ```
 
 We will use 2 datasets:
@@ -60,6 +60,7 @@ GAStech_edges <- GAStech_edges %>%
                         label = TRUE,
                         abbr = FALSE))
 ```
+
 ::: {.callout-tip}
 
 ### Things to learn from the code chunk above

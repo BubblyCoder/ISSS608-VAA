@@ -35,10 +35,11 @@ website:
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05D.qmd"
           - text: "Hands-on Exercise 5E: Treemap Visualisation with R"
             href: "Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05E.qmd"
-          - text: "Hands-on_Exercise 7A: Modelling, Visualising and Analysing Network Data with R"
-            href: "Hands-On_Ex/Hands-on_Ex007/Hands-on_Ex07A.qmd"
-          - text: "Hands-on_Exercise 7B: Visualising and Analysing Text Data"
-            href: "Hands-On_Ex/Hands-on_Ex007/Hands-on_Ex07B.qmd"
+          - text: "Hands-on Exercise 7A: Modelling, Visualising and Analysing Network Data with R"
+            href: "Hands-On_Ex/Hands-on_Ex07/Hands-on_Ex07A.qmd"
+          - text: "Hands-on Exercise 7B: Visualising and Analysing Text Data"
+            href: "Hands-On_Ex/Hands-on_Ex07/Hands-on_Ex07B.qmd"
+            
 
       - text: "Take-Home Exercise"
         menu:
