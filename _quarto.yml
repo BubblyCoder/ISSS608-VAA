@@ -40,7 +40,7 @@ website:
           - text: "Hands-on Exercise 7B: Visualising and Analysing Text Data"
             href: "Hands-On_Ex/Hands-on_Ex07B/Hands-on_Ex07B.qmd"
             
-            
+  
       - text: "Take-Home Exercise"
         menu:
           - text: "Technical Report 01"
