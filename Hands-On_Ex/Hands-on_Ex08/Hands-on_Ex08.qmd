@@ -19,7 +19,6 @@ pacman::p_load(scales, viridis, ggthemes,tidyverse,
                gridExtra, readxl, knitr, data.table, ggHoriPlot,tidyr)
 ```
 
-
 ### Plot Calender Heatmap
 
 For the purpose of this hands-on exercise, eventlog.csv file will be used. This data file consists of 199,999 rows of time-series cyber attack records by country.
@@ -27,7 +26,9 @@ For the purpose of this hands-on exercise, eventlog.csv file will be used. This 
 ```{r}
 attacks <- read_csv("data/eventlog.csv")
 ```
+
 ### Examining data structure
+
 Lets have a look at the imported data!
 
 ```{r}
@@ -36,13 +37,14 @@ kable(head(attacks))
 
 There are three columns, namely timestamp, source_country and tz.
 
-- timestamp field stores date-time values in POSIXct format.
+-   timestamp field stores date-time values in POSIXct format.
 
-- source_country field stores the source of the attack. It is in ISO 3166-1 alpha-2 country code.
+-   source_country field stores the source of the attack. It is in ISO 3166-1 alpha-2 country code.
 
-- tz field stores time zone of the source IP address.
+-   tz field stores time zone of the source IP address.
 
 ### Data Preparation
+
 Step 1: Deriving weekday and hour of day fields
 
 Before we can plot the calender heatmap, two new fields namely wkday and hour need to be derived. In this step, we will write a function to perform the task.
@@ -59,13 +61,11 @@ make_hr_wkday <- function(ts, sc, tz) {
   }
 ```
 
-::: {.callout-note}
-
+::: callout-note
 ## Note
 
-* `yml_hms()` and `hour()` are from **lubridate** package, and
-* `weekdays()` is a **base** R function.
-
+-   `yml_hms()` and `hour()` are from **lubridate** package, and
+-   `weekdays()` is a **base** R function.
 :::
 
 Step 2: Deriving the attacks tibble data frame
@@ -88,12 +88,10 @@ attacks <- attacks %>%
       hour, levels = 0:23))
 ```
 
-::: {.callout-note}
-
+::: callout-note
 ## Note
 
 Beside extracting the necessary data into attacks data frame, mutate() of dplyr package is used to convert wkday and hour fields into factor so they’ll be ordered when plotting
-
 :::
 
 Table below shows the tidy tibble table after processing.
@@ -130,31 +128,31 @@ theme(axis.ticks = element_blank(),
       legend.text = element_text(linewidth = 6) )
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ## Things to learn from the code chunk
 
-* A tibble data table called *grouped* is derived by aggregating the attack by *wkday* and *hour* fields.
-* A new field called *n* is derived by using `group_by()` and `count()` functions.
-* `na.omit()` is used to exclude missing value.
-* `geom_tile()` is used to plot tiles (grids) at each x and y position. `color` and `size` arguments are used to specify the border color and line size of the tiles.
-* [theme_tufte()](https://jrnold.github.io/ggthemes/reference/theme_tufte.html) of [**ggthemes**](https://jrnold.github.io/ggthemes/reference/index.html) package is used to remove unnecessary chart junk. To learn which visual components of default ggplot2 have been excluded, you are encouraged to comment out this line to examine the default plot.
-* `coord_equal()` is used to ensure the plot will have an aspect ratio of 1:1.
-* `scale_fill_gradient()` function is used to creates a two colour gradient (low-high).
+-   A tibble data table called *grouped* is derived by aggregating the attack by *wkday* and *hour* fields.
+-   A new field called *n* is derived by using `group_by()` and `count()` functions.
+-   `na.omit()` is used to exclude missing value.
+-   `geom_tile()` is used to plot tiles (grids) at each x and y position. `color` and `size` arguments are used to specify the border color and line size of the tiles.
+-   [theme_tufte()](https://jrnold.github.io/ggthemes/reference/theme_tufte.html) of [**ggthemes**](https://jrnold.github.io/ggthemes/reference/index.html) package is used to remove unnecessary chart junk. To learn which visual components of default ggplot2 have been excluded, you are encouraged to comment out this line to examine the default plot.
+-   `coord_equal()` is used to ensure the plot will have an aspect ratio of 1:1.
+-   `scale_fill_gradient()` function is used to creates a two colour gradient (low-high).
 :::
 
 We can simply group the count by hour and wkday and plot it, since we know that we have values for every combination there’s no need to further preprocess the data.
 
 ## Building Multiple Calendar Heatmaps
+
 **Challenge:** Building multiple heatmaps for the top four countries with the highest number of attacks.
 
 ### Plotting Multiple Calendar Heatmaps
+
 Step 1: Deriving attack by country object
 
 In order to identify the top 4 countries with the highest number of attacks, you are required to do the followings:
 
-count the number of attacks by country,
-calculate the percent of attackes by country, and
-save the results in a tibble data frame.
+count the number of attacks by country, calculate the percent of attackes by country, and save the results in a tibble data frame.
 
 ```{r}
 attacks_by_country <- count(
@@ -179,6 +177,7 @@ top4_attacks <- attacks %>%
 ```
 
 ### Plotting Multiple Calendar Heatmaps
+
 Step 3: Plotting the Multiple Calender Heatmap by using ggplot2 package.
 
 ```{r}
@@ -205,13 +204,14 @@ ggplot(top4_attacks,
 
 ## Plot Cycle Plot
 
-### Data Import 
+### Data Import
 
 ```{r}
 air <- read_excel("data/arrivals_by_air.xlsx")
 ```
 
 ### Step 2: Deriving month and year fields
+
 Next, two new fields called month and year are derived from Month-Year field.
 
 ```{r}
@@ -223,6 +223,7 @@ air$year <- year(ymd(air$`Month-Year`))
 ```
 
 ### Step 3: Extracting the target country
+
 Next, the code chunk below is use to extract data for the target country (i.e. Vietnam)
 
 ```{r}
@@ -244,6 +245,7 @@ hline.data <- Vietnam %>%
 ```
 
 ### Step 5: Plotting the cycle plot
+
 The code chunk below is used to plot the cycle plot as shown in Slide 12/23.
 
 ```{r}
@@ -365,16 +367,12 @@ ggplot(rice_ggplot, aes(x = Year, y = Yield, group = Country, color = Country)) 
 
 ```
 
-::: {.callout-note}
-
+::: callout-note
 ### using alternative packages
+
 CGPfunctions seems to be removed from cran,
 
 I installed ggplot as replacement
 
-
 For effective data visualisation design, factor() is used convert the value type of Year field from numeric to factor.
-
 :::
-
-
