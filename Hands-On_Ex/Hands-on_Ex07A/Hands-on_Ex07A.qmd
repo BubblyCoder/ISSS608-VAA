@@ -96,7 +96,7 @@ GAStech_edges_aggregated <- GAStech_edges %>%
 ### Reviewing the revised edges file
 
 ```{r}
-knitr::: kable(head(GAStech_edges_aggregated))
+knitr:::kable(head(GAStech_edges_aggregated))
 ```
 
 ### Creating network objects using tidygraph
@@ -331,8 +331,7 @@ g <- ggraph(GAStech_graph,
                   size = 2)
   
 g + facet_edges(~Weekday) +
-  th_foreground(foreground = "grey80",  
-                border = TRUE) +
+  th_foreground(foreground = "grey80", border = TRUE) +
   theme(legend.position = 'bottom')
 ```
 
