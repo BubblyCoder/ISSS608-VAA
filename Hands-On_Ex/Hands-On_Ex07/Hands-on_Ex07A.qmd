@@ -287,9 +287,9 @@ Things to learn from the code chunks above:
 
 ### Creating facet graphs
 
-```{r}
+
 Another very useful feature of ggraph is faceting. In visualising network data, this technique can be used to reduce edge over-plotting in a very meaning way by spreading nodes and edges out based on their attributes. In this section, you will learn how to use faceting technique to visualise network data.
-```
+
 
 There are three functions in ggraph to implement faceting, they are:
 
