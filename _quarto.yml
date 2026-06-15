@@ -44,7 +44,9 @@ website:
           - text: "Hands-on Exercise 7B: Visualising and Analysing Text Data"
             href: "Hands-On_Ex/Hands-on_Ex07B/Hands-on_Ex07B.qmd"
           - text: "Hands-on Exercise 8: Visualising and Analysing Time-Oriented Data"
-            href: "Hands-On_Ex/Hands-on_Ex08/Hands-on_Ex08.qmd"            
+            href: "Hands-On_Ex/Hands-on_Ex08/Hands-on_Ex08.qmd"
+          - text: "Hands-on Exercise 9A: Choropleth Mapping with R"
+            href: "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09A.qmd" 
   
       - text: "Take-Home Exercise"
         menu:
