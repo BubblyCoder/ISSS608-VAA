@@ -47,6 +47,10 @@ website:
             href: "Hands-On_Ex/Hands-on_Ex08/Hands-on_Ex08.qmd"
           - text: "Hands-on Exercise 9A: Choropleth Mapping with R"
             href: "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09A.qmd" 
+          - text: "Hands-on Exercise 9B: Choropleth Mapping with R"
+            href: "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.qmd" 
+          - text: "Hands-on Exercise 9C: Choropleth Mapping with R"
+            href: "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09C.qmd"
   
       - text: "Take-Home Exercise"
         menu:

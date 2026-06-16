@@ -1,0 +1,27 @@
+---
+title: "Hands-on_Ex09B"
+author: "Alvin Ong Wei Ming"
+date: "June 15, 2026"
+date-modified: "last-modified"
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+## Analytical Mapping
+Learning Outcome
+
+Importing geospatial data in rds format into R environment.
+- Creating cartographic quality choropleth maps by using appropriate tmap functions.
+- Creating rate map
+- Creating percentile map
+- Creating boxmap
+
+## Setup
+
+```{r}
+pacman::p_load(tmap, tidyverse, sf)
+```
+

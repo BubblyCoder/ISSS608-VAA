@@ -1545,5 +1545,68 @@
     "title": "Hands-on_Ex09",
     "section": "By defining a group-by variable in tm_facets()",
     "text": "By defining a group-by variable in tm_facets()\nIn this example, multiple small choropleth maps are created by using tm_facets().\n\ntm_shape(mpsz_pop2020) +\n  tm_fill(\"DEPENDENCY\",\n          style = \"quantile\",\n          palette = \"Blues\",\n          thres.poly = 0) + \n  tm_facets(by=\"REGION_N\", \n            free.coords=TRUE) +\n  tm_layout(legend.show = FALSE,\n            title.position = c(\"center\", \"center\"), \n            title.size = 20) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n\n\n\n\n\nBy creating multiple stand-alone maps with tmap_arrange()\nIn this example, multiple small choropleth maps are created by creating multiple stand-alone maps with tmap_arrange().\n\nyoungmap &lt;- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"YOUNG\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\nagedmap &lt;- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"AGED\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\ntmap_arrange(youngmap, agedmap, asp=1, ncol=2)\n\n\n\n\n\n\n\n\n\n\nMappping Spatial Object Meeting a Selection Criterion\nInstead of creating small multiple choropleth map, you can also use selection funtion to map spatial objects meeting the selection criterion.\n\ntm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N==\"CENTRAL REGION\", ])+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"Blues\", \n          legend.hist = TRUE, \n          legend.is.portrait = TRUE,\n          legend.hist.z = 0.1) +\n  tm_layout(legend.outside = TRUE,\n            legend.height = 0.45, \n            legend.width = 5.0,\n            legend.position = c(\"right\", \"bottom\"),\n            frame = FALSE) +\n  tm_borders(alpha = 0.5)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html",
+    "title": "Hands-on_Ex09B",
+    "section": "",
+    "text": "Proportional symbol maps (also known as graduate symbol maps) are a class of maps that use the visual variable of size to represent differences in the magnitude of a discrete, abruptly changing phenomenon, e.g. counts of people. Like choropleth maps, you can create classed or unclassed versions of these maps. The classed ones are known as range-graded or graduated symbols, and the unclassed are called proportional symbols, where the area of the symbols are proportional to the values of the attribute being mapped. In this hands-on exercise, you will learn how to create a proportional symbol map showing the number of wins by Singapore Pools’ outlets using an R package called tmap."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#visualising-geospatial-point-data",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#visualising-geospatial-point-data",
+    "title": "Hands-on_Ex09B",
+    "section": "",
+    "text": "Proportional symbol maps (also known as graduate symbol maps) are a class of maps that use the visual variable of size to represent differences in the magnitude of a discrete, abruptly changing phenomenon, e.g. counts of people. Like choropleth maps, you can create classed or unclassed versions of these maps. The classed ones are known as range-graded or graduated symbols, and the unclassed are called proportional symbols, where the area of the symbols are proportional to the values of the attribute being mapped. In this hands-on exercise, you will learn how to create a proportional symbol map showing the number of wins by Singapore Pools’ outlets using an R package called tmap."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#setup",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#setup",
+    "title": "Hands-on_Ex09B",
+    "section": "Setup",
+    "text": "Setup\n\npacman::p_load(sf, tmap, tidyverse,knitr)\n\nThe data set use for this hands-on exercise is called SGPools_svy21. The data is in csv file format.\nFigure below shows the first 15 records of SGPools_svy21.csv. It consists of seven columns. The XCOORD and YCOORD columns are the x-coordinates and y-coordinates of SingPools outlets and branches. They are in Singapore SVY21 Projected Coordinates System.\n\nData Import and prep\nThe code chunk below uses read_csv() function of readr package to import SGPools_svy21.csv into R as a tibble data frame called sgpools.\n\nsgpools &lt;- read_csv(\"data/SGPools_svy21.csv\")\n\nAfter importing the data file into R, it is important for us to examine if the data file has been imported correctly.\nThe code chunk below shows list() is used to do the job.\n\nlist(sgpools) \n\n[[1]]\n# A tibble: 306 × 7\n   NAME           ADDRESS POSTCODE XCOORD YCOORD `OUTLET TYPE` `Gp1Gp2 Winnings`\n   &lt;chr&gt;          &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt;\n 1 Livewire (Mar… 2 Bayf…    18972 30842. 29599. Branch                        5\n 2 Livewire (Res… 26 Sen…    98138 26704. 26526. Branch                       11\n 3 SportsBuzz (K… Lotus …   738078 20118. 44888. Branch                        0\n 4 SportsBuzz (P… 1 Sele…   188306 29777. 31382. Branch                       44\n 5 Prime Serango… Blk 54…   552542 32239. 39519. Branch                        0\n 6 Singapore Poo… 1A Woo…   731001 21012. 46987. Branch                        3\n 7 Singapore Poo… Blk 64…   370064 33990. 34356. Branch                       17\n 8 Singapore Poo… Blk 88…   370088 33847. 33976. Branch                       16\n 9 Singapore Poo… Blk 30…   540308 33910. 41275. Branch                       21\n10 Singapore Poo… Blk 20…   560202 29246. 38943. Branch                       25\n# ℹ 296 more rows\n\n\nNotice that the sgpools data in tibble data frame and not the common R data frame.\n\n\nCreating a sf data frame from an aspatial data frame\nThe code chunk below converts sgpools data frame into a simple feature data frame by using st_as_sf() of sf packages\n\nsgpools_sf &lt;- st_as_sf(sgpools, \n                       coords = c(\"XCOORD\", \"YCOORD\"),\n                       crs= 3414)\n\nThings to learn from the arguments above:\n\nThe coords argument requires you to provide the column name of the x-coordinates first then followed by the column name of the y-coordinates.\nThe crs argument required you to provide the coordinates system in epsg format. EPSG: 3414 is Singapore SVY21 Projected Coordinate System. You can search for other country’s epsg code by refering to epsg.io.\n\nTable below shows the data table of sgpools_sf. Notice that a new column called geometry has been added into the data frame.\n\nkable(head(sgpools_sf))\n\n\n\n\n\n\n\n\n\n\n\n\nNAME\nADDRESS\nPOSTCODE\nOUTLET TYPE\nGp1Gp2 Winnings\ngeometry\n\n\n\n\nLivewire (Marina Bay Sands)\n2 Bayfront Avenue, #01-01 The Shoppes at Marina Bay Sands Singapore 018972\n18972\nBranch\n5\nPOINT (30841.56 29598.56)\n\n\nLivewire (Resorts World Sentosa)\n26 Sentosa Gateway #B1-208 Singapore 098138\n98138\nBranch\n11\nPOINT (26703.87 26525.7)\n\n\nSportsBuzz (Kranji)\nLotus Lounge, Level 2, 1 Turf Club Avenue Singapore Racecourse Singapore 738078\n738078\nBranch\n0\nPOINT (20117.93 44888.06)\n\n\nSportsBuzz (PoMo)\n1 Selegie Rd PoMo #01-01 Singapore 188306\n188306\nBranch\n44\nPOINT (29776.95 31382.18)\n\n\nPrime Serangoon North\nBlk 542B Serangoon North Ave 3 #02-01 Singapore 552542\n552542\nBranch\n0\nPOINT (32238.69 39518.76)\n\n\nSingapore Pools Woodlands Centre\n1A Woodlands Centre Road #01-26 Singapore 731001\n731001\nBranch\n3\nPOINT (21012.15 46987.32)\n\n\n\n\n\nThe output shows that sgppols_sf is in point feature class. It’s epsg ID is 3414. The bbox provides information of the extend of the geospatial data."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#drawing-proportional-symbol-map",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#drawing-proportional-symbol-map",
+    "title": "Hands-on_Ex09B",
+    "section": "Drawing Proportional Symbol Map",
+    "text": "Drawing Proportional Symbol Map\nTo create an interactive proportional symbol map in R, the view mode of tmap will be used.\nThe code churn below will turn on the interactive mode of tmap.\n\ntmap_mode(\"view\")\n\n\nIt all started with an interactive point symbol map\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"red\",\n           size = 1,\n           col = \"black\",\n           lwd = 1)\n\n\n\n\n\n\n\nLets make it proportional\nTo draw a proportional symbol map, we need to assign a numerical variable to the size visual attribute. The code chunks below show that the variable Gp1Gp2Winnings is assigned to size visual attribute.\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"red\",\n             size = \"Gp1Gp2 Winnings\",\n             col = \"black\",\n             lwd = 1)\n\n\n\n\n\n\n\n\nLets give it a different colour\nThe proportional symbol map can be further improved by using the colour visual attribute. In the code chunks below, OUTLET_TYPE variable is used as the colour attribute variable.\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"OUTLET TYPE\", \n             size = \"Gp1Gp2 Winnings\",\n             col = \"black\",\n             lwd = 1)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#faceted-plots",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#faceted-plots",
+    "title": "Hands-on_Ex09B",
+    "section": "Faceted Plots",
+    "text": "Faceted Plots\nAn impressive and little-know feature of tmap’s view mode is that it also works with faceted plots. The argument sync in tm_facets() can be used in this case to produce multiple maps with synchronised zoom and pan settings.\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"OUTLET TYPE\", \n             size = \"Gp1Gp2 Winnings\",\n             col = \"black\",\n             lwd = 1) + \n  tm_facets(by= \"OUTLET TYPE\",\n            nrow = 1,\n            sync = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBefore you end the session, it is wiser to switch tmap’s Viewer back to plot mode by using the code chunk below.\n\ntmap_mode(\"plot\")"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#references",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#references",
+    "title": "Hands-on_Ex09B",
+    "section": "References",
+    "text": "References"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#all-about-tmap-package",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#all-about-tmap-package",
+    "title": "Hands-on_Ex09B",
+    "section": "27.1 All about tmap package",
+    "text": "27.1 All about tmap package\n\ntmap: Thematic Maps in R – CRAN Package Repository\ntmap: get started! – Vignette: Getting Started with tmap\ntmap: changes in version 2.0 – Vignette: Changes in version 2\ntmap: creating thematic maps in a flexible way (useR!2015)\nExploring and presenting maps with tmap (useR!2017)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#geospatial-data-wrangling",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#geospatial-data-wrangling",
+    "title": "Hands-on_Ex09B",
+    "section": "27.2 Geospatial data wrangling",
+    "text": "27.2 Geospatial data wrangling\n\nsf: Simple Features for R – CRAN Package Repository\nSimple Features for R: Standardized Support for Spatial Vector Data – sf Package Website\nReading, Writing and Converting Simple Features – Vignette: Reading, Writing and Converting"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#data-wrangling",
+    "href": "Hands-On_Ex/Hands-on_Ex09/Hands-on_Ex09B.html#data-wrangling",
+    "title": "Hands-on_Ex09B",
+    "section": "27.3 Data wrangling",
+    "text": "27.3 Data wrangling\n\ndplyr – dplyr Package Website\nTidy data – Hadley Wickham’s Tidy Data Paper\ntidyr: Easily Tidy Data with ‘spread()’ and ‘gather()’ Functions – tidyr Package Website"
   }
 ]
